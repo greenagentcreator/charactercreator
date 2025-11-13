@@ -124,27 +124,71 @@ export function renderStep5_Summary() {
             <div class="summary-skills-multicolumn">`;
     
     // === BEGINN DER KORRIGIERTEN SKILL-AUSGABE ===
-    const allCharacterSkills = [];
+    // Erstelle eine Map aller Skill-Instanzen gruppiert nach Skill-Key
+    const skillInstancesByKey = new Map();
     if (Array.isArray(character.skills)) {
         character.skills.forEach(skillInstance => {
-            const baseSkillData = ALL_SKILLS[skillInstance.key];
-            if (!baseSkillData) return;
-            let displayName = t(baseSkillData.nameKey);
-            if (skillInstance.typeName && skillInstance.typeName.trim() !== "") {
-                displayName += ` (${skillInstance.typeName.trim()})`;
+            if (!skillInstancesByKey.has(skillInstance.key)) {
+                skillInstancesByKey.set(skillInstance.key, []);
             }
-            const valueFromIncreasesOrProf = skillInstance.value - baseSkillData.base;
-            const isRelevant = valueFromIncreasesOrProf > 0 || 
-                               skillInstance.isProfessional || 
-                               skillInstance.isChoiceSkill || 
-                               (baseSkillData.type && skillInstance.typeName && skillInstance.typeName.trim() !== "") ||
-                               (skillInstance.value > 0 && skillInstance.value === baseSkillData.base && !baseSkillData.type); // Zeige auch unveränderte nicht-typisierte Skills > 0
-
-            if (isRelevant) {
-                 allCharacterSkills.push({ name: displayName, value: skillInstance.value, base: baseSkillData.base });
-            }
+            skillInstancesByKey.get(skillInstance.key).push(skillInstance);
         });
     }
+
+    const allCharacterSkills = [];
+    
+    // Iteriere durch ALL_SKILLS, um alle verfügbaren Skills anzuzeigen
+    for (const skillKey in ALL_SKILLS) {
+        if (!ALL_SKILLS.hasOwnProperty(skillKey)) continue;
+        
+        const baseSkillData = ALL_SKILLS[skillKey];
+        const instances = skillInstancesByKey.get(skillKey) || [];
+        
+        if (baseSkillData.type) {
+            // Für typisierte Skills: Zeige alle Instanzen mit typeName
+            if (instances.length > 0) {
+                instances.forEach(skillInstance => {
+                    let displayName = t(baseSkillData.nameKey);
+                    if (skillInstance.typeName && skillInstance.typeName.trim() !== "") {
+                        displayName += ` (${skillInstance.typeName.trim()})`;
+                    }
+                    allCharacterSkills.push({ 
+                        name: displayName, 
+                        value: skillInstance.value, 
+                        base: baseSkillData.base 
+                    });
+                });
+            } else {
+                // Zeige auch typisierte Skills ohne Instanzen (mit Basiswert)
+                const displayName = t(baseSkillData.nameKey);
+                allCharacterSkills.push({ 
+                    name: displayName, 
+                    value: baseSkillData.base, 
+                    base: baseSkillData.base 
+                });
+            }
+        } else {
+            // Für nicht-typisierte Skills: Zeige eine Instanz (oder Basiswert)
+            if (instances.length > 0) {
+                const skillInstance = instances[0]; // Nimm die erste Instanz
+                const displayName = t(baseSkillData.nameKey);
+                allCharacterSkills.push({ 
+                    name: displayName, 
+                    value: skillInstance.value, 
+                    base: baseSkillData.base 
+                });
+            } else {
+                // Zeige auch nicht-typisierte Skills ohne Instanzen (mit Basiswert)
+                const displayName = t(baseSkillData.nameKey);
+                allCharacterSkills.push({ 
+                    name: displayName, 
+                    value: baseSkillData.base, 
+                    base: baseSkillData.base 
+                });
+            }
+        }
+    }
+    
     allCharacterSkills.sort((a, b) => a.name.localeCompare(b.name, getCurrentLanguage()));
 
     if (allCharacterSkills.length > 0) {

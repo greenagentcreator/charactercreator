@@ -83,7 +83,7 @@
     --color-text-light: #666666; /* Light terminal text */
     --color-text-heading: #ffaa00; /* Amber headings */
     --color-text-heading-dark: #ffcc00; /* Bright amber */
-    --color-text-on-accent: #0a0e0a; /* Dark on green */
+    --color-text-on-accent: #ffffff; /* Light text on green buttons */
     
     /* Border Colors */
     --color-border: #4a5a4a; /* Dark green border */
@@ -97,7 +97,7 @@
     --color-button-hover: #3a9a3a; /* Brighter on hover */
     --color-button-disabled: #4a4a4a; /* Disabled dark */
     --color-button-secondary: #5a5a5a; /* Secondary dark button */
-    --color-button-text: #0a0e0a; /* Dark button text */
+    --color-button-text: #ffffff; /* Light button text for dark mode */
     
     /* Alert Colors */
     --color-alert-info: #4a8acc; /* Bright blue */

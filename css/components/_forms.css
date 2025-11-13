@@ -92,7 +92,7 @@ select.field-valid {
 input.field-valid:focus,
 select.field-valid:focus {
     border-color: var(--color-alert-success);
-    box-shadow: 0 0 0 3px rgba(45, 80, 22, 0.2);
+    box-shadow: 0 0 0 3px var(--color-accent-muted);
 }
 
 /* Success indicator (optional) */

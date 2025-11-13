@@ -3,9 +3,13 @@
     box-sizing: border-box;
 }
 
+html {
+    background-color: var(--color-bg-primary);
+}
+
 body {
     font-family: var(--font-body);
-    background-color: var(--color-bg-primary);
+    background-color: transparent;
     color: var(--color-text);
     line-height: 1.6;
     margin: 0;

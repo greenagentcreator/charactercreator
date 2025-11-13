@@ -58,7 +58,7 @@
 .derived-attr-header {
     display: flex;
     padding: 10px 0;
-    border-bottom: 2px solid var(--color-border-light, #ccc);
+    border-bottom: 2px solid var(--color-border-light);
     margin-bottom: 10px;
     font-weight: bold;
 }

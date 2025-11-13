@@ -1287,7 +1287,7 @@ export function renderAllSkillsList() {
         }
 
         if (isTypeEditableInStep13) {
-            typeDisplayOrInputHtml = ` <input type="text" class="skill-type-input-inline" data-instance-id="${skillInstanceToRender.instanceId}" value="${skillInstanceToRender.typeName || ""}" placeholder="${t('specify_type_placeholder')}" style="width: 150px; margin-left: 8px; font-size: 0.9em; padding: 3px 5px; border: 1px solid #ccc; border-radius: 2px;">`;
+            typeDisplayOrInputHtml = ` <input type="text" class="skill-type-input-inline" data-instance-id="${skillInstanceToRender.instanceId}" value="${skillInstanceToRender.typeName || ""}" placeholder="${t('specify_type_placeholder')}" style="width: 150px; margin: 0px; margin-right: 10px; font-size: 0.9em; padding: 3px 5px; border: 1px solid #ccc; border-radius: 2px;">`;
             if (skillInstanceToRender.typeName === "" || skillInstanceToRender.typeName === null) {
                 editableTypedSkillShownForKey.add(skillInstanceToRender.key); // Merken, dass wir eine leere editierbare gezeigt haben
             }

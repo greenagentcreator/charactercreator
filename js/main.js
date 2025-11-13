@@ -12,6 +12,8 @@ function initTheme() {
     // Get saved theme or default to system preference
     const savedTheme = localStorage.getItem('theme');
     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    // Use saved theme if available, otherwise use system preference
     const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
     
     // Apply initial theme
@@ -23,16 +25,28 @@ function initTheme() {
         themeToggle.setAttribute('aria-pressed', initialTheme === 'dark' ? 'true' : 'false');
     }
     
-    // Listen for system theme changes (if no saved preference)
+    // Listen for system theme changes (only if no saved preference exists)
+    // This allows the theme to automatically update when system preferences change
     if (!savedTheme) {
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const handleSystemThemeChange = (e) => {
             const newTheme = e.matches ? 'dark' : 'light';
             html.setAttribute('data-theme', newTheme);
             updateThemeIcon(newTheme, themeIcon);
-        });
+            if (themeToggle) {
+                themeToggle.setAttribute('aria-pressed', newTheme === 'dark' ? 'true' : 'false');
+            }
+        };
+        // Modern browsers
+        if (mediaQuery.addEventListener) {
+            mediaQuery.addEventListener('change', handleSystemThemeChange);
+        } else {
+            // Fallback for older browsers
+            mediaQuery.addListener(handleSystemThemeChange);
+        }
     }
     
-    // Theme toggle button
+    // Theme toggle button - allows user to manually override system preference
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
             const currentTheme = html.getAttribute('data-theme');
@@ -41,7 +55,11 @@ function initTheme() {
             // Add transition class for smooth change
             html.setAttribute('data-theme-transitioning', '');
             html.setAttribute('data-theme', newTheme);
+            
+            // Save user's manual choice to localStorage
+            // This will override system preference on future visits
             localStorage.setItem('theme', newTheme);
+            
             updateThemeIcon(newTheme, themeIcon);
             
             // Update aria-pressed

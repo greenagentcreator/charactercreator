@@ -102,6 +102,7 @@ header h1 {
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--color-text);
 }
 
 #language-switcher button.active {

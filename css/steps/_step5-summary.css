@@ -58,7 +58,7 @@
     padding: var(--spacing-md) var(--spacing-lg);
     margin-bottom: var(--spacing-xl);
     position: relative;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 3px var(--color-bg-overlay);
 }
 
 .summary-personal-grid {
@@ -155,7 +155,7 @@ span.value-field {
 
 .summary-derived-table td.placeholder-cell {
     min-width: 60px;
-    background-color: #fdfdfd;
+    background-color: var(--color-bg-secondary);
 }
 
 ul.summary-list {
@@ -249,7 +249,7 @@ ul.summary-list li:last-child {
 /* Specific styling for "Current" cells in Derived Attributes table */
 .summary-derived-table td.placeholder-cell {
     min-width: 50px;
-    background-color: #fdfdfd;
+    background-color: var(--color-bg-secondary);
     height: 1.5em;
     line-height: 1.5em;
 }

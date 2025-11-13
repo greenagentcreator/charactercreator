@@ -12,7 +12,7 @@
     letter-spacing: 2px;
     background-color: var(--color-bg-secondary);
     transform: rotate(-5deg);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 4px var(--color-bg-overlay);
     border-radius: 3px;
 }
 
@@ -31,7 +31,7 @@
     letter-spacing: 1px;
     border: 1px solid var(--color-accent-dark);
     border-radius: 3px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 4px var(--color-bg-overlay);
 }
 
 /* Redacted Text Effect */
