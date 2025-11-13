@@ -6,39 +6,39 @@
  */
 
 /* --- Base Styles (must be first) --- */
-@import url('base/_fonts.css');
-@import url('base/_variables.css');
-@import url('base/_themes.css');
-@import url('base/_reset.css');
-@import url('base/_accessibility.css');
+@import url('./base/_fonts.css');
+@import url('./base/_variables.css');
+@import url('./base/_themes.css');
+@import url('./base/_reset.css');
+@import url('./base/_accessibility.css');
 
 /* --- Layout --- */
-@import url('layout/_container.css');
-@import url('layout/_header.css');
-@import url('layout/_navigation.css');
-@import url('layout/_footer.css');
+@import url('./layout/_container.css');
+@import url('./layout/_header.css');
+@import url('./layout/_navigation.css');
+@import url('./layout/_footer.css');
 
 /* --- Components --- */
-@import url('components/_progress-bar.css');
-@import url('components/_info-box.css');
-@import url('components/_forms.css');
-@import url('components/_buttons.css');
-@import url('components/_step-animations.css');
-@import url('components/_alerts.css');
-@import url('components/_thematic-elements.css');
-@import url('components/_backgrounds.css');
-@import url('components/_transitions.css');
-@import url('components/_icons.css');
-@import url('components/_promo-banner.css');
+@import url('./components/_progress-bar.css');
+@import url('./components/_info-box.css');
+@import url('./components/_forms.css');
+@import url('./components/_buttons.css');
+@import url('./components/_step-animations.css');
+@import url('./components/_alerts.css');
+@import url('./components/_thematic-elements.css');
+@import url('./components/_backgrounds.css');
+@import url('./components/_transitions.css');
+@import url('./components/_icons.css');
+@import url('./components/_promo-banner.css');
 
 /* --- Step-Specific Styles --- */
-@import url('steps/_step0-intro.css');
-@import url('steps/_step1-profession.css');
-@import url('steps/_step2-statistics.css');
-@import url('steps/_step3-derived.css');
-@import url('steps/_step4-bonds.css');
-@import url('steps/_step5-summary.css');
+@import url('./steps/_step0-intro.css');
+@import url('./steps/_step1-profession.css');
+@import url('./steps/_step2-statistics.css');
+@import url('./steps/_step3-derived.css');
+@import url('./steps/_step4-bonds.css');
+@import url('./steps/_step5-summary.css');
 
 /* --- Utilities (must be last to allow overrides) --- */
-@import url('utilities/_responsive.css');
-@import url('utilities/_print.css');
+@import url('./utilities/_responsive.css');
+@import url('./utilities/_print.css');
