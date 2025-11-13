@@ -1,0 +1,120 @@
+/* --- Background Patterns & Atmosphere --- */
+
+/* Official Form Grid Background - Applied to body background */
+body {
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(to right, var(--color-border-lighter) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--color-border-lighter) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 0;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: -1;
+}
+
+[data-theme="dark"] body::before {
+    background-image: 
+        linear-gradient(to right, var(--color-border-light) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--color-border-light) 1px, transparent 1px);
+    opacity: 0.15;
+}
+
+/* Paper Texture Overlay (optional, subtle) */
+#app-container {
+    position: relative;
+}
+
+#app-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 0, 0, 0.02) 2px,
+            rgba(0, 0, 0, 0.02) 4px
+        );
+    pointer-events: none;
+    opacity: 0.5;
+    z-index: 0;
+}
+
+[data-theme="dark"] #app-container::before {
+    background-image: 
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(255, 255, 255, 0.02) 2px,
+            rgba(255, 255, 255, 0.02) 4px
+        );
+}
+
+/* Ensure content is above background */
+#app-container > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Terminal Scanline Effect (Dark Theme) */
+[data-theme="dark"] body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15),
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events: none;
+    z-index: 9999;
+    animation: scanline 8s linear infinite;
+}
+
+@keyframes scanline {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(4px);
+    }
+}
+
+/* Subtle Noise/Grain */
+#app-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.03"/></svg>');
+    pointer-events: none;
+    opacity: 0.4;
+    z-index: 0;
+}
+
+[data-theme="dark"] #app-container::after {
+    opacity: 0.6;
+}
+

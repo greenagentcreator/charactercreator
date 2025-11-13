@@ -1,0 +1,52 @@
+/* --- CSS Custom Properties (Design Tokens) --- */
+/* Note: Color variables are defined in _themes.css for light/dark theme support */
+/* This file contains non-color design tokens that remain constant across themes */
+:root {
+    /* Spacing */
+    --spacing-xs: 5px;
+    --spacing-sm: 10px;
+    --spacing-md: 15px;
+    --spacing-lg: 20px;
+    --spacing-xl: 25px;
+    --spacing-xxl: 30px;
+    
+    /* Layout */
+    --container-max-width: 800px;
+    --container-padding-mobile: 15px;
+    --container-padding-desktop: 20px 30px;
+    --footer-height: 90px;
+    
+    /* Typography */
+    --font-body: 'Roboto Slab', serif;
+    --font-heading: 'Special Elite', cursive;
+    --font-mono: 'Courier New', 'Liberation Mono', 'Consolas', monospace;
+    --font-size-base: 1em;
+    --font-size-sm: 0.85em;
+    --font-size-md: 0.9em;
+    --font-size-lg: 0.95em;
+    --font-size-xl: 1.1em;
+    --font-size-xxl: 1.5em;
+    --font-size-xxxl: 1.8em;
+    
+    /* Transitions */
+    --transition-fast: 0.2s;
+    --transition-normal: 0.3s;
+    --transition-slow: 0.4s;
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 5px rgba(0,0,0,0.08);
+    --shadow-md: 0 -2px 5px rgba(0,0,0,0.1);
+    --shadow-lg: 3px 3px 10px rgba(0,0,0,0.1);
+    --shadow-tooltip: 0 2px 5px rgba(0,0,0,0.2);
+    
+    /* Border Radius */
+    --radius-sm: 2px;
+    --radius-md: 3px;
+    --radius-lg: 4px;
+    --radius-full: 50%;
+    
+    /* Z-index */
+    --z-tooltip: 10;
+    --z-navigation: 1000;
+}
+

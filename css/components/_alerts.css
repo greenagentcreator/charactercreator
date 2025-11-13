@@ -1,0 +1,92 @@
+/* --- Alert System - Official Notices --- */
+.alert {
+    padding: var(--spacing-md) var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    border-left: 4px solid;
+    border-right: 1px solid;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-radius: 4px;
+    font-size: var(--font-size-lg);
+    position: relative;
+}
+
+.alert-info {
+    background-color: var(--color-bg-info);
+    border-color: var(--color-alert-info);
+    color: var(--color-text);
+}
+
+.alert-warning {
+    background-color: rgba(204, 136, 0, 0.1);
+    border-color: var(--color-alert-warning);
+    color: var(--color-text);
+}
+
+.alert-classified {
+    background-color: rgba(204, 0, 0, 0.1);
+    border-color: var(--color-alert-classified);
+    color: var(--color-text);
+}
+
+.alert-classified::after {
+    content: "CLASSIFIED";
+    position: absolute;
+    top: var(--spacing-xs);
+    right: var(--spacing-md);
+    font-family: var(--font-heading);
+    font-size: 0.7em;
+    color: var(--color-alert-classified);
+    letter-spacing: 2px;
+    opacity: 0.6;
+}
+
+.alert-success {
+    background-color: rgba(45, 80, 22, 0.1);
+    border-color: var(--color-alert-success);
+    color: var(--color-text);
+}
+
+.alert-title {
+    font-weight: bold;
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--spacing-xs);
+    font-size: 1.1em;
+}
+
+.alert p {
+    margin: var(--spacing-xs) 0;
+}
+
+.alert p:first-child {
+    margin-top: 0;
+}
+
+.alert p:last-child {
+    margin-bottom: 0;
+}
+
+/* --- Error Message System --- */
+.error-container {
+    margin-bottom: var(--spacing-lg);
+}
+
+.field-error-message {
+    margin-top: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.field-error {
+    border-color: var(--color-alert-classified) !important;
+    box-shadow: 0 0 0 2px rgba(204, 0, 0, 0.2) !important;
+}
+
+.field-error:focus {
+    border-color: var(--color-alert-classified) !important;
+    box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.3) !important;
+}
+

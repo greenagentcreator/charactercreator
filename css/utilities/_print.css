@@ -1,0 +1,142 @@
+/* --- Print Styles --- */
+@media print {
+    body {
+        padding: 0 !important;
+        background-color: #fff !important;
+        font-size: 10pt !important;
+        color: #000 !important;
+        padding-bottom: 0 !important;
+    }
+    
+    #navigation-container {
+        display: none !important;
+    }
+    
+    #app-container {
+        box-shadow: none !important;
+        border: none !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+    }
+    
+    header,
+    #sticky-nav-footer,
+    footer,
+    #language-switcher,
+    #theme-switcher,
+    #progress-bar-container,
+    .summary-actions {
+        display: none !important;
+    }
+    
+    /* Hide background patterns and effects for print */
+    body::before,
+    body::after,
+    #app-container::before,
+    #app-container::after {
+        display: none !important;
+    }
+    
+    .info-box {
+        border-left-width: 2px !important;
+        padding: 8px 10px !important;
+        background-color: #f8f8f8 !important;
+    }
+    
+    h1, h2, h3 {
+        margin-top: 15px !important;
+        margin-bottom: 8px !important;
+        color: #000 !important;
+    }
+    
+    .summary-block {
+        border: 3px double #000 !important;
+        margin-bottom: 15px !important;
+        padding: 10px 15px !important;
+        background-color: #fff !important;
+        border-radius: 0 !important;
+    }
+    
+    #step5-summary h3.summary-block-title {
+        background-color: #2d5016 !important;
+        color: #fff !important;
+        margin: -10px -15px 10px -15px !important;
+        font-size: 1.1em !important;
+        border-bottom: 3px double #fff !important;
+    }
+    
+    /* Official document styling for print */
+    #app-container {
+        border: 3px double #000 !important;
+    }
+    
+    .summary-table {
+        border: 2px solid #000 !important;
+    }
+    
+    .summary-table th,
+    .summary-table td {
+        border: 1px solid #000 !important;
+    }
+    
+    .summary-grid-stats-psych {
+        grid-template-columns: 1fr 1fr !important; 
+        gap: 10px !important;
+    }
+    
+    .summary-table {
+        font-size: 8.5pt !important;
+    }
+    
+    .summary-table th,
+    .summary-table td {
+        padding: 4px 6px !important;
+    }
+    
+    /* Skills im Druck - IMMER 3 Spalten */
+    .summary-skills-multicolumn ul.skills-flat-list {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0 10px !important;
+        font-size: 8.5pt !important;
+        padding-left: 20px !important;
+        list-style-type: disc !important;
+    }
+    
+    .summary-skills-multicolumn ul.skills-flat-list li {
+        padding: 1px 0 !important;
+        font-size: 8.5pt !important;
+        margin-bottom: 1px !important;
+    }
+    
+    .summary-table {
+        font-size: 8pt !important;
+        margin-bottom: 8px !important;
+    }
+    
+    .summary-table th,
+    .summary-table td {
+        padding: 3px 5px !important;
+    }
+    
+    .summary-derived-table td.placeholder-cell {
+        height: 1.4em !important;
+        line-height: 1.4em !important;
+        min-width: 40px !important;
+    }
+    
+    #step5-summary h4.summary-subsection-title {
+        font-size: 1em !important;
+        margin-top: 10px !important;
+        margin-bottom: 5px !important;
+    }
+    
+    .summary-skills-multicolumn .base-value {
+        font-size: 0.9em;
+    }
+    
+    footer {
+        display: none !important;
+    }
+}
+

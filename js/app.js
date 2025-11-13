@@ -3,6 +3,8 @@
 import { t, translateAllElements } from './i18n/i18n.js';
 import { getCurrentLanguage } from './i18n/i18n.js';
 import { resetCharacter, getCharacter } from './model/character.js';
+import { initErrorContainer, clearErrors } from './utils/validation.js';
+import { initKeyboardNavigation, focusFirstInput } from './utils/keyboard.js';
 import { renderIntro } from './steps/step0-intro.js';
 import { renderStep1_ProfessionSkills, validateStep1, saveStep1, attachStep1Listeners } from './steps/step1-profession.js';
 import { renderStep2_Statistics, validateStep2, saveStep2, attachStep2Listeners } from './steps/step2-statistics.js';
@@ -33,18 +35,113 @@ function renderCurrentStep() {
             stepContainer.innerHTML = ''; 
             stepContainer.appendChild(stepContentOrHtml);
         }
+        // Initialize error container for the new step
+        clearErrors();
+        initErrorContainer();
         translateAllElements(stepContainer);
         if (stepData.attachListeners) {
             stepData.attachListeners();
         }
         updateProgressBar(); 
-        updateNavigationButtons(); 
+        updateNavigationButtons();
+        // Focus first input after a short delay to ensure DOM is ready
+        // Use requestAnimationFrame to ensure DOM is fully rendered
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                focusFirstInput();
+            }, 150);
+        }); 
     }
 }
 
 function updateProgressBar() {
+    // Clear existing content
+    progressBarContainer.innerHTML = '';
+    
+    // Create stepper container
+    const stepper = document.createElement('div');
+    stepper.className = 'progress-stepper';
+    stepper.setAttribute('role', 'navigation');
+    stepper.setAttribute('aria-label', 'Step navigation');
+    
+    // Create progress line
+    const progressLine = document.createElement('div');
+    progressLine.className = 'progress-stepper-line';
+    const progressPercent = (currentStep / (steps.length - 1)) * 100;
+    progressLine.style.width = `${progressPercent}%`;
+    stepper.appendChild(progressLine);
+    
+    // Create step indicators
+    steps.forEach((step, index) => {
+        const stepIndicator = document.createElement('div');
+        stepIndicator.className = 'step-indicator';
+        stepIndicator.setAttribute('role', 'button');
+        stepIndicator.setAttribute('tabindex', index === currentStep ? '0' : '-1');
+        stepIndicator.setAttribute('aria-label', `Step ${index + 1}: ${t(step.nameKey)}`);
+        
+        if (index === currentStep) {
+            stepIndicator.classList.add('current');
+            stepIndicator.setAttribute('aria-current', 'step');
+        } else if (index < currentStep) {
+            stepIndicator.classList.add('completed');
+        }
+        
+        // Step circle
+        const circle = document.createElement('div');
+        circle.className = 'step-circle';
+        circle.textContent = index + 1;
+        stepIndicator.appendChild(circle);
+        
+        // Step label
+        const label = document.createElement('div');
+        label.className = 'step-label';
+        label.textContent = t(step.nameKey);
+        stepIndicator.appendChild(label);
+        
+        // Make completed steps clickable (optional - allow jumping back)
+        if (index < currentStep) {
+            stepIndicator.addEventListener('click', () => {
+                if (index < currentStep) {
+                    // Validate current step before allowing navigation
+                    if (validateStep(currentStep, false)) {
+                        saveStepData(currentStep);
+                        currentStep = index;
+                        renderCurrentStep();
+                    }
+                }
+            });
+            stepIndicator.addEventListener('keydown', (e) => {
+                if ((e.key === 'Enter' || e.key === ' ') && index < currentStep) {
+                    e.preventDefault();
+                    if (validateStep(currentStep, false)) {
+                        saveStepData(currentStep);
+                        currentStep = index;
+                        renderCurrentStep();
+                    }
+                }
+            });
+        }
+        
+        stepper.appendChild(stepIndicator);
+    });
+    
+    progressBarContainer.appendChild(stepper);
+    
+    // Add screen reader announcement
+    const announcement = document.createElement('div');
+    announcement.className = 'sr-only';
+    announcement.setAttribute('aria-live', 'polite');
+    announcement.setAttribute('aria-atomic', 'true');
     const stepName = t(steps[currentStep].nameKey) || `Step ${currentStep}`;
-    progressBarContainer.textContent = t('progress_bar_text', { current: currentStep, total: steps.length - 1, stepName: stepName });
+    announcement.textContent = t('progress_bar_text', { current: currentStep, total: steps.length - 1, stepName: stepName });
+    progressBarContainer.appendChild(announcement);
+    
+    // Remove announcement after screen reader has read it
+    setTimeout(() => {
+        if (announcement.parentElement) {
+            announcement.remove();
+        }
+    }, 1000);
 }
 
 function validateStep(stepIndex, showAlerts = true) {
@@ -64,16 +161,51 @@ function handleNextStep() {
     if (!validateStep(currentStep, true)) return;
     saveStepData(currentStep);
     if (currentStep < steps.length - 1) {
+        // Mark step container as busy during transition
+        if (stepContainer) {
+            stepContainer.setAttribute('aria-busy', 'true');
+        }
         currentStep++;
         renderCurrentStep();
+        // Scroll to top smoothly
+        scrollToStepTop();
     }
 }
 
 function handlePreviousStep() {
     if (currentStep > 0) {
+        // Mark step container as busy during transition
+        if (stepContainer) {
+            stepContainer.setAttribute('aria-busy', 'true');
+        }
         currentStep--;
         renderCurrentStep();
+        // Scroll to top smoothly
+        scrollToStepTop();
     }
+}
+
+/**
+ * Scroll to the top of the step content smoothly
+ */
+function scrollToStepTop() {
+    // Use requestAnimationFrame to ensure DOM is updated
+    requestAnimationFrame(() => {
+        const mainContent = document.getElementById('main-content');
+        if (mainContent) {
+            mainContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+            // Fallback to window scroll
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Remove busy state after transition
+        setTimeout(() => {
+            if (stepContainer) {
+                stepContainer.removeAttribute('aria-busy');
+            }
+        }, 300);
+    });
 }
 
 export function updateNavigationButtons() {
@@ -114,6 +246,9 @@ export function initializeApp() {
     
     btnNext.addEventListener('click', handleNextStep);
     btnBack.addEventListener('click', handlePreviousStep);
+    
+    // Initialize keyboard navigation
+    initKeyboardNavigation();
     
     renderCurrentStep();
 }

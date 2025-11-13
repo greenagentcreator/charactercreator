@@ -1,0 +1,132 @@
+/* --- Theme System: Light Theme (Default) --- */
+:root,
+[data-theme="light"] {
+    /* Background Colors - Government Office Aesthetic */
+    --color-bg-primary: #f5f5f0; /* Official paper */
+    --color-bg-secondary: #ffffff; /* White form background */
+    --color-bg-info: #e8ede8; /* Light official green tint */
+    --color-bg-summary: #f8f8f5; /* Slightly off-white */
+    --color-bg-footer: #e0e0d8; /* Muted official gray */
+    --color-bg-overlay: rgba(0, 0, 0, 0.05);
+    
+    /* Accent Colors - Military Green */
+    --color-accent: #2d5016; /* Military green */
+    --color-accent-dark: #1a3009; /* Darker military green */
+    --color-accent-light: #4a7a2a; /* Lighter military green */
+    --color-accent-hover: #3a6020; /* Hover state */
+    --color-accent-muted: #6b8a5a; /* Muted green */
+    
+    /* Text Colors */
+    --color-text: #1a1a1a; /* Official black */
+    --color-text-muted: #4a4a4a; /* Muted text */
+    --color-text-light: #6a6a6a; /* Light text */
+    --color-text-heading: #0d0d0d; /* Dark heading */
+    --color-text-heading-dark: #000000; /* Pure black for emphasis */
+    --color-text-on-accent: #ffffff; /* White on green */
+    
+    /* Border Colors */
+    --color-border: #8a8a8a; /* Official gray border */
+    --color-border-light: #b0b0b0; /* Light border */
+    --color-border-lighter: #d0d0d0; /* Very light border */
+    --color-border-dark: #2d5016; /* Dark green border */
+    --color-border-official: #1a1a1a; /* Official document border */
+    
+    /* Button Colors */
+    --color-button: #2d5016; /* Military green button */
+    --color-button-hover: #1a3009; /* Darker on hover */
+    --color-button-disabled: #a0a0a0; /* Disabled gray */
+    --color-button-secondary: #4a4a4a; /* Secondary button */
+    --color-button-text: #ffffff; /* Button text */
+    
+    /* Alert Colors */
+    --color-alert-info: #1e5a8a; /* Official blue */
+    --color-alert-warning: #cc8800; /* Amber warning */
+    --color-alert-classified: #cc0000; /* Classified red */
+    --color-alert-success: #2d5016; /* Success green */
+    
+    /* Tooltip */
+    --color-tooltip-bg: #1a1a1a; /* Dark tooltip */
+    --color-tooltip-text: #f0f0f0; /* Light tooltip text */
+    
+    /* Summary/Table Colors */
+    --color-summary-title-bg: #2d5016; /* Military green header */
+    --color-summary-title-text: #ffffff; /* White header text */
+    --color-summary-table-header: #e0e0d8; /* Table header bg */
+    --color-summary-table-border: #8a8a8a; /* Table borders */
+    
+    /* Classified/Status Colors */
+    --color-classified: #cc0000; /* Classified red */
+    --color-confidential: #cc8800; /* Confidential amber */
+    --color-redacted: #1a1a1a; /* Redacted black */
+}
+
+/* --- Theme System: Dark Theme (Classified Terminal) --- */
+[data-theme="dark"] {
+    /* Background Colors - Classified Terminal Aesthetic */
+    --color-bg-primary: #0a0e0a; /* Deep dark green-black */
+    --color-bg-secondary: #121612; /* Slightly lighter dark */
+    --color-bg-info: #1a2a1a; /* Dark green tint */
+    --color-bg-summary: #0f150f; /* Dark summary bg */
+    --color-bg-footer: #080a08; /* Darkest footer */
+    --color-bg-overlay: rgba(255, 255, 255, 0.05);
+    
+    /* Accent Colors - Terminal Green & Amber */
+    --color-accent: #2d8a2d; /* Terminal green */
+    --color-accent-dark: #1a5a1a; /* Darker terminal green */
+    --color-accent-light: #4aaa4a; /* Brighter terminal green */
+    --color-accent-hover: #3a9a3a; /* Hover state */
+    --color-accent-muted: #5a8a5a; /* Muted green */
+    
+    /* Text Colors - Terminal Style */
+    --color-text: #c0c0c0; /* Terminal gray */
+    --color-text-muted: #888888; /* Muted terminal text */
+    --color-text-light: #666666; /* Light terminal text */
+    --color-text-heading: #ffaa00; /* Amber headings */
+    --color-text-heading-dark: #ffcc00; /* Bright amber */
+    --color-text-on-accent: #0a0e0a; /* Dark on green */
+    
+    /* Border Colors */
+    --color-border: #4a5a4a; /* Dark green border */
+    --color-border-light: #3a4a3a; /* Light dark border */
+    --color-border-lighter: #2a3a2a; /* Very light dark border */
+    --color-border-dark: #2d8a2d; /* Terminal green border */
+    --color-border-official: #ffaa00; /* Amber official border */
+    
+    /* Button Colors */
+    --color-button: #2d8a2d; /* Terminal green button */
+    --color-button-hover: #3a9a3a; /* Brighter on hover */
+    --color-button-disabled: #4a4a4a; /* Disabled dark */
+    --color-button-secondary: #5a5a5a; /* Secondary dark button */
+    --color-button-text: #0a0e0a; /* Dark button text */
+    
+    /* Alert Colors */
+    --color-alert-info: #4a8acc; /* Bright blue */
+    --color-alert-warning: #ffaa00; /* Amber warning */
+    --color-alert-classified: #ff4444; /* Bright red */
+    --color-alert-success: #2d8a2d; /* Terminal green */
+    
+    /* Tooltip */
+    --color-tooltip-bg: #1a2a1a; /* Dark green tooltip */
+    --color-tooltip-text: #c0c0c0; /* Terminal text */
+    
+    /* Summary/Table Colors */
+    --color-summary-title-bg: #1a5a1a; /* Dark green header */
+    --color-summary-title-text: #ffaa00; /* Amber header text */
+    --color-summary-table-header: #1a2a1a; /* Dark table header */
+    --color-summary-table-border: #4a5a4a; /* Dark table borders */
+    
+    /* Classified/Status Colors */
+    --color-classified: #ff4444; /* Bright classified red */
+    --color-confidential: #ffaa00; /* Amber confidential */
+    --color-redacted: #ffaa00; /* Amber redacted */
+}
+
+/* Smooth theme transitions */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Disable transitions for theme switching to avoid flash */
+[data-theme-transitioning] * {
+    transition: none !important;
+}

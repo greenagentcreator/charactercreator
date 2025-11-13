@@ -1,0 +1,175 @@
+/* --- Progress Bar - Visual Stepper Component --- */
+#progress-bar-container {
+    margin-bottom: var(--spacing-xl);
+    position: relative;
+}
+
+.progress-stepper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding: var(--spacing-md) 0;
+    margin-bottom: var(--spacing-md);
+}
+
+.progress-stepper::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--color-border-lighter);
+    z-index: 0;
+    transform: translateY(-50%);
+}
+
+.progress-stepper-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 2px;
+    background-color: var(--color-accent);
+    z-index: 1;
+    transform: translateY(-50%);
+    transition: width var(--transition-normal);
+}
+
+.step-indicator {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    cursor: pointer;
+    min-width: 0;
+}
+
+.step-indicator:first-child {
+    align-items: flex-start;
+}
+
+.step-indicator:last-child {
+    align-items: flex-end;
+}
+
+.step-indicator:not(:first-child):not(:last-child) {
+    align-items: center;
+}
+
+.step-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-bg-secondary);
+    border: 2px solid var(--color-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    transition: all var(--transition-normal);
+    flex-shrink: 0;
+}
+
+.step-indicator.completed .step-circle {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-text-on-accent);
+}
+
+.step-indicator.current .step-circle {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-text-on-accent);
+    box-shadow: 0 0 0 4px var(--color-accent-muted);
+}
+
+.step-indicator:not(.current):not(.completed):hover .step-circle {
+    border-color: var(--color-accent);
+    background-color: var(--color-bg-overlay);
+}
+
+.step-label {
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    text-align: center;
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.step-indicator.current .step-label {
+    color: var(--color-text-heading);
+    font-weight: bold;
+}
+
+.step-indicator.completed .step-label {
+    color: var(--color-text);
+}
+
+.step-indicator:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
+}
+
+/* Mobile responsive stepper */
+@media (max-width: 600px) {
+    .progress-stepper {
+        overflow-x: auto;
+        padding-bottom: var(--spacing-sm);
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+    
+    .progress-stepper::-webkit-scrollbar {
+        height: 4px;
+    }
+    
+    .progress-stepper::-webkit-scrollbar-thumb {
+        background-color: var(--color-border-light);
+        border-radius: 2px;
+    }
+    
+    .step-indicator {
+        min-width: 60px;
+        flex-shrink: 0;
+    }
+    
+    .step-circle {
+        width: 32px;
+        height: 32px;
+        font-size: var(--font-size-xs);
+    }
+    
+    .step-label {
+        font-size: var(--font-size-xs);
+        max-width: 60px;
+    }
+    
+    .progress-stepper::before,
+    .progress-stepper-line {
+        top: 16px; /* Align with smaller circles */
+    }
+}
+
+/* Hide step labels on very small screens, show only numbers */
+@media (max-width: 400px) {
+    .step-label {
+        display: none;
+    }
+    
+    .step-indicator {
+        min-width: 40px;
+    }
+}
+

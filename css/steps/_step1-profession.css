@@ -1,0 +1,340 @@
+/* --- Step 1: Profession & Skills --- */
+
+/* Skill List Styling */
+.skill-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 5px; 
+    border-bottom: 1px dotted var(--color-border-lighter);
+}
+
+.skill-list-item:last-child {
+    border-bottom: none;
+}
+
+.skill-name-container {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    margin-right: 10px; 
+}
+
+.skill-name {
+    margin-right: 8px;
+}
+
+.skill-type-input-inline { 
+    width: 150px;
+    margin-left: 8px;
+    font-size: 0.9em;
+    padding: 3px 5px;
+    border: 1px solid var(--color-border-light);
+    border-radius: 3px;
+}
+
+.skill-info-icon {
+    cursor: help;
+    color: var(--color-accent);
+    font-size: var(--font-size-sm);
+    border: 1px solid var(--color-accent-light);
+    border-radius: var(--radius-full);
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    font-weight: bold;
+    transition: background-color var(--transition-fast);
+}
+
+.skill-info-icon:hover {
+    background-color: var(--color-accent-hover);
+}
+
+.skill-info-icon:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+.tooltip {
+    visibility: hidden;
+    width: 220px;
+    background-color: var(--color-tooltip-bg);
+    color: var(--color-tooltip-text);
+    text-align: left;
+    border-radius: var(--radius-lg);
+    padding: 8px 12px;
+    position: absolute;
+    z-index: var(--z-tooltip);
+    bottom: 130%;
+    left: 50%;
+    margin-left: -110px;
+    opacity: 0;
+    transition: opacity var(--transition-normal), visibility 0s var(--transition-normal);
+    font-size: var(--font-size-md);
+    line-height: 1.4;
+    box-shadow: var(--shadow-tooltip);
+}
+
+.skill-info-icon:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
+}
+
+.skill-value-controls {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.skill-value {
+    font-weight: bold;
+    min-width: 35px;
+    text-align: right;
+    margin-right: 5px;
+}
+
+.skill-increase-count {
+    font-size: 0.8em;
+    color: #666;
+    min-width: 60px;
+    text-align: left;
+    margin-right: 8px;
+}
+
+.skill-increase-button,
+.skill-decrease-button {
+    padding: 3px 7px;
+    font-size: 0.8em;
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: background-color var(--transition-fast);
+}
+
+.skill-increase-button {
+    background-color: #e8e8e8;
+}
+
+.skill-decrease-button {
+    background-color: #f0e0e0;
+    margin-right: 4px;
+}
+
+.skill-increase-button:hover:not(:disabled) {
+    background-color: #d8d8d8;
+}
+
+.skill-decrease-button:hover:not(:disabled) {
+    background-color: #e0d0d0;
+}
+
+.skill-increase-button:focus-visible,
+.skill-decrease-button:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+.skill-increase-button:disabled,
+.skill-decrease-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Profession Specific Choices */
+#profession-details ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+#profession-details li {
+    margin-bottom: 8px;
+}
+
+#profession-details input[type="text"].skill-type-input {
+    width: auto;
+    min-width: 150px;
+    margin-left: 10px;
+    padding: 6px;
+    font-size: 0.9em;
+}
+
+/* Custom Profession */
+.custom-skill-item-base > .base-skill-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.custom-skill-item-base > .base-skill-line > div:first-child {
+    display: flex;
+    align-items: center;
+}
+
+#custom-profession-skill-list .skill-instance-controls {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0;
+    padding: 8px 0;
+    margin-left: 25px;
+    border-left: 1px solid var(--color-border-lighter);
+    margin-top: 5px;
+    font-size: 0.85em;
+    min-height: 34px;
+}
+
+#custom-profession-skill-list .skill-instance-left {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    padding-right: 15px;
+}
+
+#custom-profession-skill-list .skill-instance-middle {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1 1 auto;
+    padding: 0 15px;
+}
+
+#custom-profession-skill-list .skill-instance-right {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    padding-left: 15px;
+}
+
+#custom-profession-skill-list .skill-instance-separator {
+    width: 1px;
+    background-color: #ddd;
+    align-self: stretch;
+    flex-shrink: 0;
+}
+
+#custom-profession-skill-list .custom-instance-type-input {
+    width: 130px;
+    padding: 6px;
+    font-size: 1em;
+    margin: 0;
+}
+
+#custom-profession-skill-list .custom-instance-type-input-placeholder {
+    width: 130px;
+    display: inline-block;
+    min-height: 1em;
+}
+
+#custom-profession-skill-list .assign-points-label {
+    white-space: nowrap;
+    margin-bottom: 5px;
+    font-weight: normal;
+}
+
+#custom-profession-skill-list .point-buttons-group {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    flex-wrap: wrap;
+}
+
+#custom-profession-skill-list .custom-skill-point-btn { 
+    padding: 3px 6px;
+    font-size: 0.9em;
+    line-height: 1.2;
+    min-width: auto;
+    flex-shrink: 0;
+    border: 1px solid var(--color-border-light);
+    border-radius: 3px;
+    background-color: #f5f5f5;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#custom-profession-skill-list .custom-skill-point-btn:hover:not(:disabled) {
+    background-color: #e0e0e0;
+}
+
+#custom-profession-skill-list .custom-skill-point-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#custom-profession-skill-list .custom-skill-assigned-points { 
+    min-width: 20px;
+    text-align: center;
+    font-weight: bold;
+    margin: 0 5px;
+    flex-shrink: 0;
+}
+
+#custom-profession-skill-list .skill-instance-controls .custom-skill-total-value { 
+    white-space: nowrap;
+    font-weight: bold;
+    margin: 0;
+}
+
+#custom-profession-skill-list .skill-instance-controls .remove-custom-skill-instance-btn { 
+    padding: 0 4px;
+    flex-shrink: 0;
+    font-size: 1.1em;
+    line-height: 1;
+}
+
+@media (max-width: 750px) {
+    #custom-profession-skill-list .skill-instance-controls { 
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px 0;
+    }
+    #custom-profession-skill-list .skill-instance-separator {
+        display: none;
+    }
+    #custom-profession-skill-list .skill-instance-left,
+    #custom-profession-skill-list .skill-instance-middle,
+    #custom-profession-skill-list .skill-instance-right {
+        width: 100%;
+        padding: 0;
+        margin-bottom: 8px;
+    }
+    #custom-profession-skill-list .skill-instance-right {
+        margin-bottom: 0;
+    }
+    #custom-profession-skill-list .custom-instance-type-input,
+    #custom-profession-skill-list .custom-instance-type-input-placeholder { 
+        width: 100%; 
+    }
+    #custom-profession-skill-list .assign-points-label { 
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    #custom-profession-skill-list .skill-instance-controls .custom-skill-total-value { 
+        width: 100%;
+        text-align: left;
+    }
+}
+
+.custom-prof-actions-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+#btn-confirm-custom-skills {
+    margin-top: 0;
+}
+
+label.disabled-choice {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+label.disabled-choice input[type="checkbox"] {
+    cursor: not-allowed;
+}
+

@@ -1,0 +1,106 @@
+/* --- Icons & Symbols - Government/Military Style --- */
+
+/* Icon Base */
+.icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    fill: currentColor;
+}
+
+/* Classified Icon */
+.icon-classified::before {
+    content: "⚠";
+    color: var(--color-classified);
+    font-weight: bold;
+}
+
+/* Official Seal */
+.icon-seal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--color-accent);
+    border-radius: 50%;
+    font-size: 0.7em;
+    font-weight: bold;
+    color: var(--color-accent);
+}
+
+.icon-seal::before {
+    content: "★";
+}
+
+/* Status Icons */
+.icon-status-active::before {
+    content: "●";
+    color: var(--color-alert-success);
+}
+
+.icon-status-warning::before {
+    content: "▲";
+    color: var(--color-alert-warning);
+}
+
+.icon-status-classified::before {
+    content: "■";
+    color: var(--color-alert-classified);
+}
+
+/* Arrow Icons */
+.icon-arrow-right::before {
+    content: "→";
+}
+
+.icon-arrow-left::before {
+    content: "←";
+}
+
+.icon-arrow-up::before {
+    content: "↑";
+}
+
+.icon-arrow-down::before {
+    content: "↓";
+}
+
+/* Checkmark (Official) */
+.icon-check::before {
+    content: "✓";
+    color: var(--color-alert-success);
+    font-weight: bold;
+}
+
+/* Cross/X (Rejected) */
+.icon-cross::before {
+    content: "✗";
+    color: var(--color-alert-classified);
+    font-weight: bold;
+}
+
+/* Info Icon */
+.icon-info::before {
+    content: "ℹ";
+    color: var(--color-alert-info);
+}
+
+/* Required Field Indicator */
+.required::after {
+    content: " *";
+    color: var(--color-classified);
+    font-weight: bold;
+}
+
+/* Optional Field Indicator */
+.optional::after {
+    content: " (OPTIONAL)";
+    color: var(--color-text-muted);
+    font-size: 0.8em;
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+

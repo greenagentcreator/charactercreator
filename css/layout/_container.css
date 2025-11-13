@@ -1,0 +1,32 @@
+/* --- App Container - Official Document Style --- */
+#app-container {
+    width: 100%;
+    max-width: var(--container-max-width);
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border-light);
+    box-shadow: var(--shadow-lg);
+    padding: var(--container-padding-mobile);
+    padding-bottom: calc(var(--container-padding-mobile) + 80px); /* Space for fixed navigation */
+    border-radius: 4px;
+    position: relative;
+    margin-bottom: 0;
+}
+
+/* Mobile-first responsive adjustments */
+@media (min-width: 768px) {
+    body {
+        padding: var(--spacing-lg);
+    }
+    #app-container {
+        padding: var(--container-padding-desktop);
+        padding-bottom: calc(30px + 80px); /* Space for fixed navigation on desktop */
+    }
+}
+
+/* Mobile: Adjust padding for compact navigation */
+@media (max-width: 600px) {
+    #app-container {
+        padding-bottom: calc(var(--container-padding-mobile) + 60px); /* Space for compact mobile navigation */
+    }
+}
+

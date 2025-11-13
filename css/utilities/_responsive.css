@@ -1,0 +1,114 @@
+/* --- Responsive Utilities --- */
+
+/* Mobile-first responsive breakpoints */
+/* Small mobile: up to 400px */
+/* Mobile: 401px to 600px */
+/* Tablet: 601px to 768px */
+/* Desktop: 769px and up */
+
+/* Additional mobile optimizations */
+@media (max-width: 600px) {
+    /* Improve touch targets on mobile */
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="tel"],
+    select,
+    textarea {
+        min-height: 44px; /* Touch-friendly minimum size */
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    /* Better spacing on mobile */
+    h2, h3 {
+        margin-top: var(--spacing-lg);
+        font-size: var(--font-size-xl);
+    }
+    
+    h2 {
+        font-size: var(--font-size-xxl);
+    }
+    
+    /* Full-width buttons on mobile (except navigation buttons which are side by side) */
+    .action-button {
+        width: 100%;
+        margin-bottom: var(--spacing-sm);
+        min-height: 44px;
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    /* Improve form spacing */
+    label {
+        margin-bottom: var(--spacing-xs);
+        font-size: var(--font-size-base);
+    }
+    
+    /* Better container padding on mobile */
+    #app-container {
+        padding: var(--spacing-md);
+        margin: var(--spacing-sm);
+    }
+    
+    /* Improve info boxes on mobile */
+    .info-box {
+        padding: var(--spacing-md);
+        font-size: var(--font-size-base);
+    }
+    
+    /* Better alert spacing */
+    .alert {
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-md);
+        font-size: var(--font-size-base);
+    }
+    
+    /* Improve field error messages */
+    .field-error-message {
+        font-size: var(--font-size-sm);
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+    
+    /* Better spacing for form groups */
+    .form-group,
+    fieldset {
+        margin-bottom: var(--spacing-lg);
+    }
+}
+
+/* Very small screens */
+@media (max-width: 400px) {
+    header h1 {
+        font-size: var(--font-size-xxl);
+    }
+    
+    #header-controls {
+        width: 100%;
+        justify-content: flex-end;
+        margin-top: var(--spacing-xs);
+    }
+    
+    #app-container {
+        padding: var(--spacing-sm);
+        margin: var(--spacing-xs);
+    }
+    
+    h2 {
+        font-size: var(--font-size-xl);
+    }
+    
+    h3 {
+        font-size: var(--font-size-lg);
+    }
+}
+
+/* Tablet optimizations */
+@media (min-width: 601px) and (max-width: 768px) {
+    #app-container {
+        padding: var(--spacing-lg) var(--spacing-xl);
+    }
+    
+    .nav-button {
+        min-width: 120px;
+    }
+}
+

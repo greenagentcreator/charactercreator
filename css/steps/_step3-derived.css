@@ -1,0 +1,72 @@
+/* --- Step 3: Derived Attributes --- */
+.derived-attributes-display {
+    margin-top: var(--spacing-lg);
+    border-top: 1px solid var(--color-border);
+}
+
+.derived-attr-row {
+    display: flex;
+    align-items: flex-start;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px dotted var(--color-border-lighter);
+}
+
+.derived-attr-row:last-child {
+    border-bottom: none;
+}
+
+.derived-attr-row > :nth-child(1) {
+    flex-basis: 200px;
+    flex-shrink: 0;
+    font-weight: bold;
+    text-align: right;
+    padding-right: var(--spacing-md);
+}
+
+.derived-attr-row > :nth-child(2) {
+    flex-basis: 60px;
+    flex-shrink: 0;
+    font-weight: bold;
+    text-align: center;
+}
+
+.derived-attr-row > :nth-child(3) {
+    flex-grow: 1;
+    font-size: var(--font-size-md);
+    color: var(--color-text-muted);
+    padding-left: var(--spacing-md);
+    line-height: 1.4;
+}
+
+.derived-attr-header > strong {
+    font-weight: bold;
+    color: var(--color-text-heading);
+}
+
+.derived-attr-header > :nth-child(1) {
+    text-align: right;
+}
+
+.derived-attr-header > :nth-child(2) {
+    text-align: center;
+}
+
+.derived-attr-header > :nth-child(3) {
+    text-align: left;
+}
+
+/* Responsive adjustments for derived attributes */
+@media (max-width: 600px) {
+    .derived-attr-row {
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
+    
+    .derived-attr-row > :nth-child(1),
+    .derived-attr-row > :nth-child(2) {
+        flex-basis: auto;
+        text-align: left;
+        padding-right: 0;
+    }
+}
+

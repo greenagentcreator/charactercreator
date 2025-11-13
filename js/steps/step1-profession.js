@@ -7,6 +7,7 @@ import { PROFESSIONS } from '../config/professions.js';
 import { MAX_SKILL_INCREASES, SKILL_INCREASE_AMOUNT, MAX_SKILL_VALUE } from '../config/constants.js';
 import { t, getCurrentLanguage, translateAllElements } from '../i18n/i18n.js';
 import { updateNavigationButtons } from '../app.js';
+import { showInlineError, showFieldError, clearFieldError } from '../utils/validation.js';
 
 // Helper to get character (for easier access)
 // Note: getCharacter() returns a reference, so we can modify it directly
@@ -168,31 +169,38 @@ function renderCustomProfession_SkillAllocation() {
         instancesOfThisBaseKey.forEach(instance => {
             const currentSkillTotal = skillDef.base + (instance.points || 0);
             html += `<div class="skill-instance-controls" data-instance-temp-id="${instance.tempInstanceId}">
-                        ${skillDef.type ? 
-                            `<input type="text" class="custom-instance-type-input" 
-                                    data-instance-temp-id="${instance.tempInstanceId}" 
-                                    value="${instance.typeName || ''}" 
-                                    placeholder="${t('specify_type_placeholder')}">`
-                          : 
-                            // Platzhalter für nicht-typisierte Skills, um Layout-Konsistenz zu wahren.
-                            // Die Breite sollte ungefähr der des Typ-Eingabefelds entsprechen.
-                            // CSS für .custom-instance-type-input setzt min-width: 100px;
-                            `<span class="custom-instance-type-input-placeholder" style="display: inline-block; min-width: 100px; max-width:180px; flex-grow:1; flex-shrink:1; margin-right:8px;"> </span>`
-                        }
-                        <span>${t('custom_prof_label_assign_points')}</span>
-                        <button class="custom-skill-point-btn" data-action="decrease" data-amount="10" data-instance-temp-id="${instance.tempInstanceId}">-10</button>
-                        <button class="custom-skill-point-btn" data-action="decrease" data-amount="5" data-instance-temp-id="${instance.tempInstanceId}">-5</button>
-                        <span class="custom-skill-assigned-points">${instance.points || 0}</span>
-                        <button class="custom-skill-point-btn" data-action="increase" data-amount="5" data-instance-temp-id="${instance.tempInstanceId}">+5</button>
-                        <button class="custom-skill-point-btn" data-action="increase" data-amount="10" data-instance-temp-id="${instance.tempInstanceId}">+10</button>
-                        <strong class="custom-skill-total-value">${t('custom_prof_label_skill_total')} ${currentSkillTotal}% (max 60%)</strong>
-                        ${instancesOfThisBaseKey.length > 1 ? // Entfernen-Button NUR anzeigen, wenn MEHR ALS EINE Instanz DIESES Basis-Skills existiert
-                            `<button class="remove-custom-skill-instance-btn" 
-                                     data-instance-temp-id="${instance.tempInstanceId}" 
-                                     title="${t('remove_button_title')}"
-                                     style="color:red; border:none; background:none; cursor:pointer; font-weight:bold; font-size:1.2em; padding:0 5px;">×</button>`
-                            : ''
-                        }
+                        <div class="skill-instance-left">
+                            ${skillDef.type ? 
+                                `<input type="text" class="custom-instance-type-input" 
+                                        data-instance-temp-id="${instance.tempInstanceId}" 
+                                        value="${instance.typeName || ''}" 
+                                        placeholder="${t('specify_type_placeholder')}">`
+                              : 
+                                `<span class="custom-instance-type-input-placeholder"></span>`
+                            }
+                        </div>
+                        <div class="skill-instance-separator"></div>
+                        <div class="skill-instance-middle">
+                            <span class="assign-points-label">${t('custom_prof_label_assign_points')}</span>
+                            <div class="point-buttons-group">
+                                <button class="custom-skill-point-btn" data-action="decrease" data-amount="10" data-instance-temp-id="${instance.tempInstanceId}">-10</button>
+                                <button class="custom-skill-point-btn" data-action="decrease" data-amount="5" data-instance-temp-id="${instance.tempInstanceId}">-5</button>
+                                <span class="custom-skill-assigned-points">${instance.points || 0}</span>
+                                <button class="custom-skill-point-btn" data-action="increase" data-amount="5" data-instance-temp-id="${instance.tempInstanceId}">+5</button>
+                                <button class="custom-skill-point-btn" data-action="increase" data-amount="10" data-instance-temp-id="${instance.tempInstanceId}">+10</button>
+                            </div>
+                        </div>
+                        <div class="skill-instance-separator"></div>
+                        <div class="skill-instance-right">
+                            <strong class="custom-skill-total-value">${t('custom_prof_label_skill_total')} ${currentSkillTotal}% (max 60%)</strong>
+                            ${instancesOfThisBaseKey.length > 1 ? // Entfernen-Button NUR anzeigen, wenn MEHR ALS EINE Instanz DIESES Basis-Skills existiert
+                                `<button class="remove-custom-skill-instance-btn" 
+                                         data-instance-temp-id="${instance.tempInstanceId}" 
+                                         title="${t('remove_button_title')}"
+                                         style="color:red; border:none; background:none; cursor:pointer; font-weight:bold; font-size:1.2em; padding:0 5px; margin-left: 8px;">×</button>`
+                                : ''
+                            }
+                        </div>
                      </div>`;
         });
         html += `       </div> <!-- Ende .skill-instances-container -->
@@ -501,9 +509,10 @@ export function attachCustomBondSetupListeners() {
     if (btnConfirmBonds) {
         btnConfirmBonds.onclick = () => {
             if (!character.customProfessionName || character.customProfessionName.trim() === "") {
-                alert("Please enter a name for your custom profession."); // Oder i18n
+                showFieldError(customProfNameInput, t('alert_custom_profession_name_required') || "Please enter a name for your custom profession.");
                 return;
             }
+            clearFieldError(customProfNameInput);
             character.customProfessionSetupStage = 'skills';
             character.customProfessionSelectedSkills = []; // Reset für Skill-Auswahl-Phase
             if (window.app && window.app.renderCurrentStep) {
@@ -837,7 +846,7 @@ export function handleChoiceSkillCbChange(e) {
         const numCheckedAfterThisClick = document.querySelectorAll('.prof-choice-skill-cb:checked').length;
         if (numCheckedAfterThisClick > maxChoices) {
             checkbox.checked = false;
-            alert(t('alert_max_choices_reached', { N: maxChoices }));
+            showInlineError(t('alert_max_choices_reached', { N: maxChoices }));
             console.log(`   Max choices (${maxChoices}) reached. Selection of ${skillKey} reverted.`);
         } else {
             character.profChoiceSkillSelections[skillKey] = true;
@@ -1431,7 +1440,7 @@ export function handleSkillIncreaseClick(event) {
 
     const skillDef = ALL_SKILLS[skillInstance.key];
     if (skillDef.type && (!skillInstance.typeName || skillInstance.typeName.trim() === "")) {
-        alert(t('alert_type_for_skill_needed', { skillName: t(skillDef.nameKey) }));
+        showInlineError(t('alert_type_for_skill_needed', { skillName: t(skillDef.nameKey) }));
         return;
     }
     if (skillInstance.key === "unnatural") { return; }
@@ -1439,7 +1448,7 @@ export function handleSkillIncreaseClick(event) {
 
     // Prüfe, ob genügend "Boost-Slots" übrig sind
     if (parseFloat((character.skillBoostsUsed + costForThisBoostFromButton).toFixed(1)) > MAX_SKILL_INCREASES + 0.01) { // +0.01 Toleranz
-        alert(t('alert_skill_increase_limit'));
+        showInlineError(t('alert_skill_increase_limit'));
         console.log(`Not enough boost slots. Current: ${character.skillBoostsUsed}, Cost: ${costForThisBoostFromButton}, Max: ${MAX_SKILL_INCREASES}`);
         renderAllSkillsList(); return;
     }
@@ -1560,7 +1569,7 @@ export function handleCustomBaseSkillMainCheckboxChange(checkbox) {
     if (isChecked) { // Skill wurde ausgewählt
         if (character.customProfessionSelectedSkills.length >= 10 && existingInstances.length === 0) {
             checkbox.checked = false; // Verhindere Auswahl, wenn Max erreicht und dies ein *neuer* Basis-Skill wäre
-            alert(t('alert_max_10_custom_skills'));
+            showInlineError(t('alert_max_10_custom_skills'));
             return;
         }
         // Wenn angehakt und noch keine Instanz dieses Basis-Skills existiert, füge eine hinzu.
@@ -1595,7 +1604,7 @@ export function handleCustomBaseSkillSelectChange(checkbox) {
     if (isChecked) {
         if (character.customProfessionSelectedSkills.length >= 10) {
             checkbox.checked = false; // Verhindern
-            alert(t('alert_max_10_custom_skills'));
+            showInlineError(t('alert_max_10_custom_skills'));
             return;
         }
         // Wenn angehakt und noch keine Instanz dieses Basis-Skills existiert, füge eine hinzu.
@@ -1621,7 +1630,7 @@ export function handleAddAnotherSpecializationClick(button) {
     const character = getCharacter();
     const baseKey = button.dataset.skillKey;
     if (character.customProfessionSelectedSkills.length >= 10) {
-        alert(t('alert_max_10_custom_skills'));
+        showInlineError(t('alert_max_10_custom_skills'));
         return;
     }
     // Füge eine neue, leere Instanz für diesen Basis-Skill hinzu
@@ -1920,7 +1929,14 @@ export function validateStep1(showAlerts = true) {
     console.log("--- validateStep1 --- ProfKey:", character.professionKey, "isCustom:", character.isCustomProfession, "CustomStage:", character.customProfessionSetupStage);
 
     if (!character.professionKey) {
-        if (showAlerts) alert(t('alert_select_profession'));
+        if (showAlerts) {
+            const professionSelect = document.getElementById('profession-select');
+            if (professionSelect) {
+                showFieldError(professionSelect, t('alert_select_profession'));
+            } else {
+                showInlineError(t('alert_select_profession'));
+            }
+        }
         console.log("validateStep1 FAIL: No professionKey");
         return false;
     }
@@ -1928,19 +1944,26 @@ export function validateStep1(showAlerts = true) {
     if (character.isCustomProfession) {
         if (character.customProfessionSetupStage === 'bonds') {
             if (!character.customProfessionName || character.customProfessionName.trim() === "") {
-                if (showAlerts) alert("Please enter a name for your custom profession."); // i18n
+                if (showAlerts) {
+                    const nameInput = document.getElementById('custom-profession-name-input');
+                    if (nameInput) {
+                        showFieldError(nameInput, t('alert_custom_profession_name_required') || "Please enter a name for your custom profession.");
+                    } else {
+                        showInlineError(t('alert_custom_profession_name_required') || "Please enter a name for your custom profession.");
+                    }
+                }
                 return false; // Verhindert das Fortfahren über den "Confirm Bonds" Button, wenn kein Name
             }
             return true; // "Next" Button ist hier deaktiviert, Validierung für internen Button
         } else if (character.customProfessionSetupStage === 'skills') {
             if (character.customProfessionSelectedSkills.length !== 10) {
-                if (showAlerts) alert(t('alert_max_10_custom_skills'));
+                if (showAlerts) showInlineError(t('alert_max_10_custom_skills'));
                 return false;
             }
             let pointsSpent = 0;
             character.customProfessionSelectedSkills.forEach(inst => pointsSpent += (inst.points || 0));
             if (pointsSpent !== character.customProfessionSkillPointBudget) {
-                if (showAlerts) alert(t('alert_distribute_all_custom_points', {
+                if (showAlerts) showInlineError(t('alert_distribute_all_custom_points', {
                     totalBudget: character.customProfessionSkillPointBudget,
                     remainingPoints: character.customProfessionSkillPointBudget - pointsSpent
                 }));
@@ -1949,11 +1972,11 @@ export function validateStep1(showAlerts = true) {
             for (const customInstance of character.customProfessionSelectedSkills) {
                 const skillDef = ALL_SKILLS[customInstance.key];
                 if ((skillDef.base + (customInstance.points || 0)) > 60) {
-                    if (showAlerts) alert(t('alert_custom_skill_max_60', { skillName: t(skillDef.nameKey) }));
+                    if (showAlerts) showInlineError(t('alert_custom_skill_max_60', { skillName: t(skillDef.nameKey) }));
                     return false;
                 }
                 if (skillDef.type && (!customInstance.typeName || customInstance.typeName.trim() === "")) {
-                    if (showAlerts) alert(t('alert_specify_type_for_custom_skill', { skillName: t(skillDef.nameKey) }));
+                    if (showAlerts) showInlineError(t('alert_specify_type_for_custom_skill', { skillName: t(skillDef.nameKey) }));
                     return false;
                 }
             }
@@ -1971,7 +1994,7 @@ export function validateStep1(showAlerts = true) {
                 // Finde die Instanz, die für diesen Slot erstellt wurde (sollte eine generische sein)
                 const instance = character.skills.find(s => s.key === skillInfo.key && s.isProfessional && (s.typeName === "" || s.typeName === null));
                 if (instance && (instance.typeName === "" || instance.typeName === null)) {
-                    if (showAlerts) alert(t('alert_type_for_skill_needed', { skillName: t(ALL_SKILLS[skillInfo.key].nameKey) }));
+                    if (showAlerts) showInlineError(t('alert_type_for_skill_needed', { skillName: t(ALL_SKILLS[skillInfo.key].nameKey) }));
                     return false;
                 }
             }
@@ -1984,7 +2007,7 @@ export function validateStep1(showAlerts = true) {
             
             if (selectedChoicesCount < requiredChoices) {
                 if (showAlerts) {
-                    alert(t('choose_N_label', { N: requiredChoices }) + '. ' + (requiredChoices === 1 ? 'Please select one choice skill.' : `Please select ${requiredChoices} choice skills.`));
+                    showInlineError(t('choose_N_label', { N: requiredChoices }) + '. ' + (requiredChoices === 1 ? 'Please select one choice skill.' : `Please select ${requiredChoices} choice skills.`));
                 }
                 return false;
             }
@@ -1995,7 +2018,7 @@ export function validateStep1(showAlerts = true) {
                     const choiceInstance = character.skills.find(s => s.key === choiceKey && s.isChoiceSkill);
                     // Wenn keine Instanz existiert oder die Instanz keinen Typ hat, ist die Validierung fehlgeschlagen
                     if (!choiceInstance || (choiceInstance.typeName === "" || choiceInstance.typeName === null)) {
-                        if (showAlerts) alert(t('alert_type_for_skill_needed', { skillName: t(ALL_SKILLS[choiceKey].nameKey) }));
+                        if (showAlerts) showInlineError(t('alert_type_for_skill_needed', { skillName: t(ALL_SKILLS[choiceKey].nameKey) }));
                         return false;
                     }
                 }
@@ -2031,7 +2054,7 @@ export function validateStep1(showAlerts = true) {
             const isRelevantForTyping = skillInst.isProfessional || skillInst.isChoiceSkill || (skillInst.increases || 0) > 0;
 
             if (needsTypeFilledIn && isRelevantForTyping) {
-                if (showAlerts) alert(t('alert_type_for_skill_needed', { skillName: t(skillDef.nameKey) }));
+                if (showAlerts) showInlineError(t('alert_type_for_skill_needed', { skillName: t(skillDef.nameKey) }));
                 console.log(`validateStep1 FAIL: Type needed for relevant skill. Key: ${skillInst.key}, Name: '${skillInst.typeName}', Prof: ${skillInst.isProfessional}, Choice: ${skillInst.isChoiceSkill}, Inc: ${skillInst.increases}`);
                 return false;
             }

@@ -1,0 +1,112 @@
+/* --- Forms --- */
+h2, h3 {
+    font-family: var(--font-heading);
+    margin-top: var(--spacing-xl);
+    margin-bottom: var(--spacing-md);
+    color: var(--color-text-heading);
+}
+
+h2 { font-size: var(--font-size-xxl); }
+h3 { font-size: var(--font-size-xl); }
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: var(--color-text-heading);
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    border: 1px solid var(--color-border-light);
+    background-color: var(--color-bg-secondary);
+    font-family: var(--font-body);
+    border-radius: 3px;
+    transition: all var(--transition-fast);
+    font-size: var(--font-size-base);
+    color: var(--color-text);
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    border-color: var(--color-accent);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-accent-muted);
+    background-color: var(--color-bg-secondary);
+}
+
+/* Enhanced focus-visible for better accessibility */
+input[type="text"]:focus-visible,
+input[type="number"]:focus-visible,
+select:focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 2px;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-muted);
+}
+
+select {
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5z%22%20fill%3D%22%23000%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right var(--spacing-sm) center;
+    background-size: 12px;
+    padding-right: var(--spacing-xxl);
+    cursor: pointer;
+}
+
+[data-theme="dark"] select {
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5z%22%20fill%3D%22%23ffaa00%22%2F%3E%3C%2Fsvg%3E');
+}
+
+input[type="radio"], 
+input[type="checkbox"] {
+    margin-right: 8px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+input[type="radio"]:focus-visible,
+input[type="checkbox"]:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+.inline-label {
+    font-weight: normal;
+    margin-right: var(--spacing-md);
+    display: inline-block;
+}
+
+/* Field validation states */
+input.field-valid,
+select.field-valid {
+    border-color: var(--color-alert-success);
+}
+
+input.field-valid:focus,
+select.field-valid:focus {
+    border-color: var(--color-alert-success);
+    box-shadow: 0 0 0 3px rgba(45, 80, 22, 0.2);
+}
+
+/* Success indicator (optional) */
+.field-success-indicator {
+    color: var(--color-alert-success);
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-xs);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.field-success-indicator::before {
+    content: "✓";
+    font-weight: bold;
+}
+

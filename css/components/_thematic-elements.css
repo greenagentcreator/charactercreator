@@ -1,0 +1,146 @@
+/* --- Thematic Government/Military Elements --- */
+
+/* Classified Stamp */
+.classified-stamp {
+    display: inline-block;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 2px solid var(--color-classified);
+    font-family: var(--font-heading);
+    font-size: 0.8em;
+    color: var(--color-classified);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    background-color: var(--color-bg-secondary);
+    transform: rotate(-5deg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    border-radius: 3px;
+}
+
+/* Official Badge/Insignia */
+.official-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: var(--color-accent);
+    color: var(--color-text-on-accent);
+    font-family: var(--font-heading);
+    font-size: 0.85em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 1px solid var(--color-accent-dark);
+    border-radius: 3px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Redacted Text Effect */
+.redacted {
+    background-color: var(--color-redacted);
+    color: var(--color-redacted);
+    user-select: none;
+    position: relative;
+    padding: 0 2px;
+}
+
+.redacted::after {
+    content: "████";
+    color: var(--color-redacted);
+    letter-spacing: 2px;
+}
+
+/* File Folder Tab Style */
+.file-tab {
+    display: inline-block;
+    padding: var(--spacing-xs) var(--spacing-md);
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border-light);
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    font-family: var(--font-heading);
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    top: 2px;
+    margin-right: var(--spacing-xs);
+}
+
+.file-tab.active {
+    background-color: var(--color-accent);
+    color: var(--color-text-on-accent);
+    border-color: var(--color-accent);
+    z-index: 1;
+}
+
+/* Official Form Border */
+.official-border {
+    border: 1px solid var(--color-border-light);
+    padding: var(--spacing-lg);
+    background-color: var(--color-bg-secondary);
+    position: relative;
+    border-radius: 4px;
+}
+
+/* Signature Line */
+.signature-line {
+    border-top: 1px solid var(--color-border-light);
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.signature-line::after {
+    content: "SIGNATURE";
+    font-family: var(--font-heading);
+    font-size: 0.7em;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Date Stamp */
+.date-stamp {
+    display: inline-block;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--color-border-light);
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background-color: var(--color-bg-secondary);
+    border-radius: 3px;
+}
+
+/* Status Indicator */
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.85em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-indicator::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-active::before {
+    background-color: var(--color-alert-success);
+}
+
+.status-classified::before {
+    background-color: var(--color-alert-classified);
+}
+
+.status-warning::before {
+    background-color: var(--color-alert-warning);
+}
+

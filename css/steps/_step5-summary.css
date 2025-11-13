@@ -1,0 +1,264 @@
+/* --- Step 5: Summary Page - Official Dossier Style --- */
+#step5-summary {
+    position: relative;
+}
+
+#step5-summary::before {
+    content: "OFFICIAL USE ONLY";
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-family: var(--font-heading);
+    font-size: 0.6em;
+    color: var(--color-classified);
+    opacity: 0.2;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    pointer-events: none;
+    z-index: 0;
+}
+
+#step5-summary > * {
+    position: relative;
+    z-index: 1;
+}
+
+#step5-summary h3.summary-block-title {
+    background-color: var(--color-summary-title-bg);
+    color: var(--color-summary-title-text);
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin: -15px -20px var(--spacing-md) -20px;
+    font-family: var(--font-heading);
+    font-size: 1.2em;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 4px 4px 0 0;
+    border-bottom: 1px solid var(--color-summary-title-text);
+    position: relative;
+}
+
+#step5-summary h4.summary-subsection-title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xl);
+    margin-top: var(--spacing-lg);
+    margin-bottom: 8px;
+    color: var(--color-text-heading);
+    border-bottom: 1px solid var(--color-border-light);
+    padding-bottom: var(--spacing-xs);
+}
+
+#step5-summary h4.summary-subsection-title:first-of-type {
+    margin-top: 0;
+}
+
+.summary-block {
+    background-color: var(--color-bg-summary);
+    border: 1px solid var(--color-border-light);
+    border-radius: 4px;
+    padding: var(--spacing-md) var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.summary-personal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 8px var(--spacing-lg);
+    font-size: var(--font-size-lg);
+}
+
+.summary-personal-grid div {
+    padding: 2px 0;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: baseline;
+}
+
+.summary-personal-grid strong {
+    display: inline-block;
+    min-width: 100px;
+    margin-right: var(--spacing-xs);
+    white-space: nowrap;
+}
+
+span.placeholder-field {
+    display: inline-block;
+    border-bottom: 1px solid var(--color-button-disabled);
+    min-width: 100px;
+    flex-grow: 1;
+    height: 1.2em;
+    vertical-align: bottom;
+}
+
+span.placeholder-field.long {
+    min-width: 150px;
+}
+
+span.placeholder-field.short {
+    min-width: 60px;
+}
+
+span.value-field {
+    font-weight: normal;
+    color: var(--color-text);
+    flex-grow: 1;
+    word-break: break-word;
+}
+
+.summary-grid-stats-psych {
+    display: grid;
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+    .summary-grid-stats-psych {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.summary-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: var(--font-size-md);
+    margin-bottom: var(--spacing-md);
+    border: 1px solid var(--color-border-light);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.summary-table th,
+.summary-table td {
+    border: 1px solid var(--color-border-lighter);
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.summary-table th {
+    background-color: var(--color-summary-table-header);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: var(--font-heading);
+    font-size: 0.9em;
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.summary-table td.value-cell {
+    text-align: center;
+    font-weight: bold;
+}
+
+.summary-derived-table td.placeholder-cell {
+    min-width: 60px;
+    background-color: #fdfdfd;
+}
+
+ul.summary-list {
+    list-style-type: none;
+    padding-left: 0;
+    font-size: var(--font-size-lg);
+}
+
+ul.summary-list li {
+    padding: 3px 0;
+    border-bottom: 1px dotted var(--color-border-lighter);
+}
+
+ul.summary-list li:last-child {
+    border-bottom: none;
+}
+
+/* Skills - Summary Section */
+.summary-block-skills .summary-skills-multicolumn {
+    margin-top: 0;
+    border-top: none;
+    padding-top: 0;
+}
+
+.summary-skills-multicolumn ul.skills-flat-list {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0px 20px;
+    align-items: start;
+}
+
+/* Responsive Anpassung der Spalten für Skills in der Zusammenfassung */
+@media (max-width: 750px) {
+    .summary-skills-multicolumn ul.skills-flat-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 520px) {
+    .summary-skills-multicolumn ul.skills-flat-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+.summary-skills-multicolumn ul.skills-flat-list li {
+    padding: 2px 0; 
+    font-size: 0.9em; 
+    word-break: break-word;
+}
+
+.summary-skills-multicolumn .base-value {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-light);
+    margin-left: 4px;
+}
+
+.summary-actions .action-button {
+    margin-right: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+/* Compact summary table styling */
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-sm);
+}
+
+.summary-table th,
+.summary-table td {
+    border: 1px solid var(--color-border-light);
+    padding: 4px 6px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.summary-table th {
+    background-color: var(--color-summary-table-header);
+    font-weight: bold;
+}
+
+.summary-table td.value-cell {
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Specific styling for "Current" cells in Derived Attributes table */
+.summary-derived-table td.placeholder-cell {
+    min-width: 50px;
+    background-color: #fdfdfd;
+    height: 1.5em;
+    line-height: 1.5em;
+}
+
+/* Compact subsection titles */
+#step5-summary h4.summary-subsection-title {
+    font-size: 1.05em;
+    margin-top: var(--spacing-md);
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+}
+

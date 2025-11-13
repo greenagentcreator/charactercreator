@@ -5,6 +5,7 @@ import { getCharacter } from '../model/character.js';
 import { PROFESSIONS } from '../config/professions.js';
 import { t } from '../i18n/i18n.js';
 import { updateNavigationButtons } from '../app.js';
+import { showInlineError, showFieldError } from '../utils/validation.js';
 
 export function renderStep4_BondsMotivations() {
     const character = getCharacter();
@@ -134,7 +135,14 @@ export function validateStep4(showAlerts = true) {
     if (character.bonds && character.bonds.length > 0) {
         for (let i = 0; i < character.bonds.length; i++) {
             if (!character.bonds[i].description || character.bonds[i].description.trim() === "") {
-                if (showAlerts) alert(t('alert_define_bonds'));
+                if (showAlerts) {
+                    const bondInput = document.getElementById(`bond-${i}-description`);
+                    if (bondInput) {
+                        showFieldError(bondInput, t('alert_define_bonds'));
+                    } else {
+                        showInlineError(t('alert_define_bonds'));
+                    }
+                }
                 return false;
             }
         }

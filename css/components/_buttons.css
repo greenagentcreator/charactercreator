@@ -1,0 +1,66 @@
+/* --- Buttons - Military/Government Style --- */
+.nav-button,
+.action-button {
+    font-family: var(--font-body);
+    background-color: var(--color-button);
+    color: var(--color-button-text);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: 1px solid var(--color-button);
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: var(--font-size-md);
+    font-weight: bold;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    transition: all var(--transition-fast);
+    min-height: 44px; /* Touch-friendly minimum size */
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-button:hover:not(:disabled),
+.action-button:hover {
+    background-color: var(--color-button-hover);
+    border-color: var(--color-button-hover);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+
+.nav-button:active:not(:disabled),
+.action-button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.nav-button:disabled {
+    background-color: var(--color-button-disabled);
+    border-color: var(--color-button-disabled);
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+}
+
+.nav-button:disabled::after {
+    content: " (UNAVAILABLE)";
+    font-size: 0.7em;
+    opacity: 0.8;
+}
+
+.nav-button:focus-visible,
+.action-button:focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+/* Secondary button style */
+.button-secondary {
+    background-color: transparent;
+    color: var(--color-button);
+    border: 1px solid var(--color-button);
+}
+
+.button-secondary:hover {
+    background-color: var(--color-button);
+    color: var(--color-button-text);
+}
+

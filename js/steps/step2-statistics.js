@@ -5,6 +5,7 @@ import { getCharacter } from '../model/character.js';
 import { STAT_ARRAYS, STAT_KEYS } from '../config/constants.js';
 import { t, translateAllElements } from '../i18n/i18n.js';
 import { updateNavigationButtons } from '../app.js';
+import { showInlineError, showFieldError } from '../utils/validation.js';
 
 export function renderStep2_Statistics() {
     const character = getCharacter();
@@ -657,7 +658,14 @@ export function generateRolledStatsArray() {
 export function validateStep2(showAlerts = true) {
     const character = getCharacter();
     if (!character.statGenerationMethod) {
-        if (showAlerts) alert(t('alert_select_stat_method'));
+        if (showAlerts) {
+            const methodRadios = document.querySelectorAll('input[name="stat-generation-method"]');
+            if (methodRadios.length > 0) {
+                showInlineError(t('alert_select_stat_method'));
+            } else {
+                showInlineError(t('alert_select_stat_method'));
+            }
+        }
         return false;
     }
 
@@ -665,13 +673,13 @@ export function validateStep2(showAlerts = true) {
 
     if (character.statGenerationMethod === 'array') {
         if (character.statArrayChoice === null) {
-            if (showAlerts) alert(t('alert_select_stat_array'));
+            if (showAlerts) showInlineError(t('alert_select_stat_array'));
             return false;
         }
         sourceArrayForValidation = STAT_ARRAYS[character.statArrayChoice];
     } else if (character.statGenerationMethod === 'roll') {
         if (character.rolledStatValues.length !== 6) {
-            if (showAlerts) alert(t('click_to_roll_stats_label'));
+            if (showAlerts) showInlineError(t('click_to_roll_stats_label'));
             return false;
         }
         sourceArrayForValidation = character.rolledStatValues;
@@ -679,7 +687,7 @@ export function validateStep2(showAlerts = true) {
         const TOTAL_POINT_BUY_POINTS = 72;
         const pointsSpent = calculateTotalPointsSpentInPointBuy();
         if (pointsSpent !== TOTAL_POINT_BUY_POINTS) {
-            if (showAlerts) alert(t('pointbuy_error_total_points', { spent: pointsSpent, total: TOTAL_POINT_BUY_POINTS }));
+            if (showAlerts) showInlineError(t('pointbuy_error_total_points', { spent: pointsSpent, total: TOTAL_POINT_BUY_POINTS }));
             return false;
         }
         let invalidStatFound = false;
@@ -688,7 +696,7 @@ export function validateStep2(showAlerts = true) {
             if (val < 3 || val > 18) { invalidStatFound = true; }
         });
         if (invalidStatFound) {
-            if (showAlerts) alert(t('pointbuy_error_stat_range'));
+            if (showAlerts) showInlineError(t('pointbuy_error_stat_range'));
             return false;
         }
         return true;
@@ -699,18 +707,18 @@ export function validateStep2(showAlerts = true) {
             if (val < 3 || val > 18) { invalidStatFoundManual = true; }
         });
         if (invalidStatFoundManual) {
-            if (showAlerts) alert(t('manual_entry_error_stat_range'));
+            if (showAlerts) showInlineError(t('manual_entry_error_stat_range'));
             return false;
         }
         return true;
     } else {
-        if (showAlerts) alert(t('alert_select_stat_method'));
+        if (showAlerts) showInlineError(t('alert_select_stat_method'));
         return false;
     }
 
     const assignedStatValues = Object.values(character.statAssignments);
     if (assignedStatValues.some(val => val === null || val === undefined) || assignedStatValues.length < STAT_KEYS.length) {
-        if (showAlerts) alert(t('alert_assign_all_stats'));
+        if (showAlerts) showInlineError(t('alert_assign_all_stats'));
         return false;
     }
 
@@ -722,7 +730,7 @@ export function validateStep2(showAlerts = true) {
     }
     for (let i = 0; i < chosenArraySorted.length; i++) {
         if (chosenArraySorted[i] !== currentAssignmentsSorted[i]) {
-            if (showAlerts) alert(t('alert_unique_stat_values'));
+            if (showAlerts) showInlineError(t('alert_unique_stat_values'));
             return false;
         }
     }

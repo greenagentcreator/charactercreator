@@ -1,0 +1,29 @@
+/* --- Step 4: Bonds & Motivations --- */
+.bond-entry,
+.motivation-entry {
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px dashed var(--color-border-lighter);
+}
+
+.bond-entry:last-child,
+.motivation-entry:last-child {
+    border-bottom: none;
+}
+
+.bond-entry label,
+.motivation-entry label {
+    display: block;
+    margin-bottom: 3px;
+    font-size: var(--font-size-lg);
+}
+
+.bond-entry input[type="text"] {
+    margin-bottom: var(--spacing-xs);
+}
+
+.bond-entry span[data-i18n="bond_score_label"] + span {
+    font-weight: bold;
+    margin-left: var(--spacing-xs);
+}
+

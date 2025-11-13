@@ -1,0 +1,43 @@
+/* --- Info Box - Official Notice Style --- */
+.info-box {
+    background-color: var(--color-bg-info);
+    border: 1px solid var(--color-accent);
+    border-left: 4px solid var(--color-accent);
+    padding: var(--spacing-md) var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    font-size: var(--font-size-lg);
+    border-radius: 4px;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.info-box::before {
+    content: "NOTICE";
+    position: absolute;
+    top: var(--spacing-xs);
+    right: var(--spacing-md);
+    font-family: var(--font-heading);
+    font-size: 0.7em;
+    color: var(--color-accent);
+    letter-spacing: 2px;
+    opacity: 0.4;
+    text-transform: uppercase;
+}
+
+.info-box p:first-child {
+    margin-top: 0;
+}
+
+.info-box p:last-child {
+    margin-bottom: 0;
+}
+
+.info-box h3 {
+    margin-top: 0;
+    margin-bottom: var(--spacing-sm);
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-accent-dark);
+}
+

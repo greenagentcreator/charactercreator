@@ -1,0 +1,26 @@
+/* --- Footer - Official Document Footer --- */
+footer {
+    opacity: 0.7;
+    border-top: 1px solid var(--color-border-lighter);
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-md);
+    padding-bottom: calc(var(--spacing-md) + 80px); /* Space for fixed navigation */
+    font-style: italic;
+    text-align: center;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    position: relative;
+}
+
+footer p {
+    margin: 0;
+    font-family: var(--font-body);
+}
+
+/* Mobile: Adjust padding for compact navigation */
+@media (max-width: 600px) {
+    footer {
+        padding-bottom: calc(var(--spacing-md) + 60px); /* Space for compact mobile navigation */
+    }
+}
+
