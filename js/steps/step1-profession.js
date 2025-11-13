@@ -99,9 +99,6 @@ export function renderCustomProfession_BondSetup() {
             <label data-i18n="custom_prof_label_skill_point_budget"></label>
             <span id="custom-skill-budget-display" style="font-weight: bold;">${character.customProfessionSkillPointBudget}</span>
         </div>
-        <div class="custom-prof-actions-container" style="margin-top: 20px;">
-             <button id="btn-confirm-bonds" class="action-button" data-i18n="custom_prof_btn_confirm_bonds"></button>
-        </div>
     </div>`;
     return html;
 }
@@ -123,7 +120,7 @@ function renderCustomProfession_SkillAllocation() {
             </p>
              <p>${t('custom_prof_info_max_skill')}</p> <!-- Max 60% Regel -->
         </div>
-        <p><span data-i18n="custom_prof_skills_selected_label_prefix"></span>
+        <p class="custom-skills-selected-sticky"><span data-i18n="custom_prof_skills_selected_label_prefix"></span>
            <span id="custom-skills-selected-actual-count">${selectedInstancesCount}</span> / 10
         </p>
         <div id="custom-profession-skill-list">`;
@@ -156,10 +153,9 @@ function renderCustomProfession_SkillAllocation() {
                             </span>
                         </div>`;
         if (skillDef.type && isBaseSkillSelectedAtLeastOnce && selectedInstancesCount < 10) {
-            html += `<button class="btn-add-another-specialization action-button-small" 
+            html += `<button class="btn-add-another-specialization action-button" 
                              data-skill-key="${baseKey}"
-                             title="${t('add_specialization_button_text', {skillName: t(skillDef.nameKey)})}"
-                             style="font-size:0.8em; padding: 2px 5px;">+</button>`; // Text wurde zu + verkürzt für Platz
+                             title="${t('add_another_specialization_button_text', {skillName: t(skillDef.nameKey)})}">${t('add_another_specialization_button_text', {skillName: t(skillDef.nameKey)})}</button>`;
         } else {
             html += `<div></div>`; // Leeres Div für Flexbox-Ausrichtung (justify-content: space-between)
         }
@@ -169,17 +165,17 @@ function renderCustomProfession_SkillAllocation() {
         instancesOfThisBaseKey.forEach(instance => {
             const currentSkillTotal = skillDef.base + (instance.points || 0);
             html += `<div class="skill-instance-controls" data-instance-temp-id="${instance.tempInstanceId}">
-                        <div class="skill-instance-left">
-                            ${skillDef.type ? 
-                                `<input type="text" class="custom-instance-type-input" 
+                        ${skillDef.type ? 
+                            `<div class="skill-instance-left">
+                                <input type="text" class="custom-instance-type-input" 
                                         data-instance-temp-id="${instance.tempInstanceId}" 
                                         value="${instance.typeName || ''}" 
-                                        placeholder="${t('specify_type_placeholder')}">`
-                              : 
-                                `<span class="custom-instance-type-input-placeholder"></span>`
-                            }
-                        </div>
-                        <div class="skill-instance-separator"></div>
+                                        placeholder="${t('specify_type_placeholder')}">
+                            </div>
+                            <div class="skill-instance-separator"></div>`
+                          : 
+                            ''
+                        }
                         <div class="skill-instance-middle">
                             <span class="assign-points-label">${t('custom_prof_label_assign_points')}</span>
                             <div class="point-buttons-group">
@@ -207,9 +203,6 @@ function renderCustomProfession_SkillAllocation() {
                  </div>`; // Ende .custom-skill-item-base
     });
     html += `   </div> <!-- Ende #custom-profession-skill-list -->
-                <div class="custom-prof-actions-container">
-                    <button id="btn-confirm-custom-skills" class="action-button" data-i18n="custom_prof_btn_confirm_skills"></button>
-                </div>
             </div>`;
     return html;
 }
@@ -249,6 +242,146 @@ export function attachStep1Listeners() {
         if (skillIncreaseSection) skillIncreaseSection.style.display = 'none';
         const allSkillsListContainer = document.getElementById('all-skills-list-container');
         if(allSkillsListContainer) allSkillsListContainer.innerHTML = ''; // Leeren, wenn kein Beruf
+    }
+    
+    // Mobile Tooltip Support: Tooltips per Click/Touch öffnen/schließen
+    attachTooltipListeners();
+}
+
+// Funktion zum Anhängen von Tooltip-Event-Listenern für Mobile
+function attachTooltipListeners() {
+    // Entferne alte Listener
+    document.querySelectorAll('.skill-info-icon').forEach(icon => {
+        icon.removeEventListener('click', handleTooltipClick);
+        icon.removeEventListener('touchstart', handleTooltipTouch);
+    });
+    
+    // Füge neue Listener hinzu
+    document.querySelectorAll('.skill-info-icon').forEach(icon => {
+        icon.addEventListener('click', handleTooltipClick);
+        icon.addEventListener('touchstart', handleTooltipTouch, { passive: true });
+    });
+    
+    // Schließe Tooltips beim Klicken außerhalb
+    document.removeEventListener('click', closeAllTooltips);
+    document.addEventListener('click', closeAllTooltips);
+}
+
+function handleTooltipClick(event) {
+    event.stopPropagation();
+    const icon = event.currentTarget;
+    const isActive = icon.classList.contains('tooltip-active');
+    
+    // Schließe alle anderen Tooltips
+    document.querySelectorAll('.skill-info-icon.tooltip-active').forEach(activeIcon => {
+        if (activeIcon !== icon) {
+            activeIcon.classList.remove('tooltip-active');
+            const tooltip = activeIcon.querySelector('.tooltip');
+            if (tooltip) {
+                // Entferne alle inline-Styles, damit das normale CSS wieder greift
+                tooltip.style.position = '';
+                tooltip.style.top = '';
+                tooltip.style.bottom = '';
+                tooltip.style.left = '';
+                tooltip.style.transform = '';
+                tooltip.style.marginLeft = '';
+                tooltip.style.width = '';
+            }
+        }
+    });
+    
+    // Toggle dieses Tooltip
+    if (!isActive) {
+        icon.classList.add('tooltip-active');
+        // Positioniere Tooltip auf Mobile, damit es nicht abgeschnitten wird
+        positionTooltipForMobile(icon);
+    } else {
+        icon.classList.remove('tooltip-active');
+        const tooltip = icon.querySelector('.tooltip');
+        if (tooltip) {
+            // Entferne alle inline-Styles, damit das normale CSS wieder greift
+            tooltip.style.position = '';
+            tooltip.style.top = '';
+            tooltip.style.bottom = '';
+            tooltip.style.left = '';
+            tooltip.style.transform = '';
+            tooltip.style.marginLeft = '';
+            tooltip.style.width = '';
+        }
+    }
+}
+
+function positionTooltipForMobile(icon) {
+    // Nur auf Mobile-Geräten positionieren
+    if (window.innerWidth > 600) return;
+    
+    const tooltip = icon.querySelector('.tooltip');
+    if (!tooltip) return;
+    
+    // Warte kurz, damit das Tooltip gerendert ist, bevor wir die Position berechnen
+    requestAnimationFrame(() => {
+        const iconRect = icon.getBoundingClientRect();
+        const tooltipRect = tooltip.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const viewportWidth = window.innerWidth;
+        
+        // Tooltip-Höhe (verwende tatsächliche Höhe oder Schätzung)
+        const tooltipHeight = tooltipRect.height || 100;
+        const spaceAbove = iconRect.top;
+        const spaceBelow = viewportHeight - iconRect.bottom;
+        
+        // Tooltip-Breite
+        const tooltipWidth = Math.min(280, viewportWidth - 40);
+        
+        // Positioniere Tooltip: Oben, wenn genug Platz, sonst unten
+        let tooltipTop;
+        if (spaceAbove > tooltipHeight + 10) {
+            // Genug Platz oben - positioniere über dem Icon
+            tooltipTop = iconRect.top - tooltipHeight - 8;
+        } else if (spaceBelow > tooltipHeight + 10) {
+            // Genug Platz unten - positioniere unter dem Icon
+            tooltipTop = iconRect.bottom + 8;
+        } else {
+            // Nicht genug Platz oben oder unten - zentriere im Viewport
+            tooltipTop = Math.max(20, (viewportHeight - tooltipHeight) / 2);
+            // Scroll zum Icon, damit es sichtbar ist
+            icon.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        // Horizontal zentrieren relativ zum Icon, aber sicherstellen, dass es nicht außerhalb des Viewports ist
+        const iconCenterX = iconRect.left + (iconRect.width / 2);
+        let tooltipLeft = iconCenterX - (tooltipWidth / 2);
+        
+        // Begrenze auf Viewport
+        if (tooltipLeft < 20) {
+            tooltipLeft = 20;
+        } else if (tooltipLeft + tooltipWidth > viewportWidth - 20) {
+            tooltipLeft = viewportWidth - tooltipWidth - 20;
+        }
+        
+        // Setze Position (fixed positioning relativ zum Viewport)
+        tooltip.style.position = 'fixed';
+        tooltip.style.top = `${tooltipTop}px`;
+        tooltip.style.left = `${tooltipLeft}px`;
+        tooltip.style.bottom = 'auto';
+        tooltip.style.transform = 'none';
+        tooltip.style.marginLeft = '0';
+        tooltip.style.width = `${tooltipWidth}px`;
+    });
+}
+
+function handleTooltipTouch(event) {
+    // Verhindere, dass Touch-Event auch als Click zählt
+    event.preventDefault();
+    handleTooltipClick(event);
+}
+
+function closeAllTooltips(event) {
+    // Schließe Tooltips nur, wenn nicht auf ein Icon geklickt wurde
+    if (!event.target.closest('.skill-info-icon')) {
+        document.querySelectorAll('.skill-info-icon.tooltip-active').forEach(icon => {
+            icon.classList.remove('tooltip-active');
+        });
     }
 }
 // Hilfsfunktion, um eine Skill-Instanz im character.skills Array zu finden oder zu erstellen
@@ -483,7 +616,6 @@ export function attachCustomBondSetupListeners() {
     const character = getCharacter(); /* ... bleibt erstmal ähnlich ... */
     const btnDecreaseBonds = document.getElementById('btn-decrease-bonds');
     const btnIncreaseBonds = document.getElementById('btn-increase-bonds');
-    const btnConfirmBonds = document.getElementById('btn-confirm-bonds');
     const customProfNameInput = document.getElementById('custom-profession-name');
 
     if (btnDecreaseBonds) {
@@ -506,23 +638,11 @@ export function attachCustomBondSetupListeners() {
             }
         };
     }
-    if (btnConfirmBonds) {
-        btnConfirmBonds.onclick = () => {
-            if (!character.customProfessionName || character.customProfessionName.trim() === "") {
-                showFieldError(customProfNameInput, t('alert_custom_profession_name_required') || "Please enter a name for your custom profession.");
-                return;
-            }
-            clearFieldError(customProfNameInput);
-            character.customProfessionSetupStage = 'skills';
-            character.customProfessionSelectedSkills = []; // Reset für Skill-Auswahl-Phase
-            if (window.app && window.app.renderCurrentStep) {
-        window.app.renderCurrentStep();
-    }
-        };
-    }
     if (customProfNameInput) {
         customProfNameInput.addEventListener('input', (event) => {
             character.customProfessionName = event.target.value;
+            // Aktualisiere Button-Status, wenn Name eingegeben wird
+            updateNavigationButtons();
         });
     }
 }
@@ -1304,6 +1424,9 @@ export function renderAllSkillsList() {
     });
 
     translateAllElements(listContainer);
+    
+    // Tooltip-Listener für neu gerenderte Icons anhängen
+    attachTooltipListeners();
 }
 
 // Neuer Handler für die Inline-Typ-Eingabefelder
@@ -1528,7 +1651,6 @@ export function handleSkillDecreaseClick(event) {
 export function attachCustomSkillAllocationListeners() {
     const character = getCharacter(); /* TODO: Major rewrite needed */
     const skillListDiv = document.getElementById('custom-profession-skill-list');
-    const confirmBtn = document.getElementById('btn-confirm-custom-skills');
 
     if (skillListDiv) {
         // Event Delegation für die dynamisch erstellten Elemente
@@ -1551,10 +1673,6 @@ export function attachCustomSkillAllocationListeners() {
         });
     }
 
-    if (confirmBtn) {
-        confirmBtn.removeEventListener('click', handleConfirmCustomSkills);
-        confirmBtn.addEventListener('click', handleConfirmCustomSkills);
-    }
     updateCustomSkillAllocationUI(); // Initialer UI-Status
 }
 // --- Handler für Custom Profession Skill Allocation ---
@@ -1588,7 +1706,8 @@ export function handleCustomBaseSkillMainCheckboxChange(checkbox) {
         );
     }
     if (window.app && window.app.renderCurrentStep) {
-        window.app.renderCurrentStep();
+        // Render ohne Focus, um Scroll-Springen zu vermeiden
+        window.app.renderCurrentStep(true);
     } // Um die UI komplett neu zu zeichnen (inkl. Instanzen-Container)
 }
 
@@ -1623,7 +1742,8 @@ export function handleCustomBaseSkillSelectChange(checkbox) {
         );
     }
     if (window.app && window.app.renderCurrentStep) {
-        window.app.renderCurrentStep();
+        // Render ohne Focus, um Scroll-Springen zu vermeiden
+        window.app.renderCurrentStep(true);
     } // Um die Instanzenliste und die UI neu zu zeichnen
 }
 export function handleAddAnotherSpecializationClick(button) {
@@ -1642,7 +1762,8 @@ export function handleAddAnotherSpecializationClick(button) {
         tempInstanceId: generateInstanceId(baseKey, `custom_${count}`)
     });
     if (window.app && window.app.renderCurrentStep) {
-        window.app.renderCurrentStep();
+        // Render ohne Focus, um Scroll-Springen zu vermeiden
+        window.app.renderCurrentStep(true);
     } // UI neu zeichnen
 }   
 export function handleRemoveCustomSkillInstanceClick(button) {
@@ -1652,7 +1773,8 @@ export function handleRemoveCustomSkillInstanceClick(button) {
         inst => inst.tempInstanceId !== tempIdToRemove
     );
     if (window.app && window.app.renderCurrentStep) {
-        window.app.renderCurrentStep();
+        // Render ohne Focus, um Scroll-Springen zu vermeiden
+        window.app.renderCurrentStep(true);
     } // UI neu zeichnen
 }
 export function handleCustomInstanceTypeChange(inputField) {
@@ -1876,49 +1998,7 @@ export function updateCustomSkillAllocationUI() {
             }
         });
     });
-    updateNavigationButtons(); // Wichtig für den "Confirm Custom Skills" Button
-}
-
-
-export function handleConfirmCustomSkills() {
-    const character = getCharacter();
-    if (!validateStep1(true)) { // Nutze validateStep1 für die Prüfung
-        return;
-    }
-
-    // 1. Setze die Haupt-Skill-Liste zurück (initializeCharacterSkills macht das)
-    // ABER: Wir wollen die generischen Instanzen behalten.
-    // Stattdessen: Gehe durch character.customProfessionSelectedSkills
-    // und erstelle/aktualisiere die entsprechenden Instanzen in character.skills
-    
-    // Markiere alle aktuellen Skills als nicht-professionell, bevor Custom Skills angewendet werden.
-    // (Dies ist wichtig, falls man von einem Standard-Beruf zu Custom wechselt und dann bestätigt)
-    character.skills.forEach(s => {
-        s.isProfessional = false;
-        s.baseValueFromProfession = 0;
-        // Neuberechnung des Wertes, falls Increases vorhanden sind
-        s.value = ALL_SKILLS[s.key].base + ((s.increases || 0) * SKILL_INCREASE_AMOUNT);
-    });
-
-
-    character.customProfessionSelectedSkills.forEach(customInstance => {
-        const skillKey = customInstance.key;
-        const typeName = customInstance.typeName; // Kann leer sein, wenn nicht typisiert oder Nutzer nichts eingab
-        const pointsFromCustom = customInstance.points || 0;
-        const targetValue = ALL_SKILLS[skillKey].base + pointsFromCustom; // Zielwert inkl. Basis
-
-        // `findOrCreateSkillInstance` kümmert sich um die Erstellung/Aktualisierung.
-        // Wichtig: Da wir Ansatz B folgen, wird für typisierte Skills mit explizitem typeName eine neue Instanz erstellt,
-        // wenn noch keine exakt passende existiert. Die generische Instanz (mit typeName="") bleibt unberührt.
-        const mainSkillInstance = findOrCreateSkillInstance(skillKey, typeName, true, targetValue);
-        // `isProfessional` und `baseValueFromProfession` werden in `findOrCreateSkillInstance` gesetzt.
-        // Der Wert wird dort auch basierend auf targetValue und base berechnet.
-    });
-
-    character.customProfessionSetupStage = 'done';
-    if (window.app && window.app.renderCurrentStep) {
-        window.app.renderCurrentStep();
-    } // Zeigt jetzt die +20% Skill-Boost-Liste an
+    updateNavigationButtons(); // Wichtig für den "Weiter" Button (der jetzt die Bestätigung übernimmt)
 }
 
 
@@ -1943,18 +2023,23 @@ export function validateStep1(showAlerts = true) {
 
     if (character.isCustomProfession) {
         if (character.customProfessionSetupStage === 'bonds') {
+            // Stelle sicher, dass Bonds standardmäßig auf 3 gesetzt sind, falls nicht gesetzt
+            if (!character.customProfessionBonds) {
+                character.customProfessionBonds = 3;
+            }
+            // Prüfe nur, ob ein Name eingegeben wurde - Bonds sind standardmäßig valide (3)
             if (!character.customProfessionName || character.customProfessionName.trim() === "") {
                 if (showAlerts) {
-                    const nameInput = document.getElementById('custom-profession-name-input');
+                    const nameInput = document.getElementById('custom-profession-name');
                     if (nameInput) {
                         showFieldError(nameInput, t('alert_custom_profession_name_required') || "Please enter a name for your custom profession.");
                     } else {
                         showInlineError(t('alert_custom_profession_name_required') || "Please enter a name for your custom profession.");
                     }
                 }
-                return false; // Verhindert das Fortfahren über den "Confirm Bonds" Button, wenn kein Name
+                return false; // Verhindert das Fortfahren, wenn kein Name
             }
-            return true; // "Next" Button ist hier deaktiviert, Validierung für internen Button
+            return true; // Name vorhanden und Bonds sind standardmäßig valide (3)
         } else if (character.customProfessionSetupStage === 'skills') {
             if (character.customProfessionSelectedSkills.length !== 10) {
                 if (showAlerts) showInlineError(t('alert_max_10_custom_skills'));
@@ -2068,6 +2153,57 @@ export function saveStep1() {
     const character = getCharacter();
     // Die meisten Daten (Berufswahl, Skill-Instanzen, Custom-Prof-Daten)
     // sind bereits im `character`-Objekt durch die Event-Handler.
-    // Für Custom Berufe: `handleConfirmCustomSkills` überträgt die ausgewählten Skills in die Haupt-Skill-Liste.
-    // Hier ist nichts weiter zu tun.
+    
+    // Für Custom Berufe im 'bonds' Stage: Wechsle zum 'skills' Stage
+    if (character.isCustomProfession && character.customProfessionSetupStage === 'bonds') {
+        const customProfNameInput = document.getElementById('custom-profession-name');
+        if (!character.customProfessionName || character.customProfessionName.trim() === "") {
+            if (customProfNameInput) {
+                showFieldError(customProfNameInput, t('alert_custom_profession_name_required') || "Please enter a name for your custom profession.");
+            }
+            return; // Verhindere das Speichern, wenn kein Name eingegeben wurde
+        }
+        if (customProfNameInput) {
+            clearFieldError(customProfNameInput);
+        }
+        character.customProfessionSetupStage = 'skills';
+        character.customProfessionSelectedSkills = []; // Reset für Skill-Auswahl-Phase
+        // Ansicht aktualisieren, um die Skill-Auswahl anzuzeigen
+        if (window.app && window.app.renderCurrentStep) {
+            window.app.renderCurrentStep(true);
+        }
+        return;
+    }
+    
+    // Für Custom Berufe im 'skills' Stage: Übertrage die ausgewählten Skills in die Haupt-Skill-Liste
+    if (character.isCustomProfession && character.customProfessionSetupStage === 'skills') {
+        // Markiere alle aktuellen Skills als nicht-professionell, bevor Custom Skills angewendet werden.
+        // (Dies ist wichtig, falls man von einem Standard-Beruf zu Custom wechselt und dann bestätigt)
+        character.skills.forEach(s => {
+            s.isProfessional = false;
+            s.baseValueFromProfession = 0;
+            // Neuberechnung des Wertes, falls Increases vorhanden sind
+            s.value = ALL_SKILLS[s.key].base + ((s.increases || 0) * SKILL_INCREASE_AMOUNT);
+        });
+
+        character.customProfessionSelectedSkills.forEach(customInstance => {
+            const skillKey = customInstance.key;
+            const typeName = customInstance.typeName; // Kann leer sein, wenn nicht typisiert oder Nutzer nichts eingab
+            const pointsFromCustom = customInstance.points || 0;
+            const targetValue = ALL_SKILLS[skillKey].base + pointsFromCustom; // Zielwert inkl. Basis
+
+            // `findOrCreateSkillInstance` kümmert sich um die Erstellung/Aktualisierung.
+            // Wichtig: Da wir Ansatz B folgen, wird für typisierte Skills mit explizitem typeName eine neue Instanz erstellt,
+            // wenn noch keine exakt passende existiert. Die generische Instanz (mit typeName="") bleibt unberührt.
+            const mainSkillInstance = findOrCreateSkillInstance(skillKey, typeName, true, targetValue);
+            // `isProfessional` und `baseValueFromProfession` werden in `findOrCreateSkillInstance` gesetzt.
+            // Der Wert wird dort auch basierend auf targetValue und base berechnet.
+        });
+
+        character.customProfessionSetupStage = 'done';
+        // Ansicht aktualisieren, um die +20% Skill-Boost-Liste anzuzeigen
+        if (window.app && window.app.renderCurrentStep) {
+            window.app.renderCurrentStep();
+        }
+    }
 }

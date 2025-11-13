@@ -80,8 +80,9 @@ export function renderStep2_Statistics() {
         const currentValue = character.stats[key] || 3;
         html += `<div class="pointbuy-stat-row" style="display:flex; align-items:center; margin-bottom:10px; padding-bottom:10px; border-bottom: 1px dotted #eee;">
                     <label for="pointbuy-${key}" style="width:180px; margin-bottom:0; font-weight:bold;">${t('stat_' + key.toLowerCase() + '_name')}:</label>
-                    <input type="number" class="pointbuy-stat-input" id="pointbuy-${key}" data-stat-key="${key}" 
-                           value="${currentValue}" min="3" max="18" style="width:70px; margin: 0 5px 0 auto; text-align:center; padding: 6px; font-size:1em;">
+                    <button class="stat-adjust-button" data-stat-key="${key}" data-action="decrease" data-type="pointbuy" ${currentValue <= 3 ? 'disabled' : ''}>-</button>
+                    <span class="stat-value-display" id="pointbuy-${key}">${currentValue}</span>
+                    <button class="stat-adjust-button" data-stat-key="${key}" data-action="increase" data-type="pointbuy" ${currentValue >= 18 ? 'disabled' : ''}>+</button>
                     <span class="stat-percentile" id="pointbuy-percentile-${key}" style="font-weight:bold; min-width:40px; text-align:right;">(${currentValue * 5}%)</span>
                  </div>`;
     });
@@ -97,8 +98,9 @@ export function renderStep2_Statistics() {
         const currentValue = character.stats[key] || 10;
         html += `<div class="manual-entry-stat-row" style="display:flex; align-items:center; margin-bottom:10px; padding-bottom:10px; border-bottom: 1px dotted #eee;">
                     <label for="manual-${key}" style="width:180px; margin-bottom:0; font-weight:bold;">${t('stat_' + key.toLowerCase() + '_name')}:</label>
-                    <input type="number" class="manual-entry-stat-input" id="manual-${key}" data-stat-key="${key}" 
-                           value="${currentValue}" min="3" max="18" style="width:70px; margin: 0 5px 0 auto; text-align:center; padding: 6px; font-size:1em;">
+                    <button class="stat-adjust-button" data-stat-key="${key}" data-action="decrease" data-type="manual" ${currentValue <= 3 ? 'disabled' : ''}>-</button>
+                    <span class="stat-value-display" id="manual-${key}">${currentValue}</span>
+                    <button class="stat-adjust-button" data-stat-key="${key}" data-action="increase" data-type="manual" ${currentValue >= 18 ? 'disabled' : ''}>+</button>
                     <span class="stat-percentile" id="manual-percentile-${key}" style="font-weight:bold; min-width:40px; text-align:right;">(${currentValue * 5}%)</span>
                  </div>`;
     });
@@ -117,26 +119,53 @@ export function renderStep2_Statistics() {
     </div>`;
     return html;
 }
-export function manualEntryInputDelegationHandler(event) {
-    const character = getCharacter();
-    if (event.target.classList.contains('manual-entry-stat-input')) {
-        handleManualEntryInputChange(event.target);
+export function manualEntryButtonDelegationHandler(event) {
+    if (event.target.classList.contains('stat-adjust-button') && event.target.dataset.type === 'manual') {
+        handleStatAdjustButtonClick(event.target);
     }
 }
-export function handleManualEntryInputChange(inputElement) {
+
+export function handleStatAdjustButtonClick(buttonElement) {
     const character = getCharacter();
-    const statKey = inputElement.dataset.statKey;
-    let newValue = parseInt(inputElement.value);
-
-    if (isNaN(newValue)) newValue = 3; // Oder alten Wert behalten
-    newValue = Math.max(3, Math.min(18, newValue));
+    const statKey = buttonElement.dataset.statKey;
+    const action = buttonElement.dataset.action;
+    const type = buttonElement.dataset.type; // 'pointbuy' oder 'manual'
+    const currentValue = character.stats[statKey] || (type === 'pointbuy' ? 3 : 10);
     
-    if (parseInt(inputElement.value) !== newValue) { // Korrigiere UI nur bei echter Änderung
-        inputElement.value = newValue;
+    let newValue = currentValue;
+    if (action === 'increase') {
+        newValue = Math.min(18, currentValue + 1);
+    } else if (action === 'decrease') {
+        newValue = Math.max(3, currentValue - 1);
     }
-
+    
+    // Für PointBuy: Prüfe, ob der neue Wert den Gesamtpool überschreiten würde
+    if (type === 'pointbuy') {
+        const TOTAL_POINT_BUY_POINTS = 72;
+        let currentTotalWithoutThisStat = 0;
+        STAT_KEYS.forEach(key => {
+            if (key !== statKey) {
+                currentTotalWithoutThisStat += (character.stats[key] || 3);
+            }
+        });
+        
+        if ((currentTotalWithoutThisStat + newValue) > TOTAL_POINT_BUY_POINTS) {
+            // Berechne den maximal möglichen Wert
+            let maxPossibleValue = TOTAL_POINT_BUY_POINTS - currentTotalWithoutThisStat;
+            maxPossibleValue = Math.min(maxPossibleValue, 18);
+            maxPossibleValue = Math.max(maxPossibleValue, 3);
+            newValue = Math.min(newValue, maxPossibleValue);
+        }
+    }
+    
     character.stats[statKey] = newValue;
-    updateManualEntryUI(); // Aktualisiert Prozente und Feature-Anzeige
+    
+    // UI aktualisieren
+    if (type === 'pointbuy') {
+        updatePointBuyUI();
+    } else {
+        updateManualEntryUI();
+    }
     updateNavigationButtons();
 }
 
@@ -152,10 +181,20 @@ export function updateManualEntryUI() {
         } else {
             console.warn(`updateManualEntryUI - #manual-percentile-${key} span NOT FOUND!`);
         }
-        // Eingabefeld-Wert synchronisieren (falls programmatisch geändert)
-        const inputField = document.getElementById(`manual-${key}`);
-        if (inputField && parseInt(inputField.value) !== statValue) {
-            inputField.value = statValue;
+        // Wert-Anzeige synchronisieren
+        const valueDisplay = document.getElementById(`manual-${key}`);
+        if (valueDisplay && parseInt(valueDisplay.textContent) !== statValue) {
+            valueDisplay.textContent = statValue;
+        }
+        
+        // Button-Status aktualisieren
+        const decreaseButton = document.querySelector(`.stat-adjust-button[data-stat-key="${key}"][data-action="decrease"][data-type="manual"]`);
+        const increaseButton = document.querySelector(`.stat-adjust-button[data-stat-key="${key}"][data-action="increase"][data-type="manual"]`);
+        if (decreaseButton) {
+            decreaseButton.disabled = statValue <= 3;
+        }
+        if (increaseButton) {
+            increaseButton.disabled = statValue >= 18;
         }
     });
     
@@ -346,15 +385,35 @@ export function updatePointBuyUI() {
             console.warn(`updatePointBuyUI - #pointbuy-percentile-${key} span NOT FOUND!`);
         }
 
-        // Eingabefeld-Wert synchronisieren (falls Wert in character.stats sich geändert hat)
-        const inputField = document.getElementById(`pointbuy-${key}`);
-        if (inputField) {
-            if (parseInt(inputField.value) !== statValue) {
-                console.log(`updatePointBuyUI - Syncing input field pointbuy-${key} from ${inputField.value} to ${statValue}`);
-                inputField.value = statValue;
+        // Wert-Anzeige synchronisieren
+        const valueDisplay = document.getElementById(`pointbuy-${key}`);
+        if (valueDisplay) {
+            if (parseInt(valueDisplay.textContent) !== statValue) {
+                console.log(`updatePointBuyUI - Syncing value display pointbuy-${key} to ${statValue}`);
+                valueDisplay.textContent = statValue;
             }
         } else {
-             console.warn(`updatePointBuyUI - #pointbuy-${key} input field NOT FOUND!`);
+             console.warn(`updatePointBuyUI - #pointbuy-${key} value display NOT FOUND!`);
+        }
+        
+        // Button-Status aktualisieren
+        const TOTAL_POINT_BUY_POINTS = 72;
+        let currentTotalWithoutThisStat = 0;
+        STAT_KEYS.forEach(otherKey => {
+            if (otherKey !== key) {
+                currentTotalWithoutThisStat += (character.stats[otherKey] || 3);
+            }
+        });
+        const canIncrease = (currentTotalWithoutThisStat + statValue + 1) <= TOTAL_POINT_BUY_POINTS && statValue < 18;
+        const canDecrease = statValue > 3;
+        
+        const decreaseButton = document.querySelector(`.stat-adjust-button[data-stat-key="${key}"][data-action="decrease"][data-type="pointbuy"]`);
+        const increaseButton = document.querySelector(`.stat-adjust-button[data-stat-key="${key}"][data-action="increase"][data-type="pointbuy"]`);
+        if (decreaseButton) {
+            decreaseButton.disabled = !canDecrease;
+        }
+        if (increaseButton) {
+            increaseButton.disabled = !canIncrease;
         }
     });
     
@@ -411,14 +470,14 @@ export function attachStep2Listeners() {
 
     const pointbuyContainer = document.getElementById('stat-pointbuy-container');
     if (pointbuyContainer) {
-        pointbuyContainer.removeEventListener('input', pointBuyInputDelegationHandler);
-        pointbuyContainer.addEventListener('input', pointBuyInputDelegationHandler);
+        pointbuyContainer.removeEventListener('click', pointBuyButtonDelegationHandler);
+        pointbuyContainer.addEventListener('click', pointBuyButtonDelegationHandler);
     }
 
     const manualEntryContainer = document.getElementById('stat-manual-entry-container');
     if (manualEntryContainer) {
-        manualEntryContainer.removeEventListener('input', manualEntryInputDelegationHandler);
-        manualEntryContainer.addEventListener('input', manualEntryInputDelegationHandler);
+        manualEntryContainer.removeEventListener('click', manualEntryButtonDelegationHandler);
+        manualEntryContainer.addEventListener('click', manualEntryButtonDelegationHandler);
     }
     
     const assignmentOrFeaturesContainer = document.getElementById('stat-assignment-or-features-container');
@@ -451,10 +510,9 @@ export function attachStep2Listeners() {
     }
     updateNavigationButtons();
 }
-export function pointBuyInputDelegationHandler(event) {
-    const character = getCharacter(); // Neuer Name für den Delegations-Handler
-    if (event.target.classList.contains('pointbuy-stat-input')) {
-        handlePointBuyInputChange(event.target); // Ruft deinen bestehenden Logik-Handler auf
+export function pointBuyButtonDelegationHandler(event) {
+    if (event.target.classList.contains('stat-adjust-button') && event.target.dataset.type === 'pointbuy') {
+        handleStatAdjustButtonClick(event.target);
     }
 }
 

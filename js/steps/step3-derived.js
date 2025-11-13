@@ -16,7 +16,7 @@ export function renderStep3_DerivedAttributes() {
             <p data-i18n="step3_info_derived_intro"></p>
         </div>
         <div class="derived-attributes-display">
-            <div class="derived-attr-header" style="display: flex; padding: 10px 0; border-bottom: 2px solid #ccc; margin-bottom: 10px; font-weight: bold;">
+            <div class="derived-attr-header">
                 <div style="flex-basis: 200px; flex-shrink: 0; text-align: right; padding-right: 15px;" data-i18n="derived_attribute_label"></div>
                 <div style="flex-basis: 60px; flex-shrink: 0; text-align: center;" data-i18n="derived_value_label"></div>
                 <div style="flex-grow: 1; padding-left: 15px;" data-i18n="derived_description_label"></div>

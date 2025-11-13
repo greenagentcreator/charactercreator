@@ -26,6 +26,7 @@ export const i18nData = {
         "step1_info1": "An agent's profession is foundational, influencing their skill set, initial number of interpersonal Bonds, available resources, and the scope of their authority and duties. The occupations listed below represent common backgrounds for Delta Green agents.",
         "step1_info2": "Each profession grants a specific list of skills with initial ratings that override the default base values. Beyond these professional skills, you have 8 points (each worth +20%) to distribute among any skills on your sheet. A single skill can receive multiple boosts, but no skill may exceed an initial rating of 80%.",
         "add_specialization_button_text": "Add Specialization for {skillName}",
+        "add_another_specialization_button_text": "Add another {skillName}",
 "remove_button_title": "Remove this specialization",
         "step1_select_profession_label": "Step 1.1: Select a Profession",
         "step1_2_profession_specific_label": "Step 1.2: Profession-Specific Choices",
@@ -319,6 +320,7 @@ export const i18nData = {
         "profession_special_operator_name": "Spezialeinsatzkraft",
 
         "add_specialization_button_text": "Spezialisierung für {skillName} hinzufügen",
+        "add_another_specialization_button_text": "Weitere {skillName} hinzufügen",
 "remove_button_title": "Diese Spezialisierung entfernen",
 
         "skill_accounting_name": "Buchhaltung", "skill_accounting_desc": "Verständnis von Finanzunterlagen, Geschäftspraktiken und Aufdeckung fiskalischer Unregelmäßigkeiten.",

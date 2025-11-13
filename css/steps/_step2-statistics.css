@@ -40,6 +40,10 @@
     font-size: var(--font-size-md);
 }
 
+.pointbuy-stat-row {
+    flex-wrap: wrap;
+}
+
 .pointbuy-stat-row label {
     width: auto;
     min-width: 160px;
@@ -47,19 +51,51 @@
     font-weight: bold;
 }
 
-.pointbuy-stat-row input[type="number"] {
+.pointbuy-stat-row .stat-value-display {
     width: 70px;
-    margin: 0 var(--spacing-xs) 0 auto;
+    margin: 0 var(--spacing-xs);
     text-align: center;
     padding: 6px;
     font-size: var(--font-size-base);
-    margin-bottom: 0;
+    font-weight: bold;
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pointbuy-stat-row .stat-adjust-button {
+    padding: 6px 12px;
+    min-width: 44px;
+    min-height: 34px;
+    font-size: var(--font-size-lg);
+    font-weight: bold;
+    border: 1px solid var(--color-button);
+    background-color: transparent;
+    color: var(--color-button);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: background-color var(--transition-fast);
+}
+
+.pointbuy-stat-row .stat-adjust-button:hover:not(:disabled) {
+    background-color: var(--color-button);
+    color: var(--color-button-text);
+}
+
+.pointbuy-stat-row .stat-adjust-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .pointbuy-stat-row .stat-percentile {
     font-weight: bold;
     min-width: 40px;
     text-align: right;
+}
+
+.manual-entry-stat-row {
+    flex-wrap: wrap;
 }
 
 .manual-entry-stat-row label {
@@ -69,13 +105,41 @@
     font-weight: bold;
 }
 
-.manual-entry-stat-row input[type="number"] {
+.manual-entry-stat-row .stat-value-display {
     width: 70px;
-    margin: 0 var(--spacing-xs) 0 auto;
+    margin: 0 var(--spacing-xs);
     text-align: center;
     padding: 6px;
     font-size: var(--font-size-base);
-    margin-bottom: 0;
+    font-weight: bold;
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.manual-entry-stat-row .stat-adjust-button {
+    padding: 6px 12px;
+    min-width: 44px;
+    min-height: 34px;
+    font-size: var(--font-size-lg);
+    font-weight: bold;
+    border: 1px solid var(--color-button);
+    background-color: transparent;
+    color: var(--color-button);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: background-color var(--transition-fast);
+}
+
+.manual-entry-stat-row .stat-adjust-button:hover:not(:disabled) {
+    background-color: var(--color-button);
+    color: var(--color-button-text);
+}
+
+.manual-entry-stat-row .stat-adjust-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .manual-entry-stat-row .stat-percentile {

@@ -3,6 +3,7 @@
 /* Skill List Styling */
 .skill-list-item {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     padding: 8px 5px; 
@@ -11,6 +12,22 @@
 
 .skill-list-item:last-child {
     border-bottom: none;
+}
+
+@media (max-width: 600px) {
+    .skill-list-item {
+        flex-direction: column;
+        align-items: start;
+    }
+    
+    .skill-name-container {
+        flex-direction: column;
+        align-items: start;
+    }
+    
+    .custom-skill-item-base > .base-skill-line {
+        flex-wrap: wrap;
+    }
 }
 
 .skill-name-container {
@@ -82,6 +99,34 @@
     visibility: visible;
     opacity: 1;
     transition-delay: 0s;
+}
+
+/* Mobile Tooltip Support: Tooltips per Tap öffnen */
+.skill-info-icon.tooltip-active .tooltip {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
+}
+
+/* Mobile: Tooltips besser positionieren, damit sie nicht abgeschnitten werden */
+@media (max-width: 600px) {
+    .tooltip {
+        width: calc(100vw - 40px);
+        max-width: 280px;
+        /* Position wird per JavaScript dynamisch gesetzt */
+    }
+    
+    /* Sicherstellen, dass Tooltip sichtbar bleibt */
+    .skill-info-icon {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .skill-info-icon.tooltip-active .tooltip {
+        position: fixed;
+        z-index: 1000;
+        /* Position wird per JavaScript dynamisch gesetzt */
+    }
 }
 
 .skill-value-controls {
@@ -182,7 +227,6 @@
     gap: 0;
     padding: 8px 0;
     margin-left: 25px;
-    border-left: 1px solid var(--color-border-lighter);
     margin-top: 5px;
     font-size: 0.85em;
     min-height: 34px;
@@ -291,6 +335,8 @@
         flex-wrap: wrap;
         gap: 10px;
         padding: 10px 0;
+        margin-left: 0;
+        border-left: none;
     }
     #custom-profession-skill-list .skill-instance-separator {
         display: none;
@@ -325,10 +371,6 @@
     margin-top: 20px;
 }
 
-#btn-confirm-custom-skills {
-    margin-top: 0;
-}
-
 label.disabled-choice {
     opacity: 0.6;
     cursor: not-allowed;
@@ -336,5 +378,35 @@ label.disabled-choice {
 
 label.disabled-choice input[type="checkbox"] {
     cursor: not-allowed;
+}
+
+/* Sticky Label für Custom Skills Selected Count */
+.custom-skills-selected-sticky {
+    position: sticky;
+    top: 0;
+    background-color: var(--color-bg-secondary, #fff);
+    padding: 10px 0;
+    margin: 0;
+    z-index: 10;
+    border-bottom: 1px solid var(--color-border-lighter, #ddd);
+}
+
+/* Button für "Add another specialization" - Sekundärer Button-Stil */
+.btn-add-another-specialization {
+    background-color: transparent;
+    color: var(--color-button);
+    border: 1px solid var(--color-button);
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    min-height: auto;
+    white-space: nowrap;
+    text-transform: none;
+    letter-spacing: normal;
+    font-weight: normal;
+}
+
+.btn-add-another-specialization:hover {
+    background-color: var(--color-button);
+    color: var(--color-button-text);
 }
 

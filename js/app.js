@@ -25,7 +25,7 @@ const steps = [
     { render: renderStep5_Summary, validate: validateStep5, save: saveStep5, nameKey: "step_name_5", attachListeners: attachStep5Listeners }
 ];
 
-function renderCurrentStep() {
+function renderCurrentStep(skipFocus = false) {
     if (steps[currentStep] && typeof steps[currentStep].render === 'function') {
         const stepData = steps[currentStep];
         const stepContentOrHtml = stepData.render();
@@ -45,12 +45,14 @@ function renderCurrentStep() {
         updateProgressBar(); 
         updateNavigationButtons();
         // Focus first input after a short delay to ensure DOM is ready
-        // Use requestAnimationFrame to ensure DOM is fully rendered
-        requestAnimationFrame(() => {
-            setTimeout(() => {
-                focusFirstInput();
-            }, 150);
-        }); 
+        // Skip focus if requested (e.g., when updating UI without changing steps)
+        if (!skipFocus) {
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    focusFirstInput();
+                }, 150);
+            });
+        }
     }
 }
 
@@ -107,6 +109,8 @@ function updateProgressBar() {
                         saveStepData(currentStep);
                         currentStep = index;
                         renderCurrentStep();
+                        // Scroll to top smoothly
+                        scrollToStepTop();
                     }
                 }
             });
@@ -117,6 +121,8 @@ function updateProgressBar() {
                         saveStepData(currentStep);
                         currentStep = index;
                         renderCurrentStep();
+                        // Scroll to top smoothly
+                        scrollToStepTop();
                     }
                 }
             });
@@ -159,6 +165,18 @@ function saveStepData(stepIndex) {
 
 function handleNextStep() {
     if (!validateStep(currentStep, true)) return;
+    const character = getCharacter();
+    
+    // Prüfe, ob wir im 'bonds' oder 'skills' Stage einer Custom Profession sind
+    // In diesem Fall wird die Bestätigung in saveStep1 gemacht und die Ansicht aktualisiert
+    if (currentStep === 1 && character.isCustomProfession && 
+        (character.customProfessionSetupStage === 'bonds' || character.customProfessionSetupStage === 'skills')) {
+        saveStepData(currentStep);
+        // saveStep1 hat bereits renderCurrentStep aufgerufen, also nur scrollen
+        scrollToStepTop();
+        return;
+    }
+    
     saveStepData(currentStep);
     if (currentStep < steps.length - 1) {
         // Mark step container as busy during transition
@@ -221,11 +239,8 @@ export function updateNavigationButtons() {
         let isStepValid = validateStep(currentStep, false);
 
         if (currentStep === 1 && character.isCustomProfession) {
-            if (character.customProfessionSetupStage === 'bonds' || character.customProfessionSetupStage === 'skills') {
-                btnNext.disabled = true;
-            } else {
-                btnNext.disabled = !isStepValid;
-            }
+            // Im 'bonds' und 'skills' Stage ist der Button aktiv und übernimmt die Bestätigung
+            btnNext.disabled = !isStepValid;
         } else {
             btnNext.disabled = !isStepValid;
         }
