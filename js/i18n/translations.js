@@ -177,6 +177,7 @@ export const i18nData = {
         "not_selected": "Not Yet Selected",
         "not_defined": "Not Yet Defined",
         "btn_print_summary": "Print Dossier", // Reworded
+        "btn_export_json": "Export as JSON",
         "btn_download_txt": "Download as TXT",
 
         "summary_section_personal_details": "Personal Details",
@@ -508,6 +509,7 @@ export const i18nData = {
         "not_selected": "Noch nicht gewählt",
         "not_defined": "Noch nicht definiert",
         "btn_print_summary": "Akte drucken",
+        "btn_export_json": "Als JSON exportieren",
         "btn_download_txt": "Als TXT herunterladen",
 
         "summary_section_personal_details": "Persönliche Daten",

@@ -273,6 +273,7 @@ export function renderStep5_Summary() {
 
         <div class="summary-actions" style="margin-top: 30px;">
             <button id="btn-print-summary" class="action-button" data-i18n="btn_print_summary"></button>
+            <button id="btn-export-json" class="action-button" data-i18n="btn_export_json"></button>
         </div>
     </div>`;
     return html;
@@ -283,6 +284,23 @@ export function attachStep5Listeners() {
     if (btnPrint) {
         btnPrint.addEventListener('click', () => {
             window.print();
+        });
+    }
+
+    const btnExportJson = document.getElementById('btn-export-json');
+    if (btnExportJson) {
+        btnExportJson.addEventListener('click', () => {
+            const character = getCharacter();
+            const jsonData = JSON.stringify(character, null, 2);
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'delta_green_character.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
         });
     }
 
