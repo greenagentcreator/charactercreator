@@ -21,6 +21,7 @@ export const i18nData = {
         "step_name_2": "Statistics",
         "step_name_3": "Derived Attributes",
         "step_name_4": "Bonds & Motivations",
+        "step_name_4_3": "Traumatic Background",
         "step_name_5": "Summary",
 
         "step1_info1": "An agent's profession is foundational, influencing their skill set, initial number of interpersonal Bonds, available resources, and the scope of their authority and duties. The occupations listed below represent common backgrounds for Delta Green agents.",
@@ -185,6 +186,7 @@ export const i18nData = {
         "summary_section_skills": "Skills",
         "summary_section_bonds": "Bonds",
         "summary_section_motivations": "Motivations",
+        "summary_section_traumatic_background": "Traumatic Background",
 
         "summary_placeholder_name": "Name: _______________",
         "summary_placeholder_age": "Age: __________",
@@ -273,7 +275,26 @@ export const i18nData = {
         "step4_info_motivations2": "You can define up to five initial motivations. These may change or be replaced as your agent confronts the horrors of their work and their personality develops.",
         "step4_info_motivations3": "When an agent's Sanity reaches their Breaking Point due to trauma, a Motivation is usually replaced by a new mental disorder, reflecting the toll of their experiences.",
         "motivation_label_number": "Motivation {number}",
-        "motivation_placeholder": "e.g., Uncover the truth, no matter the cost" // New example
+        "motivation_placeholder": "e.g., Uncover the truth, no matter the cost", // New example
+
+        //------------ Step 4.3: Traumatic Background --------------
+        "step4_3_traumatic_background_title": "Step 4.3: Traumatic Background (Optional)",
+        "step4_3_traumatic_background_info": "If your Agent is new to Delta Green, you can skip this step. However, if your Agent is a veteran who has already encountered the unnatural horrors of Delta Green, you may select a traumatic background from the options below. Each traumatic background represents a significant past experience that has shaped your Agent and brought them deeper into Delta Green's world. These backgrounds modify your Agent's statistics, skills, and Sanity, reflecting the lasting impact of their traumatic experiences. Work with your Handler to determine the specific details of what happened and how it led your Agent to Delta Green.",
+        "step4_traumatic_background_warning": "Please consult your Handler before selecting a traumatic background.",
+        "traumatic_background_none": "None",
+        "traumatic_background_extreme_violence": "Extreme Violence",
+        "traumatic_background_extreme_violence_desc": "+10% to Occult; -5 SAN; -3 CHA (reduces each Bond by 3). You are Adapted to Violence.",
+        "traumatic_background_captivity": "Captivity or Imprisonment",
+        "traumatic_background_captivity_desc": "+10% to Occult; -5 SAN; -3 POW (does not affect SAN). You are Adapted to helplessness.",
+        "traumatic_background_hard_experience": "Hard Experience",
+        "traumatic_background_hard_experience_desc": "+10% to Occult; -5 SAN; +10% to any four skills (except Unnatural). Remove one bond.",
+        "traumatic_background_things_man": "Things Man Was Not Meant to Know",
+        "traumatic_background_things_man_desc": "+20% to Occult; reduce SAN by POW; +10% Unnatural skill. Reset Breaking Point to new SAN minus POW. Gain a disorder caused by the Unnatural.",
+        "hard_experience_skill_selection_label": "Select four skills to receive +10% (excluding Unnatural):",
+        "hard_experience_skill_label": "Skill {number}:",
+        "hard_experience_bond_removal_label": "Select a bond to remove:",
+        "disorder_label": "Disorder:",
+        "disorder_placeholder": "e.g., Paranoia, Obsession, etc."
     },
     de: {
         "page_title": "Delta Green Agenten-Ersteller",
@@ -296,6 +317,7 @@ export const i18nData = {
         "step_name_2": "Attribute",
         "step_name_3": "Abgeleitete Werte",
         "step_name_4": "Beziehungen & Motivationen",
+        "step_name_4_3": "Traumatischer Hintergrund",
         "step_name_5": "Zusammenfassung",
         "confirm_incomplete_skill_boosts_de": "Du hast nicht alle {maxBoosts} Skill-Boosts verteilt. Möchtest du trotzdem fortfahren?",
 
@@ -495,6 +517,7 @@ export const i18nData = {
         "summary_section_skills": "Fertigkeiten",
         "summary_section_bonds": "Beziehungen",
         "summary_section_motivations": "Motivationen",
+        "summary_section_traumatic_background": "Traumatischer Hintergrund",
 
         "summary_placeholder_name": "Name: _______________",
         "summary_placeholder_age": "Alter: __________",
@@ -567,6 +590,25 @@ export const i18nData = {
         "step4_info_motivations2": "Du kannst bis zu fünf anfängliche Motivationen definieren. Diese können sich ändern oder ersetzt werden, wenn du mit den Schrecken deiner Arbeit konfrontiert wirst und sich deine Persönlichkeit entwickelt.",
         "step4_info_motivations3": "Wenn deine Stabilität aufgrund eines Traumas deine Belastungsgrenze erreicht, wird eine deiner Motivationen üblicherweise durch eine neue psychische Störung ersetzt, was den Tribut deiner Erfahrungen widerspiegelt.",
         "motivation_label_number": "Motivation {number}",
-        "motivation_placeholder": "z.B. Die Wahrheit aufdecken, egal was es kostet"
+        "motivation_placeholder": "z.B. Die Wahrheit aufdecken, egal was es kostet",
+
+        //------------ Schritt 4.3: Traumatischer Hintergrund --------------
+        "step4_3_traumatic_background_title": "Schritt 4.3: Traumatischer Hintergrund (Optional)",
+        "step4_3_traumatic_background_info": "Wenn dein Agent neu bei Delta Green ist, kannst du diesen Schritt überspringen. Wenn dein Agent jedoch ein Veteran ist, der bereits die unnatürlichen Schrecken von Delta Green erlebt hat, kannst du einen traumatischen Hintergrund aus den unten stehenden Optionen auswählen. Jeder traumatische Hintergrund repräsentiert eine bedeutsame vergangene Erfahrung, die deinen Agenten geprägt und ihn tiefer in die Welt von Delta Green gebracht hat. Diese Hintergründe modifizieren die Statistiken, Fertigkeiten und Stabilität deines Agenten und spiegeln die dauerhaften Auswirkungen seiner traumatischen Erfahrungen wider. Arbeite mit deinem Handler zusammen, um die spezifischen Details dessen zu bestimmen, was passiert ist und wie es deinen Agenten zu Delta Green geführt hat.",
+        "step4_traumatic_background_warning": "Bitte konsultiere deinen Handler, bevor du einen traumatischen Hintergrund auswählst.",
+        "traumatic_background_none": "Keiner",
+        "traumatic_background_extreme_violence": "Extreme Gewalt",
+        "traumatic_background_extreme_violence_desc": "+10% auf Okkultismus; -5 STA; -3 CH (reduziert jede Beziehung um 3). Du bist an Gewalt angepasst.",
+        "traumatic_background_captivity": "Gefangenschaft oder Inhaftierung",
+        "traumatic_background_captivity_desc": "+10% auf Okkultismus; -5 STA; -3 WK (beeinflusst STA nicht). Du bist an Hilflosigkeit angepasst.",
+        "traumatic_background_hard_experience": "Harte Erfahrung",
+        "traumatic_background_hard_experience_desc": "+10% auf Okkultismus; -5 STA; +10% auf vier beliebige Fertigkeiten (außer Das Unnatürliche). Entferne eine Beziehung.",
+        "traumatic_background_things_man": "Dinge, die der Mensch nicht wissen sollte",
+        "traumatic_background_things_man_desc": "+20% auf Okkultismus; reduziere STA um WK; +10% Fertigkeit Das Unnatürliche. Setze Belastungsgrenze auf neue STA minus WK. Erhalte eine Störung, die durch das Unnatürliche verursacht wurde.",
+        "hard_experience_skill_selection_label": "Wähle vier Fertigkeiten, die +10% erhalten (außer Das Unnatürliche):",
+        "hard_experience_skill_label": "Fertigkeit {number}:",
+        "hard_experience_bond_removal_label": "Wähle eine Beziehung zum Entfernen:",
+        "disorder_label": "Störung:",
+        "disorder_placeholder": "z.B. Paranoia, Besessenheit, etc."
     }
 };

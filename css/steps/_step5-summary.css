@@ -180,25 +180,28 @@ ul.summary-list li:last-child {
     padding-top: 0;
 }
 
-.summary-skills-multicolumn ul.skills-flat-list {
-    list-style-type: disc;
-    padding-left: 20px;
-    margin: 0;
+.summary-skills-multicolumn .skills-columns-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0px 20px;
     align-items: start;
 }
 
+.summary-skills-multicolumn ul.skills-flat-list.skills-column {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+}
+
 /* Responsive Anpassung der Spalten für Skills in der Zusammenfassung */
 @media (max-width: 750px) {
-    .summary-skills-multicolumn ul.skills-flat-list {
+    .summary-skills-multicolumn .skills-columns-container {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 520px) {
-    .summary-skills-multicolumn ul.skills-flat-list {
+    .summary-skills-multicolumn .skills-columns-container {
         grid-template-columns: 1fr;
     }
 }
@@ -207,6 +210,11 @@ ul.summary-list li:last-child {
     padding: 2px 0; 
     font-size: 0.9em; 
     word-break: break-word;
+}
+
+/* Hide checkboxes on screen, show only in print */
+.summary-skills-multicolumn .skill-checkbox {
+    display: none;
 }
 
 .summary-skills-multicolumn .base-value {

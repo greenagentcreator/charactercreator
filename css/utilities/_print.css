@@ -1,11 +1,17 @@
 /* --- Print Styles --- */
 @media print {
+    @page {
+        size: A4;
+        margin: 0.2cm 0.5cm;
+    }
+    
     body {
         padding: 0 !important;
         background-color: #fff !important;
-        font-size: 10pt !important;
+        font-size: 9pt !important;
         color: #000 !important;
         padding-bottom: 0 !important;
+        margin: 0 !important;
     }
     
     #navigation-container {
@@ -17,6 +23,7 @@
         border: none !important;
         max-width: 100% !important;
         padding: 0 !important;
+        margin: 0 !important;
     }
     
     header,
@@ -33,106 +40,203 @@
     body::before,
     body::after,
     #app-container::before,
-    #app-container::after {
+    #app-container::after,
+    #step5-summary::before {
         display: none !important;
     }
     
     .info-box {
         border-left-width: 2px !important;
-        padding: 8px 10px !important;
+        padding: 4px 6px !important;
         background-color: #f8f8f8 !important;
+        margin-bottom: 4px !important;
     }
     
-    h1, h2, h3 {
-        margin-top: 15px !important;
-        margin-bottom: 8px !important;
+    h1, h2 {
+        margin-top: 4px !important;
+        margin-bottom: 6px !important;
         color: #000 !important;
+        font-size: 1.3em !important;
+        page-break-after: avoid !important;
+    }
+    
+    h3 {
+        margin-top: 4px !important;
+        margin-bottom: 4px !important;
+        color: #000 !important;
+        font-size: 1.05em !important;
+        page-break-after: avoid !important;
     }
     
     .summary-block {
-        border: 3px double #000 !important;
-        margin-bottom: 15px !important;
-        padding: 10px 15px !important;
+        border: 2px solid #000 !important;
+        margin-bottom: 8px !important;
+        padding: 8px 10px !important;
         background-color: #fff !important;
         border-radius: 0 !important;
+        page-break-inside: avoid !important;
     }
     
     #step5-summary h3.summary-block-title {
         background-color: #2d5016 !important;
         color: #fff !important;
-        margin: -10px -15px 10px -15px !important;
-        font-size: 1.1em !important;
-        border-bottom: 3px double #fff !important;
+        margin: -8px -10px 6px -10px !important;
+        font-size: 0.95em !important;
+        padding: 4px 10px !important;
+        border-bottom: 2px solid #fff !important;
     }
     
     /* Official document styling for print */
     #app-container {
-        border: 3px double #000 !important;
+        border: none !important;
+    }
+    
+    /* Hide the main title in print */
+    #step5-summary h2 {
+        display: none !important;
     }
     
     .summary-table {
-        border: 2px solid #000 !important;
+        border: 1px solid #000 !important;
+        font-size: 8pt !important;
+        margin-bottom: 6px !important;
     }
     
     .summary-table th,
     .summary-table td {
         border: 1px solid #000 !important;
+        padding: 3px 5px !important;
+    }
+    
+    .summary-table th {
+        font-size: 8pt !important;
+        padding: 3px 5px !important;
     }
     
     .summary-grid-stats-psych {
         grid-template-columns: 1fr 1fr !important; 
-        gap: 10px !important;
-    }
-    
-    .summary-table {
-        font-size: 8.5pt !important;
-    }
-    
-    .summary-table th,
-    .summary-table td {
-        padding: 4px 6px !important;
-    }
-    
-    /* Skills im Druck - IMMER 3 Spalten */
-    .summary-skills-multicolumn ul.skills-flat-list {
-        display: grid !important;
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 0 10px !important;
-        font-size: 8.5pt !important;
-        padding-left: 20px !important;
-        list-style-type: disc !important;
-    }
-    
-    .summary-skills-multicolumn ul.skills-flat-list li {
-        padding: 1px 0 !important;
-        font-size: 8.5pt !important;
-        margin-bottom: 1px !important;
-    }
-    
-    .summary-table {
-        font-size: 8pt !important;
+        gap: 8px !important;
         margin-bottom: 8px !important;
     }
     
-    .summary-table th,
-    .summary-table td {
-        padding: 3px 5px !important;
+    .summary-personal-grid {
+        gap: 3px 10px !important;
+        font-size: 9pt !important;
+        margin-bottom: 6px !important;
+    }
+    
+    .summary-personal-grid div {
+        padding: 1px 0 !important;
+    }
+    
+    .summary-personal-grid strong {
+        min-width: 80px !important;
+        font-size: 8pt !important;
+    }
+    
+    span.placeholder-field {
+        min-width: 80px !important;
+        height: 1em !important;
+    }
+    
+    span.placeholder-field.long {
+        min-width: 120px !important;
+    }
+    
+    span.placeholder-field.short {
+        min-width: 50px !important;
     }
     
     .summary-derived-table td.placeholder-cell {
-        height: 1.4em !important;
-        line-height: 1.4em !important;
-        min-width: 40px !important;
+        height: 1em !important;
+        line-height: 1em !important;
+        min-width: 30px !important;
     }
     
     #step5-summary h4.summary-subsection-title {
-        font-size: 1em !important;
-        margin-top: 10px !important;
-        margin-bottom: 5px !important;
+        font-size: 0.9em !important;
+        margin-top: 6px !important;
+        margin-bottom: 3px !important;
+        padding-bottom: 3px !important;
+        page-break-after: avoid !important;
+    }
+    
+    ul.summary-list {
+        font-size: 8.5pt !important;
+        margin-bottom: 6px !important;
+    }
+    
+    ul.summary-list li {
+        padding: 2px 0 !important;
+        margin-bottom: 0 !important;
+    }
+    
+    /* Skills im Druck - kompakt */
+    .summary-skills-multicolumn .skills-columns-container {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0 10px !important;
+    }
+    
+    .summary-skills-multicolumn ul.skills-flat-list.skills-column {
+        font-size: 7.5pt !important;
+        padding-left: 0 !important;
+        margin: 0 !important;
+        list-style-type: none !important;
+    }
+    
+    .summary-skills-multicolumn ul.skills-flat-list li {
+        padding: 2px 0 !important;
+        font-size: 7.5pt !important;
+        margin-bottom: 1px !important;
+        line-height: 1.4 !important;
+    }
+    
+    /* Show checkboxes in print */
+    .summary-skills-multicolumn .skill-checkbox {
+        display: inline-block !important;
+        width: 10px !important;
+        height: 10px !important;
+        margin-right: 4px !important;
+        vertical-align: middle !important;
+        border: 1px solid #000 !important;
+        background-color: #fff !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
     }
     
     .summary-skills-multicolumn .base-value {
-        font-size: 0.9em;
+        font-size: 7pt !important;
+    }
+    
+    .summary-block-skills {
+        margin-bottom: 8px !important;
+    }
+    
+    /* Allow page breaks if needed, but try to keep sections together */
+    .summary-block-personal-data {
+        page-break-inside: avoid !important;
+    }
+    
+    /* Compact spacing */
+    #step5-summary {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    #step5-summary > * {
+        margin-top: 0 !important;
+    }
+    
+    /* Use more vertical space */
+    main#main-content {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    #step-content-container {
+        padding: 0 !important;
+        margin: 0 !important;
     }
     
     footer {

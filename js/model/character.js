@@ -99,3 +99,27 @@ export function setCharacter(newCharacter) {
     character = newCharacter;
 }
 
+// Find a skill instance by key (for non-typed skills, returns first instance)
+export function findSkillInstance(skillKey, typeName = null) {
+    if (!character.skills || !Array.isArray(character.skills)) {
+        return null;
+    }
+    
+    if (typeName) {
+        return character.skills.find(s => s.key === skillKey && s.typeName === typeName);
+    } else {
+        // For non-typed skills, return the first instance
+        return character.skills.find(s => s.key === skillKey);
+    }
+}
+
+// Modify a skill value by adding a percentage
+export function modifySkillValue(skillKey, percentageChange, typeName = null) {
+    const instance = findSkillInstance(skillKey, typeName);
+    if (instance) {
+        instance.value = Math.max(0, Math.min(99, instance.value + percentageChange));
+        return true;
+    }
+    return false;
+}
+

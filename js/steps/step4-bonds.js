@@ -96,7 +96,8 @@ export function renderStep4_BondsMotivations() {
                            placeholder="${t('motivation_placeholder')}">
                  </div>`;
     }
-    html += `</div></div>`;
+    html += `</div>
+    </div>`;
     return html;
 }
 

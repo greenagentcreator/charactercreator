@@ -10,6 +10,7 @@ import { renderStep1_ProfessionSkills, validateStep1, saveStep1, attachStep1List
 import { renderStep2_Statistics, validateStep2, saveStep2, attachStep2Listeners } from './steps/step2-statistics.js';
 import { renderStep3_DerivedAttributes, validateStep3, saveStep3, attachStep3Listeners } from './steps/step3-derived.js';
 import { renderStep4_BondsMotivations, validateStep4, saveStep4, attachStep4Listeners } from './steps/step4-bonds.js';
+import { renderStep4_TraumaticBackground, validateStep4_3, saveStep4_3, attachStep4_3Listeners } from './steps/step4-traumatic-background.js';
 import { renderStep5_Summary, validateStep5, saveStep5, attachStep5Listeners } from './steps/step5-summary.js';
 
 let currentStep = 0;
@@ -22,6 +23,7 @@ const steps = [
     { render: renderStep2_Statistics, validate: validateStep2, save: saveStep2, nameKey: "step_name_2", attachListeners: attachStep2Listeners },
     { render: renderStep3_DerivedAttributes, validate: validateStep3, save: saveStep3, nameKey: "step_name_3", attachListeners: attachStep3Listeners },
     { render: renderStep4_BondsMotivations, validate: validateStep4, save: saveStep4, nameKey: "step_name_4", attachListeners: attachStep4Listeners },
+    { render: renderStep4_TraumaticBackground, validate: validateStep4_3, save: saveStep4_3, nameKey: "step_name_4_3", attachListeners: attachStep4_3Listeners },
     { render: renderStep5_Summary, validate: validateStep5, save: saveStep5, nameKey: "step_name_5", attachListeners: attachStep5Listeners }
 ];
 

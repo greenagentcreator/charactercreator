@@ -27,3 +27,82 @@
     margin-left: var(--spacing-xs);
 }
 
+/* --- Traumatic Background Section --- */
+.traumatic-background-option {
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    background-color: var(--color-bg-secondary);
+}
+
+.traumatic-background-option input[type="radio"] {
+    margin-right: var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
+}
+
+.traumatic-background-option label {
+    font-weight: bold;
+    font-size: var(--font-size-lg);
+    cursor: pointer;
+    display: inline-block;
+    margin-bottom: var(--spacing-xs);
+}
+
+.traumatic-background-description {
+    margin-top: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
+
+.traumatic-background-subsection {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
+    background-color: var(--color-bg);
+    border: 1px dashed var(--color-border-lighter);
+    border-radius: var(--border-radius);
+}
+
+.hard-experience-skill-select,
+.hard-experience-bond-removal {
+    margin-bottom: var(--spacing-md);
+}
+
+.hard-experience-skill-select label,
+.hard-experience-bond-removal label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-weight: normal;
+    font-size: var(--font-size-base);
+}
+
+.hard-experience-skill-dropdown,
+.hard-experience-bond-dropdown {
+    width: 100%;
+    padding: var(--spacing-xs);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-size: var(--font-size-base);
+}
+
+.disorder-input {
+    width: 100%;
+    padding: var(--spacing-xs);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-size: var(--font-size-base);
+}
+
+.warning-box {
+    background-color: var(--color-warning-bg, rgba(255, 193, 7, 0.1));
+    border-left: 4px solid var(--color-warning, #ffc107);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+

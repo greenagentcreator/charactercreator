@@ -115,8 +115,41 @@ export function renderStep5_Summary() {
     if (definedMotivations.length > 0) {
         definedMotivations.forEach((motivation) => { html += `<li>${motivation}</li>`; });
     } else { html += `<li><em>${t('not_defined')}</em></li>`; }
-    html += `       </ul>
-            </div>
+    html += `       </ul>`;
+    
+    // Display Traumatic Background if selected
+    if (character.traumaticBackground) {
+        html += `<h4 class="summary-subsection-title" data-i18n="summary_section_traumatic_background"></h4>
+                <ul class="summary-list">`;
+        const bgKey = character.traumaticBackground;
+        let bgName = '';
+        if (bgKey === 'extreme_violence') {
+            bgName = t('traumatic_background_extreme_violence');
+        } else if (bgKey === 'captivity') {
+            bgName = t('traumatic_background_captivity');
+        } else if (bgKey === 'hard_experience') {
+            bgName = t('traumatic_background_hard_experience');
+        } else if (bgKey === 'things_man_was_not_meant_to_know') {
+            bgName = t('traumatic_background_things_man');
+        }
+        html += `<li><strong>${bgName}</strong></li>`;
+        
+        // Display adaptations
+        if (character.adaptations && character.adaptations.length > 0) {
+            character.adaptations.forEach(adaptation => {
+                html += `<li><em>${adaptation}</em></li>`;
+            });
+        }
+        
+        // Display disorder if present
+        if (character.disorder && character.disorder.trim() !== '') {
+            html += `<li><strong data-i18n="disorder_label"></strong>: ${character.disorder}</li>`;
+        }
+        
+        html += `</ul>`;
+    }
+    
+    html += `       </div>
         </div>
 
         <div class="summary-block summary-block-skills">
@@ -192,15 +225,44 @@ export function renderStep5_Summary() {
     allCharacterSkills.sort((a, b) => a.name.localeCompare(b.name, getCurrentLanguage()));
 
     if (allCharacterSkills.length > 0) {
-        html += `<ul class="skills-flat-list">`; // Nur EINE UL mit dieser Klasse
-        allCharacterSkills.forEach(skill => {
-            const isModified = skill.value !== skill.base;
-            const baseDisplayValue = (skill.base > 0 || isModified) ? `(${skill.base}%)` : ""; // Zeige Basis nur wenn >0 oder wenn modifiziert
-            const baseDisplaySpan = isModified ? ` <span class="base-value">${baseDisplayValue}</span>` : "";
-            const displayValue = isModified ? `<strong>${skill.value}%</strong>${baseDisplaySpan}` : `${skill.value}%`;
-            html += `<li>${skill.name}: ${displayValue}</li>`;
-        });
-        html += `</ul>`;
+        // Teile Skills in Spalten auf (spaltenweise Sortierung)
+        // Bestimme Anzahl der Spalten basierend auf Fenstergröße (entspricht CSS Media Queries)
+        let numberOfColumns = 3; // Standard: 3 Spalten
+        if (typeof window !== 'undefined' && window.innerWidth) {
+            if (window.innerWidth <= 520) {
+                numberOfColumns = 1;
+            } else if (window.innerWidth <= 750) {
+                numberOfColumns = 2;
+            }
+        }
+        
+        const itemsPerColumn = Math.ceil(allCharacterSkills.length / numberOfColumns);
+        const columns = [];
+        
+        for (let col = 0; col < numberOfColumns; col++) {
+            columns[col] = [];
+            for (let i = 0; i < itemsPerColumn; i++) {
+                const index = col * itemsPerColumn + i;
+                if (index < allCharacterSkills.length) {
+                    columns[col].push(allCharacterSkills[index]);
+                }
+            }
+        }
+        
+        html += `<div class="skills-columns-container">`;
+        // Rendere jede Spalte als separate Liste
+        for (let col = 0; col < numberOfColumns; col++) {
+            html += `<ul class="skills-flat-list skills-column">`;
+            columns[col].forEach(skill => {
+                const isModified = skill.value !== skill.base;
+                const baseDisplayValue = (skill.base > 0 || isModified) ? `(${skill.base}%)` : ""; // Zeige Basis nur wenn >0 oder wenn modifiziert
+                const baseDisplaySpan = isModified ? ` <span class="base-value">${baseDisplayValue}</span>` : "";
+                const displayValue = isModified ? `<strong>${skill.value}%</strong>${baseDisplaySpan}` : `${skill.value}%`;
+                html += `<li><input type="checkbox" class="skill-checkbox" disabled> ${skill.name}: ${displayValue}</li>`;
+            });
+            html += `</ul>`;
+        }
+        html += `</div>`;
     } else { 
         html += `<p><em>${t('no_skills_available')}</em></p>`; 
     }
