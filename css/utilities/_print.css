@@ -32,7 +32,8 @@
     #language-switcher,
     #theme-switcher,
     #progress-bar-container,
-    .summary-actions {
+    .summary-actions,
+    .character-view-header {
         display: none !important;
     }
     

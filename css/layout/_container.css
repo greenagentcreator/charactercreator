@@ -10,6 +10,11 @@
     border-radius: 4px;
     position: relative;
     margin-bottom: 0;
+    overflow-x: hidden;
+}
+
+#main-content {
+    max-width: 100%;
 }
 
 /* Mobile-first responsive adjustments */

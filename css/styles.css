@@ -31,6 +31,7 @@
 @import url('components/_icons.css');
 
 /* --- Step-Specific Styles --- */
+@import url('steps/_step0-intro.css');
 @import url('steps/_step1-profession.css');
 @import url('steps/_step2-statistics.css');
 @import url('steps/_step3-derived.css');

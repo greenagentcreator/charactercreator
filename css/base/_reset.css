@@ -5,6 +5,9 @@
 
 html {
     background-color: var(--color-bg-primary);
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
 }
 
 body {
@@ -20,5 +23,8 @@ body {
     align-items: flex-start;
     min-height: 100vh;
     position: relative;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
 }
 

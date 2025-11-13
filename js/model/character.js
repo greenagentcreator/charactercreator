@@ -38,7 +38,10 @@ export function resetCharacter() {
         distinguishingFeatures: {},
         derivedAttributes: { HP: 0, WP: 0, SAN: 0, BP: 0 },
         bonds: [],
-        motivations: ["", "", "", "", ""]
+        motivations: ["", "", "", "", ""],
+        personalInfo: {},
+        id: null,
+        createdDate: null
     };
     initializeCharacterSkills();
 }

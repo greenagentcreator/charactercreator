@@ -7,6 +7,7 @@ import { ALL_SKILLS } from '../config/skills.js';
 import { PROFESSIONS } from '../config/professions.js';
 import { STAT_KEYS } from '../config/constants.js';
 import { t, getCurrentLanguage } from '../i18n/i18n.js';
+import { createShareableUrl, copyToClipboard } from '../utils/sharing.js';
 
 export function renderStep5_Summary() {
     const character = getCharacter();
@@ -28,12 +29,12 @@ export function renderStep5_Summary() {
         <div class="summary-block summary-block-personal-data">
             <h3 class="summary-block-title" data-i18n="summary_section_personal_details"></h3>
             <div class="summary-personal-grid">
-                <div><strong data-i18n="summary_label_name"></strong> <span class="placeholder-field long"></span></div>
+                <div><strong data-i18n="summary_label_name"></strong> <span class="value-field">${character.personalInfo?.name || ''}</span></div>
                 <div><strong data-i18n="summary_label_profession"></strong> <span class="value-field">${professionDisplayName}</span></div>
-                <div><strong data-i18n="summary_label_employer"></strong> <span class="placeholder-field long"></span></div>
-                <div><strong data-i18n="summary_label_nationality"></strong> <span class="placeholder-field"></span></div>
-                <div><strong data-i18n="summary_label_sex"></strong> <span class="placeholder-field short"></span></div>
-                <div><strong data-i18n="summary_label_age_dob"></strong> <span class="placeholder-field"></span></div>
+                <div><strong data-i18n="summary_label_employer"></strong> <span class="value-field">${character.personalInfo?.employer || ''}</span></div>
+                <div><strong data-i18n="summary_label_nationality"></strong> <span class="value-field">${character.personalInfo?.nationality || ''}</span></div>
+                <div><strong data-i18n="summary_label_sex"></strong> <span class="value-field">${character.personalInfo?.sex || ''}</span></div>
+                <div><strong data-i18n="summary_label_age_dob"></strong> <span class="value-field">${character.personalInfo?.age ? character.personalInfo.age + (character.personalInfo.dob ? ' / ' + character.personalInfo.dob : '') : (character.personalInfo?.dob || '')}</span></div>
             </div>
         </div>
 
@@ -272,14 +273,36 @@ export function renderStep5_Summary() {
         </div>
 
         <div class="summary-actions" style="margin-top: 30px;">
+            <button id="btn-share-summary" class="action-button button-secondary" data-i18n="share_character"></button>
             <button id="btn-print-summary" class="action-button" data-i18n="btn_print_summary"></button>
-            <button id="btn-export-json" class="action-button" data-i18n="btn_export_json"></button>
+            <button id="btn-export-json" class="action-button button-secondary" data-i18n="btn_export_json"></button>
         </div>
     </div>`;
     return html;
 }
 
 export function attachStep5Listeners() {
+    // Share button
+    const btnShare = document.getElementById('btn-share-summary');
+    if (btnShare) {
+        btnShare.addEventListener('click', async () => {
+            const character = getCharacter();
+            try {
+                const shareableUrl = createShareableUrl(character);
+                const success = await copyToClipboard(shareableUrl);
+                if (success) {
+                    alert(t('share_url_copied'));
+                } else {
+                    // Fallback: show URL in prompt
+                    prompt(t('share_character'), shareableUrl);
+                }
+            } catch (error) {
+                console.error('Error sharing character:', error);
+                alert(t('share_error') || 'Error creating shareable link. Character data may be too large.');
+            }
+        });
+    }
+    
     const btnPrint = document.getElementById('btn-print-summary');
     if (btnPrint) {
         btnPrint.addEventListener('click', () => {

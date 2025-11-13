@@ -223,3 +223,41 @@ export function setupRealtimeValidation(field, validator = null) {
     fieldElement.addEventListener('blur', clearErrorHandler);
 }
 
+/**
+ * Validate imported character data structure
+ * @param {Object} characterData - Character data to validate
+ * @returns {Object} { valid: boolean, error: string }
+ */
+export function validateImportedCharacter(characterData) {
+    if (!characterData || typeof characterData !== 'object') {
+        return { valid: false, error: 'Invalid character data format' };
+    }
+    
+    // Check for required fields (at minimum, should have basic structure)
+    const requiredFields = ['stats', 'skills'];
+    for (const field of requiredFields) {
+        if (!characterData[field]) {
+            return { valid: false, error: `Missing required field: ${field}` };
+        }
+    }
+    
+    // Validate stats structure
+    if (!characterData.stats || typeof characterData.stats !== 'object') {
+        return { valid: false, error: 'Invalid stats structure' };
+    }
+    
+    const statKeys = ['STR', 'CON', 'DEX', 'INT', 'POW', 'CHA'];
+    for (const key of statKeys) {
+        if (typeof characterData.stats[key] !== 'number') {
+            return { valid: false, error: `Invalid stat value for ${key}` };
+        }
+    }
+    
+    // Validate skills is an array
+    if (!Array.isArray(characterData.skills)) {
+        return { valid: false, error: 'Skills must be an array' };
+    }
+    
+    return { valid: true, error: null };
+}
+

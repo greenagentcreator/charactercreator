@@ -100,8 +100,12 @@ export function setLanguage(lang) {
     
     translateAllElements(); 
 
+    // Don't re-render if we're loading a shared character
     if (window.app && typeof window.app.renderCurrentStep === 'function') {
-        window.app.renderCurrentStep(); 
+        const isLoadingShared = window.app.isLoadingSharedCharacter && window.app.isLoadingSharedCharacter();
+        if (!isLoadingShared) {
+            window.app.renderCurrentStep(); 
+        }
     }
     const langDeButton = document.getElementById('lang-de');
     const langEnButton = document.getElementById('lang-en');

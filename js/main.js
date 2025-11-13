@@ -2,6 +2,8 @@
 
 import { initI18n, setLanguage, getCurrentLanguage } from './i18n/i18n.js';
 import { initializeApp } from './app.js';
+import { getCharacterFromUrl } from './utils/sharing.js';
+import { initFirebase } from './utils/database.js';
 
 // Theme management
 function initTheme() {
@@ -89,7 +91,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize i18n
     initI18n();
     
-    // Initialize the app
+    // Initialize Firebase
+    initFirebase();
+    
+    // Check for shared character in URL BEFORE initializing app
+    const sharedCharacterData = getCharacterFromUrl();
+    const hasSharedCharacter = !!sharedCharacterData;
+    
+    // Initialize the app (it will check for shared character and set flag internally)
     initializeApp();
     
     // Set the language (this will trigger initial translation)
@@ -128,5 +137,18 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initial update
     updateLanguageButtons();
+    
+    // Handle shared character if present
+    if (hasSharedCharacter && sharedCharacterData) {
+        // Wait for app to be fully initialized, then handle shared character
+        // Use requestAnimationFrame to ensure DOM is ready
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                if (window.app && window.app.handleSharedCharacter) {
+                    window.app.handleSharedCharacter(sharedCharacterData);
+                }
+            }, 50);
+        });
+    }
 });
 
