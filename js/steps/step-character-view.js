@@ -43,7 +43,7 @@ export function renderCharacterView(characterId, characterData = null) {
                 <h2>Agent ${characterData.name || 'Unnamed'}</h2>
                 <div class="character-view-actions">
                     <button id="btn-view-share" class="action-button button-secondary" data-i18n="share_character" aria-label="${t('aria_share_character')}"></button>
-                    <button id="btn-view-print" class="action-button button-secondary" data-i18n="btn_print_summary" aria-label="${t('aria_print_summary')}"></button>
+                    <button type="button" id="btn-view-print" class="action-button button-secondary" data-i18n="btn_print_summary" aria-label="${t('aria_print_summary')}" onclick="window.print(); return false;"></button>
                     <button id="btn-view-export" class="action-button button-secondary" data-i18n="btn_export_json" aria-label="${t('aria_export_json')}"></button>
                     ${!isDatabaseCharacter ? `<button id="btn-view-delete" class="action-button character-delete-btn-view" data-i18n="delete_character" aria-label="${t('aria_delete_character', { name: characterData.name || 'Unnamed' })}"></button>` : ''}
                     <button id="btn-view-back" class="action-button" data-i18n="back_to_list" aria-label="${t('aria_back_to_list')}"></button>
@@ -85,17 +85,23 @@ export function attachCharacterViewListeners(characterId, characterData = null) 
         });
     }
     
-    // Print button
+    // Print button - using onclick attribute for better Safari compatibility
+    // The onclick is already set in the HTML, but we can also add event listener as fallback
     const btnPrint = document.getElementById('btn-view-print');
     if (btnPrint) {
-        btnPrint.addEventListener('click', () => {
-            // Ensure the page is ready for printing
-            requestAnimationFrame(() => {
-                setTimeout(() => {
-                    window.print();
-                }, 100);
+        // Detect Safari and change button text
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        if (isSafari) {
+            btnPrint.textContent = 'print with cmd + p';
+        }
+        
+        if (!btnPrint.onclick) {
+            // Fallback if onclick wasn't set
+            btnPrint.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.print();
             });
-        });
+        }
     }
     
     // Export JSON button
@@ -146,4 +152,6 @@ export function attachCharacterViewListeners(characterId, characterData = null) 
         });
     }
 }
+
+
 
