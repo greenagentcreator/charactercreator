@@ -179,11 +179,11 @@ function renderCustomProfession_SkillAllocation() {
                         <div class="skill-instance-middle">
                             <span class="assign-points-label">${t('custom_prof_label_assign_points')}</span>
                             <div class="point-buttons-group">
-                                <button class="custom-skill-point-btn" data-action="decrease" data-amount="10" data-instance-temp-id="${instance.tempInstanceId}">-10</button>
-                                <button class="custom-skill-point-btn" data-action="decrease" data-amount="5" data-instance-temp-id="${instance.tempInstanceId}">-5</button>
+                                <button class="custom-skill-point-btn" data-action="decrease" data-amount="10" data-instance-temp-id="${instance.tempInstanceId}" aria-label="${t('aria_custom_skill_decrease', { amount: 10 })}">-10</button>
+                                <button class="custom-skill-point-btn" data-action="decrease" data-amount="5" data-instance-temp-id="${instance.tempInstanceId}" aria-label="${t('aria_custom_skill_decrease', { amount: 5 })}">-5</button>
                                 <span class="custom-skill-assigned-points">${instance.points || 0}</span>
-                                <button class="custom-skill-point-btn" data-action="increase" data-amount="5" data-instance-temp-id="${instance.tempInstanceId}">+5</button>
-                                <button class="custom-skill-point-btn" data-action="increase" data-amount="10" data-instance-temp-id="${instance.tempInstanceId}">+10</button>
+                                <button class="custom-skill-point-btn" data-action="increase" data-amount="5" data-instance-temp-id="${instance.tempInstanceId}" aria-label="${t('aria_custom_skill_increase', { amount: 5 })}">+5</button>
+                                <button class="custom-skill-point-btn" data-action="increase" data-amount="10" data-instance-temp-id="${instance.tempInstanceId}" aria-label="${t('aria_custom_skill_increase', { amount: 10 })}">+10</button>
                             </div>
                         </div>
                         <div class="skill-instance-separator"></div>
@@ -1382,6 +1382,16 @@ export function renderAllSkillsList() {
         }
 
 
+        const skillDisplayName = skillDef.type && skillInstanceToRender.typeName && skillInstanceToRender.typeName.trim() !== "" 
+            ? `${t(skillDef.nameKey)} (${skillInstanceToRender.typeName.trim()})` 
+            : t(skillDef.nameKey);
+        const decreaseAriaLabel = pointsToDecreaseOnClick > 0 
+            ? t('aria_skill_decrease', { skillName: skillDisplayName, amount: pointsToDecreaseOnClick })
+            : '';
+        const increaseAriaLabel = pointsToAddOnClick > 0 
+            ? t('aria_skill_increase', { skillName: skillDisplayName, amount: pointsToAddOnClick })
+            : '';
+        
         item.innerHTML = `
             <div class="skill-name-container">
                 ${skillNameDisplaySpan}
@@ -1396,12 +1406,14 @@ export function renderAllSkillsList() {
                         data-instance-id="${skillInstanceToRender.instanceId}" 
                         data-points-to-decrease="${pointsToDecreaseOnClick}"
                         data-boost-value-to-return="${boostValueToReturn}" 
-                        ${minusButtonDisabled ? 'disabled' : ''}>${minusButtonText}</button>
+                        ${minusButtonDisabled ? 'disabled' : ''}
+                        ${decreaseAriaLabel ? `aria-label="${decreaseAriaLabel}"` : ''}>${minusButtonText}</button>
                 <button class="skill-increase-button" 
                         data-instance-id="${skillInstanceToRender.instanceId}" 
                         data-points-to-add="${pointsToAddOnClick}" 
                         data-cost-for-boost="${costForThisBoost}" 
-                        ${plusButtonDisabled ? 'disabled' : ''}>${plusButtonText}</button>
+                        ${plusButtonDisabled ? 'disabled' : ''}
+                        ${increaseAriaLabel ? `aria-label="${increaseAriaLabel}"` : ''}>${plusButtonText}</button>
             </div>
         `;
         listContainer.appendChild(item);

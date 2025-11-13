@@ -42,11 +42,11 @@ export function renderCharacterView(characterId, characterData = null) {
             <div class="character-view-header">
                 <h2>Agent ${characterData.name || 'Unnamed'}</h2>
                 <div class="character-view-actions">
-                    <button id="btn-view-share" class="action-button button-secondary" data-i18n="share_character"></button>
-                    <button id="btn-view-print" class="action-button button-secondary" data-i18n="btn_print_summary"></button>
-                    <button id="btn-view-export" class="action-button button-secondary" data-i18n="btn_export_json"></button>
-                    ${!isDatabaseCharacter ? `<button id="btn-view-delete" class="action-button character-delete-btn-view" data-i18n="delete_character"></button>` : ''}
-                    <button id="btn-view-back" class="action-button" data-i18n="back_to_list"></button>
+                    <button id="btn-view-share" class="action-button button-secondary" data-i18n="share_character" aria-label="${t('aria_share_character')}"></button>
+                    <button id="btn-view-print" class="action-button button-secondary" data-i18n="btn_print_summary" aria-label="${t('aria_print_summary')}"></button>
+                    <button id="btn-view-export" class="action-button button-secondary" data-i18n="btn_export_json" aria-label="${t('aria_export_json')}"></button>
+                    ${!isDatabaseCharacter ? `<button id="btn-view-delete" class="action-button character-delete-btn-view" data-i18n="delete_character" aria-label="${t('aria_delete_character', { name: characterData.name || 'Unnamed' })}"></button>` : ''}
+                    <button id="btn-view-back" class="action-button" data-i18n="back_to_list" aria-label="${t('aria_back_to_list')}"></button>
                 </div>
             </div>
             ${summaryHtml}
@@ -89,7 +89,12 @@ export function attachCharacterViewListeners(characterId, characterData = null) 
     const btnPrint = document.getElementById('btn-view-print');
     if (btnPrint) {
         btnPrint.addEventListener('click', () => {
-            window.print();
+            // Ensure the page is ready for printing
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    window.print();
+                }, 100);
+            });
         });
     }
     

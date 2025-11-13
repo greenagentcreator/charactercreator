@@ -58,7 +58,7 @@ export function renderStep2_Statistics() {
         </div>
 
         <div id="stat-roll-container" style="display: ${character.statGenerationMethod === 'roll' ? 'block' : 'none'};">
-            <button id="btn-roll-stats" class="action-button" data-i18n="btn_roll_stats_text"></button>
+            <button id="btn-roll-stats" class="action-button" data-i18n="btn_roll_stats_text" aria-label="${t('aria_roll_stats')}"></button>
             <div id="rolled-stats-display" style="margin-top: 10px; font-weight: bold; font-size: 1.1em;">`;
     if (character.statGenerationMethod === 'roll' && character.rolledStatValues.length === 6) {
         html += `<span data-i18n="rolled_values_label"></span> ${character.rolledStatValues.join(', ')}`;

@@ -5,6 +5,7 @@ import { getAllCharacters, deleteCharacter, updateCharacterName, importCharacter
 import { t } from '../i18n/i18n.js';
 import { validateImportedCharacter } from '../utils/validation.js';
 import { getPublicCharacters, importCharacterFromDatabase, reportCharacter } from '../utils/database.js';
+import { shouldShowBanner, dismissBanner } from '../utils/banner.js';
 
 export async function renderIntro() {
     // Check if we're loading a shared character - if so, don't render intro
@@ -32,60 +33,75 @@ export async function renderIntro() {
         return '';
     }
     
+    // Check if banner should be shown
+    const showBanner = shouldShowBanner();
+    
     let html = `
         <div class="step" id="step-intro">
+            ${showBanner ? `
+            <!-- WritersAlley.com Promo Banner -->
+            <div class="promo-banner" id="writersalley-banner">
+                <div class="promo-banner-icon">✍️</div>
+                <div class="promo-banner-content">
+                    <h3 class="promo-banner-headline" data-i18n="banner_headline">Are you a writer?</h3>
+                    <p class="promo-banner-text" data-i18n="banner_text">Check out my new app <a href="https://writersalley.com" target="_blank" rel="noopener noreferrer" class="promo-banner-link">WritersAlley.com</a> — a goal-based writing tracker that helps you stay on target.</p>
+                </div>
+                <div class="promo-banner-actions">
+                    <a href="https://writersalley.com" target="_blank" rel="noopener noreferrer" class="promo-banner-cta" data-i18n="banner_cta">Visit WritersAlley.com</a>
+                    <button class="promo-banner-close" id="banner-close-btn" aria-label="" title="">×</button>
+                </div>
+            </div>
+            ` : ''}
             <!-- Entry Section with large create button -->
             <div class="intro-entry-section">
                 <div class="info-box"><p data-i18n="intro_quote_dg"></p></div>
-                <button id="btn-create-character" class="action-button btn-create-character-large" data-i18n="create_character"></button>
+                <button id="btn-create-character" class="action-button btn-create-character-large" data-i18n="create_character" aria-label="${t('create_character')}"></button>
                 <div class="import-section" style="margin-top: 20px;">
-                    <button id="btn-import-json" class="action-button button-secondary" data-i18n="import_character"></button>
+                    <button id="btn-import-json" class="action-button button-secondary" data-i18n="import_character" aria-label="${t('aria_import_character')}"></button>
                     <input type="file" id="file-input-json" accept=".json" style="display: none;">
                 </div>
             </div>
             
             <!-- Characters Section -->
+            ${(allCharacters.length > 0 || publicCharacters.length > 0) ? `
             <div class="intro-characters-section">
                 <h3 data-i18n="characters_title"></h3>
                 ${allCharacters.length > 0 ? `
-                    <div class="character-list">
-                        ${allCharacters.map(char => {
-                            const createdDate = new Date(char.createdDate || char.importedDate);
-                            const dateStr = createdDate.toLocaleDateString();
-                            const isImported = char.imported === true;
-                            // Translate profession name if it's a translation key
-                            let professionDisplay = char.profession || 'Unknown';
-                            if (char.profession && char.profession.startsWith('profession_')) {
-                                professionDisplay = t(char.profession);
-                            }
-                            return `
-                                <div class="character-card ${isImported ? 'character-card-imported' : ''}" data-character-id="${char.id}">
-                                    <div class="character-card-content">
-                                        <div class="character-card-header">
-                                            <h4 class="character-name" data-character-id="${char.id}">Agent ${char.name || 'Unnamed'}</h4>
-                                            ${isImported ? `
-                                                <span class="imported-badge" data-i18n="imported_character_label"></span>
-                                            ` : `
-                                                <button class="character-rename-btn" data-character-id="${char.id}" data-i18n="edit_name"></button>
-                                            `}
-                                        </div>
-                                        <div class="character-card-info">
-                                            <span class="character-profession">${professionDisplay}</span>
-                                            <span class="character-date">${dateStr}</span>
-                                        </div>
+                <div class="character-list">
+                    ${allCharacters.map(char => {
+                        const createdDate = new Date(char.createdDate || char.importedDate);
+                        const dateStr = createdDate.toLocaleDateString();
+                        const isImported = char.imported === true;
+                        // Translate profession name if it's a translation key
+                        let professionDisplay = char.profession || 'Unknown';
+                        if (char.profession && char.profession.startsWith('profession_')) {
+                            professionDisplay = t(char.profession);
+                        }
+                        return `
+                            <div class="character-card ${isImported ? 'character-card-imported' : ''}" data-character-id="${char.id}">
+                                <div class="character-card-content">
+                                    <div class="character-card-header">
+                                        <h4 class="character-name" data-character-id="${char.id}">Agent ${char.name || 'Unnamed'}</h4>
+                                        ${isImported ? `
+                                            <span class="imported-badge" data-i18n="imported_character_label"></span>
+                                        ` : `
+                                            <button class="character-rename-btn" data-character-id="${char.id}" data-i18n="edit_name" aria-label="${t('aria_edit_name', { name: char.name || 'Unnamed' })}"></button>
+                                        `}
                                     </div>
-                                    <div class="character-card-actions">
-                                        <button class="character-view-btn" data-character-id="${char.id}" data-i18n="view_character"></button>
-                                        <button class="character-delete-btn" data-character-id="${char.id}" data-i18n="delete_character"></button>
+                                    <div class="character-card-info">
+                                        <span class="character-profession">${professionDisplay}</span>
+                                        <span class="character-date">${dateStr}</span>
                                     </div>
                                 </div>
-                            `;
-                        }).join('')}
-                    </div>
-                ` : `
-                    <p class="no-characters-message" data-i18n="no_characters_saved"></p>
-                `}
-            </div>
+                                <div class="character-card-actions">
+                                    <button class="character-view-btn" data-character-id="${char.id}" data-i18n="view_character" aria-label="${t('aria_view_character', { name: char.name || 'Unnamed' })}"></button>
+                                    <button class="character-delete-btn" data-character-id="${char.id}" data-i18n="delete_character" aria-label="${t('aria_delete_character', { name: char.name || 'Unnamed' })}"></button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+                ` : ''}
             
                 ${publicCharacters.length > 0 ? `
                     <div class="character-list-section" style="margin-top: 30px;">
@@ -107,7 +123,7 @@ export async function renderIntro() {
                                         <div class="character-card-content">
                                             <div class="character-card-header">
                                                 <h4 class="character-name">Agent ${char.name || 'Unnamed'}</h4>
-                                                <button class="character-report-btn-icon" data-db-id="${char.id}" title="${t('report_character')}" aria-label="${t('report_character')}">⚑</button>
+                                                <button class="character-report-btn-icon" data-db-id="${char.id}" title="${t('report_character')}" aria-label="${t('aria_report_character', { name: char.name || 'Unnamed' })}">⚑</button>
                                             </div>
                                             <div class="character-card-info">
                                                 <span class="character-profession">${professionDisplay}</span>
@@ -115,8 +131,8 @@ export async function renderIntro() {
                                             </div>
                                         </div>
                                         <div class="character-card-actions">
-                                            <button class="character-view-db-btn" data-db-id="${char.id}" data-i18n="view_character"></button>
-                                            <button class="character-load-btn" data-db-id="${char.id}" data-i18n="load_from_database"></button>
+                                            <button class="character-view-db-btn" data-db-id="${char.id}" data-i18n="view_character" aria-label="${t('aria_view_character', { name: char.name || 'Unnamed' })}"></button>
+                                            <button class="character-load-btn" data-db-id="${char.id}" data-i18n="load_from_database" aria-label="${t('aria_load_from_database', { name: char.name || 'Unnamed' })}"></button>
                                         </div>
                                     </div>
                                 `;
@@ -124,12 +140,13 @@ export async function renderIntro() {
                         </div>
                         ${publicCharactersData.hasMore ? `
                             <div style="text-align: center; margin-top: var(--spacing-lg);">
-                                <button id="btn-load-more-characters" class="action-button button-secondary" data-i18n="load_more_characters"></button>
+                                <button id="btn-load-more-characters" class="action-button button-secondary" data-i18n="load_more_characters" aria-label="${t('load_more_characters')}"></button>
                             </div>
                         ` : ''}
                     </div>
                 ` : ''}
             </div>
+            ` : ''}
         </div>`;
     
     // Store pagination state in a data attribute for the load more button
@@ -144,6 +161,28 @@ export async function renderIntro() {
 }
 
 export function attachIntroListeners() {
+    // Banner dismissal
+    const bannerCloseBtn = document.getElementById('banner-close-btn');
+    if (bannerCloseBtn) {
+        // Set translated aria-label and title
+        const dismissText = t('banner_dismiss');
+        bannerCloseBtn.setAttribute('aria-label', dismissText);
+        bannerCloseBtn.setAttribute('title', dismissText);
+        
+        bannerCloseBtn.addEventListener('click', () => {
+            const banner = document.getElementById('writersalley-banner');
+            if (banner) {
+                dismissBanner();
+                banner.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                banner.style.opacity = '0';
+                banner.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    banner.classList.add('hidden');
+                }, 300);
+            }
+        });
+    }
+    
     // Create character button
     const btnCreate = document.getElementById('btn-create-character');
     if (btnCreate) {
@@ -300,8 +339,8 @@ export function attachIntroListeners() {
                                         </div>
                                     </div>
                                     <div class="character-card-actions">
-                                        <button class="character-view-db-btn" data-db-id="${char.id}" data-i18n="view_character"></button>
-                                        <button class="character-load-btn" data-db-id="${char.id}" data-i18n="load_from_database"></button>
+                                        <button class="character-view-db-btn" data-db-id="${char.id}" data-i18n="view_character" aria-label="${t('aria_view_character', { name: char.name || 'Unnamed' })}"></button>
+                                        <button class="character-load-btn" data-db-id="${char.id}" data-i18n="load_from_database" aria-label="${t('aria_load_from_database', { name: char.name || 'Unnamed' })}"></button>
                                     </div>
                                 </div>
                             `;
@@ -315,12 +354,17 @@ export function attachIntroListeners() {
                             const loadBtn = newCard.querySelector('.character-load-btn');
                             const reportBtn = newCard.querySelector('.character-report-btn-icon');
                             
-                            // Translate button text
+                            // Translate button text and set aria-labels
                             if (viewBtn && viewBtn.hasAttribute('data-i18n')) {
                                 viewBtn.textContent = t(viewBtn.getAttribute('data-i18n'));
+                                viewBtn.setAttribute('aria-label', t('aria_view_character', { name: char.name || 'Unnamed' }));
                             }
                             if (loadBtn && loadBtn.hasAttribute('data-i18n')) {
                                 loadBtn.textContent = t(loadBtn.getAttribute('data-i18n'));
+                                loadBtn.setAttribute('aria-label', t('aria_load_from_database', { name: char.name || 'Unnamed' }));
+                            }
+                            if (reportBtn) {
+                                reportBtn.setAttribute('aria-label', t('aria_report_character', { name: char.name || 'Unnamed' }));
                             }
                             
                             if (viewBtn) {

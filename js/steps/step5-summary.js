@@ -273,9 +273,9 @@ export function renderStep5_Summary() {
         </div>
 
         <div class="summary-actions" style="margin-top: 30px;">
-            <button id="btn-share-summary" class="action-button button-secondary" data-i18n="share_character"></button>
-            <button id="btn-print-summary" class="action-button" data-i18n="btn_print_summary"></button>
-            <button id="btn-export-json" class="action-button button-secondary" data-i18n="btn_export_json"></button>
+            <button id="btn-share-summary" class="action-button button-secondary" data-i18n="share_character" aria-label="${t('aria_share_character')}"></button>
+            <button id="btn-print-summary" class="action-button" data-i18n="btn_print_summary" aria-label="${t('aria_print_summary')}"></button>
+            <button id="btn-export-json" class="action-button button-secondary" data-i18n="btn_export_json" aria-label="${t('aria_export_json')}"></button>
         </div>
     </div>`;
     return html;
