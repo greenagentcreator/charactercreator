@@ -16,6 +16,36 @@ const BLACKLIST = [
     'nazi'
 ];
 
+// Promotional phrases that indicate spam (case-insensitive)
+const PROMOTIONAL_PHRASES = [
+    'subscribe',
+    'check out my channel',
+    'watch my video',
+    'visit my channel',
+    'my youtube channel',
+    'youtube.com',
+    'youtu.be',
+    'follow my channel',
+    'like and subscribe',
+    'hit subscribe',
+    'subscribe to',
+    'check out my',
+    'watch my',
+    'visit my',
+    'follow me on'
+];
+
+// YouTube URL patterns (regex)
+const YOUTUBE_URL_PATTERNS = [
+    /youtube\.com\/watch/i,
+    /youtu\.be\//i,
+    /youtube\.com\/channel\//i,
+    /youtube\.com\/user\//i,
+    /youtube\.com\/c\//i,
+    /youtube\.com\/@/i,
+    /youtube\.com/i
+];
+
 const CONTROL_CHARS_REGEX = /[\u0000-\u001F\u007F]+/g;
 const STRIP_TAGS_REGEX = /<\/?[^>]+(>|$)/g;
 const STRIP_SCRIPT_REGEX = /<script[\s\S]*?>[\s\S]*?<\/script>/gi;
@@ -237,6 +267,20 @@ export function containsProhibitedContent(text) {
         }
     }
     
+    // Check for YouTube URLs
+    for (const pattern of YOUTUBE_URL_PATTERNS) {
+        if (pattern.test(text)) {
+            return true;
+        }
+    }
+    
+    // Check for promotional phrases
+    for (const phrase of PROMOTIONAL_PHRASES) {
+        if (lowerText.includes(phrase.toLowerCase())) {
+            return true;
+        }
+    }
+    
     return false;
 }
 
@@ -289,6 +333,11 @@ export function validateCharacterContent(characterData) {
     // Check disorder
     if (characterData.disorder && containsProhibitedContent(characterData.disorder)) {
         issues.push('Prohibited content found in disorder description');
+    }
+    
+    // Check notes field
+    if (characterData.notes && containsProhibitedContent(characterData.notes)) {
+        issues.push('Prohibited content found in notes');
     }
     
     return {

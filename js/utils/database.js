@@ -8,6 +8,8 @@ import {
     validateCharacterContent,
     validateCharacterSchema
 } from './content-moderation.js';
+import { checkRateLimit, recordUpload } from './rate-limiter.js';
+import { checkForDuplicate, recordCharacterFingerprint } from './duplicate-detector.js';
 
 // Initialize Firebase
 let app = null;
@@ -67,6 +69,18 @@ export async function uploadCharacter(characterData) {
     const submittedData = characterData?.data || characterData || {};
     const sanitizedData = sanitizeCharacterContent(submittedData);
 
+    // Check rate limit
+    const rateLimitCheck = checkRateLimit();
+    if (!rateLimitCheck.allowed) {
+        throw new Error('Rate limit exceeded. Please wait before uploading again.');
+    }
+
+    // Check for duplicates
+    const duplicateCheck = checkForDuplicate(sanitizedData);
+    if (duplicateCheck.isDuplicate) {
+        throw new Error('Duplicate character detected. This character was recently uploaded.');
+    }
+
     const schemaValidation = validateCharacterSchema(sanitizedData);
     if (!schemaValidation.valid) {
         throw new Error('Schema validation failed: ' + schemaValidation.issues.join(', '));
@@ -107,6 +121,11 @@ export async function uploadCharacter(characterData) {
     
     try {
         const docRef = await addDoc(collection(db, COLLECTIONS.CHARACTERS), characterDoc);
+        
+        // Record successful upload for rate limiting and duplicate detection
+        recordUpload();
+        recordCharacterFingerprint(sanitizedData);
+        
         return docRef.id;
     } catch (error) {
         console.error('Error uploading character:', error);
