@@ -290,6 +290,18 @@ function autoSaveCharacter() {
     }
 }
 
+function hasShortBondDescriptions(character) {
+    if (!Array.isArray(character.bonds) || character.bonds.length === 0) {
+        return false;
+    }
+
+    return character.bonds.some(bond => {
+        const description = (bond?.description || '').normalize('NFKD');
+        const lettersOnly = description.replace(/[^\p{L}]/gu, '');
+        return lettersOnly.length <= 4;
+    });
+}
+
 async function autoUploadCharacter() {
     const character = getCharacter();
     
@@ -311,6 +323,11 @@ async function autoUploadCharacter() {
         }
     }
     
+    if (hasShortBondDescriptions(character)) {
+        console.info('Auto-upload skipped: bond descriptions must contain more than 4 letters.');
+        return;
+    }
+
     const characterData = {
         id: character.id,
         name: characterName,

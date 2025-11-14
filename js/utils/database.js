@@ -3,12 +3,35 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js';
 import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, limit, startAfter, doc, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
 import { firebaseConfig, COLLECTIONS, MODERATION_STATUS } from '../config/database.js';
-// Content moderation is currently disabled - can be enabled later if needed
-// import { validateCharacterContent } from './content-moderation.js';
+import {
+    sanitizeCharacterContent,
+    validateCharacterContent,
+    validateCharacterSchema
+} from './content-moderation.js';
 
 // Initialize Firebase
 let app = null;
 let db = null;
+
+const MAX_CHARACTER_BYTES = 750 * 1024; // keep well below Firestore 1MB limit
+
+function sanitizeShortText(value, maxLength = 120) {
+    if (!value) {
+        return '';
+    }
+    const text = String(value)
+        .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+        .replace(/<\/?[^>]+(>|$)/g, '')
+        .replace(/[\u0000-\u001F\u007F]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    return text.slice(0, maxLength);
+}
+
+function estimateByteSize(payload) {
+    const encoder = new TextEncoder();
+    return encoder.encode(JSON.stringify(payload)).length;
+}
 
 export function initFirebase() {
     try {
@@ -40,22 +63,43 @@ export async function uploadCharacter(characterData) {
     if (!ensureInitialized()) {
         throw new Error('Firebase not initialized');
     }
-    
-    // Content moderation is currently disabled
-    // Uncomment the following lines to enable content moderation:
-    // const contentValidation = validateCharacterContent(characterData.data || characterData);
-    // if (!contentValidation.valid) {
-    //     throw new Error('Content validation failed: ' + contentValidation.issues.join(', '));
-    // }
-    
+
+    const submittedData = characterData?.data || characterData || {};
+    const sanitizedData = sanitizeCharacterContent(submittedData);
+
+    const schemaValidation = validateCharacterSchema(sanitizedData);
+    if (!schemaValidation.valid) {
+        throw new Error('Schema validation failed: ' + schemaValidation.issues.join(', '));
+    }
+
+    const contentValidation = validateCharacterContent(sanitizedData);
+    if (!contentValidation.valid) {
+        throw new Error('Content validation failed: ' + contentValidation.issues.join(', '));
+    }
+
+    const payloadSize = estimateByteSize(sanitizedData);
+    if (payloadSize > MAX_CHARACTER_BYTES) {
+        throw new Error('Character data is too large to upload.');
+    }
+
     // Prepare character document
-    const characterName = characterData.name || characterData.data?.personalInfo?.name || 'Unnamed Agent';
-    const profession = characterData.profession || 'Unknown';
-    
+    const characterName =
+        sanitizeShortText(
+            characterData.name ||
+                sanitizedData.name ||
+                sanitizedData.personalInfo?.name ||
+                'Unnamed Agent',
+            80
+        ) || 'Unnamed Agent';
+
+    const profession =
+        sanitizeShortText(characterData.profession || sanitizedData.profession || 'Unknown', 80) ||
+        'Unknown';
+
     const characterDoc = {
         name: characterName,
         profession: profession,
-        data: characterData.data || characterData,
+        data: sanitizedData,
         createdDate: characterData.createdDate || new Date().toISOString(),
         moderationStatus: MODERATION_STATUS.APPROVED, // Auto-approve uploaded characters
         uploadedAt: new Date().toISOString()
@@ -145,11 +189,16 @@ export async function reportCharacter(characterId, reason) {
     if (!ensureInitialized()) {
         return false;
     }
-    
+
+    const safeReason = sanitizeShortText(reason, 360);
+    if (!safeReason || safeReason.length < 3) {
+        throw new Error('Report reason must contain at least 3 readable characters.');
+    }
+
     try {
         const reportDoc = {
             characterId: characterId,
-            reason: reason,
+            reason: safeReason,
             reportedAt: new Date().toISOString(),
             status: 'pending'
         };
