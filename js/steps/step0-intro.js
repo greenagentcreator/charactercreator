@@ -6,6 +6,57 @@ import { t } from '../i18n/i18n.js';
 import { validateImportedCharacter } from '../utils/validation.js';
 import { getPublicCharacters, importCharacterFromDatabase, reportCharacter } from '../utils/database.js';
 import { shouldShowBanner, dismissBanner } from '../utils/banner.js';
+import { PROFESSIONS } from '../config/professions.js';
+
+const STANDARD_PROFESSION_NAME_KEYS = new Set(
+    Object.values(PROFESSIONS)
+        .filter(prof => !prof.isCustom && prof.nameKey)
+        .map(prof => prof.nameKey)
+);
+
+const DEFAULT_PROFESSION_FILTER = 'all';
+let activeProfessionFilter = DEFAULT_PROFESSION_FILTER;
+
+function getPublicProfessionMetadata(professionValue) {
+    const isStandard = professionValue && STANDARD_PROFESSION_NAME_KEYS.has(professionValue);
+    const displayName = isStandard ? t(professionValue) : (professionValue || 'Unknown');
+    return {
+        displayName,
+        isCustom: !isStandard,
+        filterKey: isStandard ? professionValue : ''
+    };
+}
+
+function getPublicCharacterCardTemplate(char) {
+    const uploadedDate = new Date(char.uploadedAt || char.createdDate);
+    const dateStr = uploadedDate.toLocaleDateString();
+    const { displayName, isCustom, filterKey } = getPublicProfessionMetadata(char.profession);
+    const agentName = `Agent ${char.name || 'Unnamed'}`;
+    return `
+        <div class="character-card character-card-public" data-character-id="${char.id}" data-db-id="${char.id}" data-profession-key="${filterKey}" data-profession-custom="${isCustom}">
+            <div class="character-card-content">
+                <div class="character-card-header">
+                    <h4 class="character-name">${agentName}</h4>
+                    <button class="character-report-btn-icon" data-db-id="${char.id}" title="${t('report_character')}" aria-label="${t('aria_report_character', { name: char.name || 'Unnamed' })}">⚑</button>
+                </div>
+                <div class="character-card-info">
+                    <span class="character-profession">${displayName}</span>
+                    <span class="character-date">${dateStr}</span>
+                </div>
+            </div>
+            <div class="character-card-actions">
+                <button class="character-view-db-btn" data-db-id="${char.id}" data-i18n="view_character" aria-label="${t('aria_view_character', { name: char.name || 'Unnamed' })}"></button>
+                <button class="character-load-btn" data-db-id="${char.id}" data-i18n="load_from_database" aria-label="${t('aria_load_from_database', { name: char.name || 'Unnamed' })}"></button>
+            </div>
+        </div>
+    `;
+}
+
+function createPublicCharacterCardElement(char) {
+    const template = document.createElement('template');
+    template.innerHTML = getPublicCharacterCardTemplate(char).trim();
+    return template.content.firstElementChild;
+}
 
 export async function renderIntro() {
     // Check if we're loading a shared character - if so, don't render intro
@@ -27,6 +78,17 @@ export async function renderIntro() {
         console.error('Error loading public characters:', error);
     }
     const publicCharacters = publicCharactersData.characters || [];
+    const standardProfessionFilters = Array.from(STANDARD_PROFESSION_NAME_KEYS)
+        .map(nameKey => ({
+            key: nameKey,
+            label: t(nameKey)
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label));
+    const professionFilterButtons = [
+        { key: 'all', label: t('made_by_others_filter_all'), i18nKey: 'made_by_others_filter_all' },
+        ...standardProfessionFilters.map(filter => ({ key: filter.key, label: filter.label, i18nKey: filter.key })),
+        { key: 'custom', label: t('made_by_others_filter_custom'), i18nKey: 'made_by_others_filter_custom' }
+    ];
     
     // Check again after async operation - shared character might have started loading
     if (window.app && window.app.isLoadingSharedCharacter && window.app.isLoadingSharedCharacter()) {
@@ -109,34 +171,21 @@ export async function renderIntro() {
                         <div class="info-box" style="margin-bottom: var(--spacing-md);">
                             <p data-i18n="made_by_others_info"></p>
                         </div>
-                        <div class="character-list">
-                            ${publicCharacters.map(char => {
-                                const uploadedDate = new Date(char.uploadedAt || char.createdDate);
-                                const dateStr = uploadedDate.toLocaleDateString();
-                                // Translate profession name if it's a translation key
-                                let professionDisplay = char.profession || 'Unknown';
-                                if (char.profession && char.profession.startsWith('profession_')) {
-                                    professionDisplay = t(char.profession);
-                                }
+                        <div class="made-by-others-filters" role="tablist" aria-label="${t('made_by_others_filter_aria_label')}">
+                            ${professionFilterButtons.map(filter => {
+                                const isActive = activeProfessionFilter === filter.key;
                                 return `
-                                    <div class="character-card character-card-public" data-character-id="${char.id}" data-db-id="${char.id}">
-                                        <div class="character-card-content">
-                                            <div class="character-card-header">
-                                                <h4 class="character-name">Agent ${char.name || 'Unnamed'}</h4>
-                                                <button class="character-report-btn-icon" data-db-id="${char.id}" title="${t('report_character')}" aria-label="${t('aria_report_character', { name: char.name || 'Unnamed' })}">⚑</button>
-                                            </div>
-                                            <div class="character-card-info">
-                                                <span class="character-profession">${professionDisplay}</span>
-                                                <span class="character-date">${dateStr}</span>
-                                            </div>
-                                        </div>
-                                        <div class="character-card-actions">
-                                            <button class="character-view-db-btn" data-db-id="${char.id}" data-i18n="view_character" aria-label="${t('aria_view_character', { name: char.name || 'Unnamed' })}"></button>
-                                            <button class="character-load-btn" data-db-id="${char.id}" data-i18n="load_from_database" aria-label="${t('aria_load_from_database', { name: char.name || 'Unnamed' })}"></button>
-                                        </div>
-                                    </div>
+                                    <button type="button" class="profession-filter-btn ${isActive ? 'active' : ''}" data-filter="${filter.key}" role="tab" aria-selected="${isActive ? 'true' : 'false'}" data-i18n="${filter.i18nKey}">
+                                        ${filter.label}
+                                    </button>
                                 `;
                             }).join('')}
+                        </div>
+                        <div class="character-list">
+                            ${publicCharacters.map(getPublicCharacterCardTemplate).join('')}
+                        </div>
+                        <div id="made-by-others-empty" class="made-by-others-empty" style="display: none;">
+                            <p data-i18n="made_by_others_filter_empty"></p>
                         </div>
                         ${publicCharactersData.hasMore ? `
                             <div style="text-align: center; margin-top: var(--spacing-lg);">
@@ -319,34 +368,7 @@ export function attachIntroListeners() {
                     if (characterList) {
                         // Append new characters
                         result.characters.forEach(char => {
-                            const uploadedDate = new Date(char.uploadedAt || char.createdDate);
-                            const dateStr = uploadedDate.toLocaleDateString();
-                            let professionDisplay = char.profession || 'Unknown';
-                            if (char.profession && char.profession.startsWith('profession_')) {
-                                professionDisplay = t(char.profession);
-                            }
-                            
-                            const cardHtml = `
-                                <div class="character-card character-card-public" data-character-id="${char.id}" data-db-id="${char.id}">
-                                    <div class="character-card-content">
-                                        <div class="character-card-header">
-                                            <h4 class="character-name">Agent ${char.name || 'Unnamed'}</h4>
-                                            <button class="character-report-btn-icon" data-db-id="${char.id}" title="${t('report_character')}" aria-label="${t('report_character')}">⚑</button>
-                                        </div>
-                                        <div class="character-card-info">
-                                            <span class="character-profession">${professionDisplay}</span>
-                                            <span class="character-date">${dateStr}</span>
-                                        </div>
-                                    </div>
-                                    <div class="character-card-actions">
-                                        <button class="character-view-db-btn" data-db-id="${char.id}" data-i18n="view_character" aria-label="${t('aria_view_character', { name: char.name || 'Unnamed' })}"></button>
-                                        <button class="character-load-btn" data-db-id="${char.id}" data-i18n="load_from_database" aria-label="${t('aria_load_from_database', { name: char.name || 'Unnamed' })}"></button>
-                                    </div>
-                                </div>
-                            `;
-                            const tempDiv = document.createElement('div');
-                            tempDiv.innerHTML = cardHtml;
-                            const newCard = tempDiv.firstElementChild;
+                            const newCard = createPublicCharacterCardElement(char);
                             characterList.appendChild(newCard);
                             
                             // Attach listeners only to the new card's buttons
@@ -430,6 +452,8 @@ export function attachIntroListeners() {
                                 });
                             }
                         });
+                        
+                        applyProfessionFilter(activeProfessionFilter);
                         
                         // Update pagination state
                         window.__introLastDoc = result.lastDoc;
@@ -528,5 +552,74 @@ export function attachIntroListeners() {
             }
         });
     });
+
+    initializeMadeByOthersFilters();
+}
+
+function initializeMadeByOthersFilters() {
+    const filterContainer = document.querySelector('.made-by-others-filters');
+    const characterList = document.querySelector('.character-list-section .character-list');
+    
+    if (!filterContainer || !characterList) {
+        activeProfessionFilter = DEFAULT_PROFESSION_FILTER;
+        return;
+    }
+    
+    const buttons = Array.from(filterContainer.querySelectorAll('.profession-filter-btn'));
+    if (buttons.length === 0) {
+        return;
+    }
+    
+    updateProfessionFilterButtons(buttons, activeProfessionFilter);
+    applyProfessionFilter(activeProfessionFilter);
+    
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            const selectedFilter = button.dataset.filter || DEFAULT_PROFESSION_FILTER;
+            if (selectedFilter === activeProfessionFilter) {
+                return;
+            }
+            activeProfessionFilter = selectedFilter;
+            updateProfessionFilterButtons(buttons, selectedFilter);
+            applyProfessionFilter(selectedFilter);
+        });
+    });
+}
+
+function updateProfessionFilterButtons(buttons, selectedFilter) {
+    buttons.forEach(button => {
+        const isActive = button.dataset.filter === selectedFilter;
+        button.classList.toggle('active', isActive);
+        button.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+}
+
+function applyProfessionFilter(filterValue) {
+    const cards = document.querySelectorAll('.character-card-public');
+    let visibleCount = 0;
+    
+    cards.forEach(card => {
+        const professionKey = card.getAttribute('data-profession-key') || '';
+        const isCustom = card.getAttribute('data-profession-custom') === 'true';
+        let shouldShow = false;
+        
+        if (filterValue === 'all') {
+            shouldShow = true;
+        } else if (filterValue === 'custom') {
+            shouldShow = isCustom;
+        } else {
+            shouldShow = professionKey === filterValue;
+        }
+        
+        card.style.display = shouldShow ? '' : 'none';
+        if (shouldShow) {
+            visibleCount++;
+        }
+    });
+    
+    const emptyState = document.getElementById('made-by-others-empty');
+    if (emptyState) {
+        emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
 }
 

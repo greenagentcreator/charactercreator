@@ -508,6 +508,7 @@ async function viewDatabaseCharacter(dbId) {
         // Prepare character data in the same format as localStorage
         const characterData = {
             id: null, // No local ID for database characters
+            dbId: characterDoc.id,
             name: characterDoc.name,
             profession: characterDoc.profession,
             data: characterDoc.data,

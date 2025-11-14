@@ -28,6 +28,54 @@
     margin-top: var(--spacing-xl);
 }
 
+.made-by-others-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
+    align-items: stretch;
+}
+
+.profession-filter-btn {
+    border: 1px solid var(--color-border-light);
+    background-color: var(--color-bg-summary);
+    color: var(--color-text);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: 999px;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.profession-filter-btn:hover {
+    border-color: var(--color-button, #2d5016);
+    color: var(--color-button, #2d5016);
+}
+
+.profession-filter-btn.active {
+    background-color: var(--color-button, #2d5016);
+    border-color: var(--color-button, #2d5016);
+    color: var(--color-button-text, #fff);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.profession-filter-btn:focus-visible {
+    outline: 2px solid var(--color-primary, #2d5016);
+    outline-offset: 2px;
+}
+
+.made-by-others-empty {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
+    text-align: center;
+    border: 1px dashed var(--color-border-light);
+    border-radius: 8px;
+    color: var(--color-text-light);
+    background-color: var(--color-bg-summary);
+}
+
 .character-list-section h3 {
     margin-bottom: var(--spacing-md);
     color: var(--color-text-heading);
@@ -264,12 +312,29 @@
     flex-wrap: wrap;
 }
 
+.character-view-actions-top {
+    margin-bottom: var(--spacing-md);
+}
+
+.character-view-actions-bottom {
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-border-light);
+    justify-content: flex-end;
+}
+
 .character-view-actions .action-button {
     font-size: var(--font-size-sm);
     padding: var(--spacing-xs) var(--spacing-sm);
     min-height: auto;
     line-height: 1.3;
     letter-spacing: 0.5px;
+}
+
+.character-view-actions .character-report-btn-icon {
+    min-height: 36px;
+    min-width: 36px;
+    padding: 0;
 }
 
 .danger-button,
@@ -306,6 +371,10 @@
     .character-view-actions .action-button {
         flex: 1;
         min-width: 120px;
+    }
+    
+    .character-view-actions-bottom {
+        justify-content: center;
     }
 }
 
