@@ -50,6 +50,11 @@ const CONTROL_CHARS_REGEX = /[\u0000-\u001F\u007F]+/g;
 const STRIP_TAGS_REGEX = /<\/?[^>]+(>|$)/g;
 const STRIP_SCRIPT_REGEX = /<script[\s\S]*?>[\s\S]*?<\/script>/gi;
 
+// URL patterns for link detection and removal
+const URL_PATTERN = /(https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9-]+\.[a-zA-Z]{2,}[^\s]*)/gi;
+const MARKDOWN_LINK_PATTERN = /\[([^\]]+)\]\([^\)]+\)/gi;
+const HTML_LINK_PATTERN = /<a\s+[^>]*href\s*=\s*["']([^"']+)["'][^>]*>([^<]*)<\/a>/gi;
+
 const DEFAULT_FIELD_LIMITS = {
     name: 80,
     employer: 120,
@@ -109,6 +114,28 @@ function deepClone(value) {
     return JSON.parse(JSON.stringify(value));
 }
 
+/**
+ * Remove links from text content
+ * @param {string} text - Text to sanitize
+ * @returns {string} Text with links removed
+ */
+function removeLinks(text) {
+    if (!text || typeof text !== 'string') {
+        return text;
+    }
+    
+    // Remove HTML links but keep the link text
+    let cleaned = text.replace(HTML_LINK_PATTERN, '$2');
+    
+    // Remove markdown links but keep the link text
+    cleaned = cleaned.replace(MARKDOWN_LINK_PATTERN, '$1');
+    
+    // Remove plain URLs
+    cleaned = cleaned.replace(URL_PATTERN, '');
+    
+    return cleaned;
+}
+
 function sanitizeText(value, limit = DEFAULT_FIELD_LIMITS.text) {
     if (typeof value !== 'string') {
         return value;
@@ -119,6 +146,13 @@ function sanitizeText(value, limit = DEFAULT_FIELD_LIMITS.text) {
         .replace(CONTROL_CHARS_REGEX, ' ')
         .replace(/\s+/g, ' ')
         .trim();
+    
+    // Remove links from the text
+    sanitized = removeLinks(sanitized);
+    
+    // Clean up extra spaces that may have been left after link removal
+    sanitized = sanitized.replace(/\s+/g, ' ').trim();
+    
     if (limit && sanitized.length > limit) {
         sanitized = sanitized.slice(0, limit);
     }
