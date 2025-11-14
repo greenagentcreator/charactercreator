@@ -43,25 +43,49 @@ const steps = [
 ];
 
 async function renderCurrentStep(skipFocus = false) {
+    console.log('app.js: renderCurrentStep() called, currentStep:', currentStep, 'isLoadingSharedCharacter:', isLoadingSharedCharacter);
+    
     // Don't render if we're currently loading a shared character
     if (isLoadingSharedCharacter) {
+        console.log('app.js: Skipping render - loading shared character');
         return;
     }
     
     if (steps[currentStep] && typeof steps[currentStep].render === 'function') {
         const stepData = steps[currentStep];
-        const stepContentOrHtml = await stepData.render();
+        console.log('app.js: Rendering step', currentStep, 'render function:', stepData.render.name);
         
-    // Don't render if we started loading a shared character while waiting for async render
-    if (isLoadingSharedCharacter) {
-        return;
-    }
-        
-        if (typeof stepContentOrHtml === 'string') {
-            stepContainer.innerHTML = stepContentOrHtml;
-        } else if (stepContentOrHtml instanceof Node) {
-            stepContainer.innerHTML = ''; 
-            stepContainer.appendChild(stepContentOrHtml);
+        try {
+            const stepContentOrHtml = await stepData.render();
+            console.log('app.js: Step render returned:', typeof stepContentOrHtml, stepContentOrHtml ? (typeof stepContentOrHtml === 'string' ? stepContentOrHtml.substring(0, 100) + '...' : 'Node') : 'empty');
+            
+            // Don't render if we started loading a shared character while waiting for async render
+            if (isLoadingSharedCharacter) {
+                console.log('app.js: Skipping render - started loading shared character during async render');
+                return;
+            }
+            
+            if (typeof stepContentOrHtml === 'string') {
+                console.log('app.js: Setting innerHTML, length:', stepContentOrHtml.length);
+                if (stepContainer) {
+                    stepContainer.innerHTML = stepContentOrHtml;
+                    console.log('app.js: innerHTML set successfully');
+                } else {
+                    console.error('app.js: stepContainer is null!');
+                }
+            } else if (stepContentOrHtml instanceof Node) {
+                console.log('app.js: Appending Node');
+                if (stepContainer) {
+                    stepContainer.innerHTML = ''; 
+                    stepContainer.appendChild(stepContentOrHtml);
+                } else {
+                    console.error('app.js: stepContainer is null!');
+                }
+            } else {
+                console.warn('app.js: Step render returned unexpected type:', typeof stepContentOrHtml);
+            }
+        } catch (error) {
+            console.error('app.js: Error rendering step:', error);
         }
         // Initialize error container for the new step
         clearErrors();
@@ -433,12 +457,22 @@ export function getCurrentCharacterData() {
 }
 
 export function initializeApp() {
+    console.log('app.js: initializeApp() called');
+    
     stepContainer = document.getElementById('step-content-container');
     progressBarContainer = document.getElementById('progress-bar-container');
     btnNext = document.getElementById('btn-next');
     btnBack = document.getElementById('btn-back');
     
+    console.log('app.js: DOM elements found:', {
+        stepContainer: !!stepContainer,
+        progressBarContainer: !!progressBarContainer,
+        btnNext: !!btnNext,
+        btnBack: !!btnBack
+    });
+    
     resetCharacter();
+    console.log('app.js: Character reset');
     
     btnNext.addEventListener('click', handleNextStep);
     btnBack.addEventListener('click', handlePreviousStep);
@@ -449,8 +483,10 @@ export function initializeApp() {
     // Check if there's a shared character in URL - if so, set flag and don't render intro yet
     const sharedCharacterData = getCharacterFromUrl();
     if (sharedCharacterData) {
+        console.log('app.js: Shared character detected, skipping intro render');
         isLoadingSharedCharacter = true; // Set flag immediately to prevent intro from rendering
     } else {
+        console.log('app.js: No shared character, calling renderCurrentStep()');
         renderCurrentStep();
     }
 }

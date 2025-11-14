@@ -8,22 +8,56 @@ import { getPublicCharacters, importCharacterFromDatabase, reportCharacter } fro
 import { shouldShowBanner, dismissBanner } from '../utils/banner.js';
 import { PROFESSIONS } from '../config/professions.js';
 
+// Create a map from profession keys to their nameKeys for lookup
+const PROFESSION_KEY_TO_NAME_KEY = new Map();
+try {
+    if (PROFESSIONS && typeof PROFESSIONS === 'object') {
+        Object.entries(PROFESSIONS).forEach(([profKey, profData]) => {
+            if (profData && !profData.isCustom && profData.nameKey) {
+                PROFESSION_KEY_TO_NAME_KEY.set(profKey, profData.nameKey);
+            }
+        });
+    } else {
+        console.warn('PROFESSIONS is not available or not an object');
+    }
+} catch (error) {
+    console.error('Error initializing profession mappings:', error);
+}
+
 const STANDARD_PROFESSION_NAME_KEYS = new Set(
-    Object.values(PROFESSIONS)
-        .filter(prof => !prof.isCustom && prof.nameKey)
-        .map(prof => prof.nameKey)
+    Array.from(PROFESSION_KEY_TO_NAME_KEY.values())
 );
+
+// Debug: Log initialization
+console.log('step0-intro.js loaded. Profession mappings:', PROFESSION_KEY_TO_NAME_KEY.size, 'professions');
 
 const DEFAULT_PROFESSION_FILTER = 'all';
 let activeProfessionFilter = DEFAULT_PROFESSION_FILTER;
 
 function getPublicProfessionMetadata(professionValue) {
-    const isStandard = professionValue && STANDARD_PROFESSION_NAME_KEYS.has(professionValue);
-    const displayName = isStandard ? t(professionValue) : (professionValue || 'Unknown');
+    if (!professionValue) {
+        return {
+            displayName: 'Unknown',
+            isCustom: true,
+            filterKey: ''
+        };
+    }
+    
+    // Check if it's a nameKey (e.g., "profession_anthropologist_name")
+    let nameKey = professionValue;
+    let isStandard = STANDARD_PROFESSION_NAME_KEYS.has(professionValue);
+    
+    // If not a nameKey, check if it's a profession key (e.g., "anthropologist_archaeologist_historian")
+    if (!isStandard && PROFESSION_KEY_TO_NAME_KEY.has(professionValue)) {
+        nameKey = PROFESSION_KEY_TO_NAME_KEY.get(professionValue);
+        isStandard = true;
+    }
+    
+    const displayName = isStandard ? t(nameKey) : (professionValue || 'Unknown');
     return {
         displayName,
         isCustom: !isStandard,
-        filterKey: isStandard ? professionValue : ''
+        filterKey: isStandard ? nameKey : ''
     };
 }
 
@@ -59,46 +93,55 @@ function createPublicCharacterCardElement(char) {
 }
 
 export async function renderIntro() {
-    // Check if we're loading a shared character - if so, don't render intro
-    if (window.app && window.app.isLoadingSharedCharacter && window.app.isLoadingSharedCharacter()) {
-        return '';
-    }
-    
-    // Reset character when starting from intro
-    resetCharacter();
-    
-    // Get all characters (own and imported)
-    const allCharacters = getAllCharacters();
-    
-    // Load public characters from database (initial load)
-    let publicCharactersData = { characters: [], lastDoc: null, hasMore: false };
     try {
-        publicCharactersData = await getPublicCharacters(20);
-    } catch (error) {
-        console.error('Error loading public characters:', error);
-    }
-    const publicCharacters = publicCharactersData.characters || [];
-    const standardProfessionFilters = Array.from(STANDARD_PROFESSION_NAME_KEYS)
-        .map(nameKey => ({
-            key: nameKey,
-            label: t(nameKey)
-        }))
-        .sort((a, b) => a.label.localeCompare(b.label));
-    const professionFilterButtons = [
-        { key: 'all', label: t('made_by_others_filter_all'), i18nKey: 'made_by_others_filter_all' },
-        ...standardProfessionFilters.map(filter => ({ key: filter.key, label: filter.label, i18nKey: filter.key })),
-        { key: 'custom', label: t('made_by_others_filter_custom'), i18nKey: 'made_by_others_filter_custom' }
-    ];
-    
-    // Check again after async operation - shared character might have started loading
-    if (window.app && window.app.isLoadingSharedCharacter && window.app.isLoadingSharedCharacter()) {
-        return '';
-    }
-    
-    // Check if banner should be shown
-    const showBanner = shouldShowBanner();
-    
-    let html = `
+        // Check if we're loading a shared character - if so, don't render intro
+        if (window.app && window.app.isLoadingSharedCharacter && typeof window.app.isLoadingSharedCharacter === 'function' && window.app.isLoadingSharedCharacter()) {
+            return '';
+        }
+        
+        // Reset character when starting from intro
+        resetCharacter();
+        
+        // Get all characters (own and imported)
+        const allCharacters = getAllCharacters();
+        
+        // Load public characters from database (initial load)
+        let publicCharactersData = { characters: [], lastDoc: null, hasMore: false };
+        try {
+            publicCharactersData = await getPublicCharacters(20);
+        } catch (error) {
+            console.error('Error loading public characters:', error);
+        }
+        const publicCharacters = publicCharactersData.characters || [];
+        
+        // Create profession filters safely
+        let standardProfessionFilters = [];
+        try {
+            standardProfessionFilters = Array.from(STANDARD_PROFESSION_NAME_KEYS)
+                .map(nameKey => ({
+                    key: nameKey,
+                    label: t(nameKey)
+                }))
+                .sort((a, b) => a.label.localeCompare(b.label));
+        } catch (error) {
+            console.error('Error creating profession filters:', error);
+        }
+        
+        const professionFilterButtons = [
+            { key: 'all', label: t('made_by_others_filter_all'), i18nKey: 'made_by_others_filter_all' },
+            ...standardProfessionFilters.map(filter => ({ key: filter.key, label: filter.label, i18nKey: filter.key })),
+            { key: 'custom', label: t('made_by_others_filter_custom'), i18nKey: 'made_by_others_filter_custom' }
+        ];
+        
+        // Check again after async operation - shared character might have started loading
+        if (window.app && window.app.isLoadingSharedCharacter && typeof window.app.isLoadingSharedCharacter === 'function' && window.app.isLoadingSharedCharacter()) {
+            return '';
+        }
+        
+        // Check if banner should be shown
+        const showBanner = shouldShowBanner();
+        
+        let html = `
         <div class="step" id="step-intro">
             ${showBanner ? `
             <!-- WritersAlley.com Promo Banner -->
@@ -197,16 +240,32 @@ export async function renderIntro() {
             </div>
             ` : ''}
         </div>`;
-    
-    // Store pagination state in a data attribute for the load more button
-    if (publicCharactersData.lastDoc) {
-        // Store the lastDoc reference (we'll need to store it differently since we can't serialize DocumentSnapshot)
-        // Instead, we'll store it in a module-level variable
-        window.__introLastDoc = publicCharactersData.lastDoc;
-        window.__introHasMore = publicCharactersData.hasMore;
+        
+        // Store pagination state in a data attribute for the load more button
+        if (publicCharactersData.lastDoc) {
+            // Store the lastDoc reference (we'll need to store it differently since we can't serialize DocumentSnapshot)
+            // Instead, we'll store it in a module-level variable
+            window.__introLastDoc = publicCharactersData.lastDoc;
+            window.__introHasMore = publicCharactersData.hasMore;
+        }
+        
+        return html;
+    } catch (error) {
+        console.error('Error rendering intro:', error);
+        // Return a basic intro HTML even if there's an error
+        return `
+            <div class="step" id="step-intro">
+                <div class="intro-entry-section">
+                    <div class="info-box"><p data-i18n="intro_quote_dg"></p></div>
+                    <button id="btn-create-character" class="action-button btn-create-character-large" data-i18n="create_character" aria-label="${t('create_character')}"></button>
+                    <div class="import-section" style="margin-top: 20px;">
+                        <button id="btn-import-json" class="action-button button-secondary" data-i18n="import_character" aria-label="${t('aria_import_character')}"></button>
+                        <input type="file" id="file-input-json" accept=".json" style="display: none;">
+                    </div>
+                </div>
+            </div>
+        `;
     }
-    
-    return html;
 }
 
 export function attachIntroListeners() {

@@ -84,71 +84,96 @@ function updateThemeIcon(theme, iconElement) {
 }
 
 // Initialize the application when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    // Initialize theme first
-    initTheme();
+function initializeApplication() {
+    console.log('main.js: initializeApplication() called, document.readyState:', document.readyState);
     
-    // Initialize i18n
-    initI18n();
-    
-    // Initialize Firebase
-    initFirebase();
-    
-    // Check for shared character in URL BEFORE initializing app
-    const sharedCharacterData = getCharacterFromUrl();
-    const hasSharedCharacter = !!sharedCharacterData;
-    
-    // Initialize the app (it will check for shared character and set flag internally)
-    initializeApp();
-    
-    // Set the language (this will trigger initial translation)
-    setLanguage(getCurrentLanguage());
-    
-    // Set up language switcher buttons
-    const langDeButton = document.getElementById('lang-de');
-    const langEnButton = document.getElementById('lang-en');
-    
-    // Update aria-pressed based on current language
-    const updateLanguageButtons = () => {
-        const currentLang = getCurrentLanguage();
+    try {
+        // Initialize theme first
+        initTheme();
+        console.log('main.js: Theme initialized');
+        
+        // Initialize i18n
+        initI18n();
+        console.log('main.js: i18n initialized');
+        
+        // Initialize Firebase
+        initFirebase();
+        console.log('main.js: Firebase initialized');
+        
+        // Check for shared character in URL BEFORE initializing app
+        const sharedCharacterData = getCharacterFromUrl();
+        const hasSharedCharacter = !!sharedCharacterData;
+        console.log('main.js: Shared character check:', hasSharedCharacter);
+        
+        // Initialize the app (it will check for shared character and set flag internally)
+        initializeApp();
+        console.log('main.js: App initialized');
+        
+        // Set the language (this will trigger initial translation)
+        setLanguage(getCurrentLanguage());
+        
+        // Set up language switcher buttons
+        const langDeButton = document.getElementById('lang-de');
+        const langEnButton = document.getElementById('lang-en');
+        
+        // Update aria-pressed based on current language
+        const updateLanguageButtons = () => {
+            const currentLang = getCurrentLanguage();
+            if (langDeButton) {
+                langDeButton.setAttribute('aria-pressed', currentLang === 'de' ? 'true' : 'false');
+                langDeButton.classList.toggle('active', currentLang === 'de');
+            }
+            if (langEnButton) {
+                langEnButton.setAttribute('aria-pressed', currentLang === 'en' ? 'true' : 'false');
+                langEnButton.classList.toggle('active', currentLang === 'en');
+            }
+        };
+        
         if (langDeButton) {
-            langDeButton.setAttribute('aria-pressed', currentLang === 'de' ? 'true' : 'false');
-            langDeButton.classList.toggle('active', currentLang === 'de');
+            langDeButton.addEventListener('click', () => {
+                setLanguage('de');
+                updateLanguageButtons();
+            });
         }
+        
         if (langEnButton) {
-            langEnButton.setAttribute('aria-pressed', currentLang === 'en' ? 'true' : 'false');
-            langEnButton.classList.toggle('active', currentLang === 'en');
+            langEnButton.addEventListener('click', () => {
+                setLanguage('en');
+                updateLanguageButtons();
+            });
         }
-    };
-    
-    if (langDeButton) {
-        langDeButton.addEventListener('click', () => {
-            setLanguage('de');
-            updateLanguageButtons();
-        });
+        
+        // Initial update
+        updateLanguageButtons();
+        
+        // Handle shared character if present
+        if (hasSharedCharacter && sharedCharacterData) {
+            // Wait for app to be fully initialized, then handle shared character
+            // Use requestAnimationFrame to ensure DOM is ready
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    if (window.app && window.app.handleSharedCharacter) {
+                        window.app.handleSharedCharacter(sharedCharacterData);
+                    }
+                }, 50);
+            });
+        }
+    } catch (error) {
+        console.error('main.js: Error during initialization:', error);
+        throw error; // Re-throw to see in console
     }
-    
-    if (langEnButton) {
-        langEnButton.addEventListener('click', () => {
-            setLanguage('en');
-            updateLanguageButtons();
-        });
-    }
-    
-    // Initial update
-    updateLanguageButtons();
-    
-    // Handle shared character if present
-    if (hasSharedCharacter && sharedCharacterData) {
-        // Wait for app to be fully initialized, then handle shared character
-        // Use requestAnimationFrame to ensure DOM is ready
-        requestAnimationFrame(() => {
-            setTimeout(() => {
-                if (window.app && window.app.handleSharedCharacter) {
-                    window.app.handleSharedCharacter(sharedCharacterData);
-                }
-            }, 50);
-        });
-    }
-});
+}
+
+// Check if DOM is already loaded
+if (document.readyState === 'loading') {
+    // DOM is still loading, wait for DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('main.js: DOMContentLoaded fired');
+        initializeApplication();
+    });
+} else {
+    // DOM is already loaded, initialize immediately
+    console.log('main.js: DOM already loaded, initializing immediately');
+    initializeApplication();
+}
 
