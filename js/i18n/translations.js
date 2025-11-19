@@ -787,5 +787,672 @@ export const i18nData = {
         "hard_experience_bond_removal_label": "Wähle eine Beziehung zum Entfernen:",
         "disorder_label": "Störung:",
         "disorder_placeholder": "z.B. Paranoia, Besessenheit, etc."
+    },
+    es: {
+        // ====================================================================
+        // GENERAL UI ELEMENTS
+        // ====================================================================
+        // These are common interface elements used throughout the app
+        
+        "remaining_boost_pool_label": "Bonificaciones restantes:",
+        // NOTE: "Boost Points" refers to skill improvement points in the game
+        
+        "confirm_incomplete_skill_boosts": "No has distribuido las {maxBoosts} bonificaciones de habilidad. ¿Deseas continuar de todos modos?",
+        // NOTE: {maxBoosts} will be replaced with a number (e.g., 8)
+        
+        "page_title": "Creador de agente de Delta Green",
+        
+        
+        "app_header": "Creación de agente de Delta Green",
+        
+        "footer_feedback_text": "¿Tienes algún comentario, o has encontrado un error? Avísame en",
+        
+        
+        "footer_feedback_link": "Reddit",
+        
+        
+        "footer_text": "Publicado en acuerdo con Delta Green Partnership. La propiedad intelectual conocida como Delta Green es una marca comercial y derechos de autor propiedad de Delta Green Partnership, que ha autorizado su uso aquí. Esto incluye todos los elementos que forman parte de la propiedad intelectual de Delta Green.",
+        
+        
+        // ====================================================================
+        // BUTTONS
+        // ====================================================================
+        
+        "btn_back_text": "Volver",
+        "btn_next_text": "Siguiente",
+        "btn_finish_text": "Ver resumen",
+        "btn_back_to_home": "Volver a inicio",
+        
+        // ====================================================================
+        // PROGRESS AND NAVIGATION
+        // ====================================================================
+        
+        "progress_bar_text": "Paso {current} de {total}: {stepName}",
+       
+        // TC: Changed "one" for the number, as it's gendered in spanish ("una" or "uno")
+        "select_one_option": "-- Escoge 1 --",
+        
+        
+        "specify_type_placeholder": "Especificar uno (e.g., Física, Francés, Actuación)",
+        
+        
+        "choose_one_label": "Escoge 1",
+        "choose_N_label": "Escoge {N} de los siguientes",
+        // NOTE: {N} will be replaced with a number
+        
+        // ====================================================================
+        // INTRODUCTION / WELCOME SCREEN
+        // ====================================================================
+        
+        "intro_quote_dg": "Crear un agente de Delta Green requiere varias etapas clave: escoger una profesión y sus habilidades asociadas, definir sus características físicas y mentales para calcular sus atributos derivados y, finalmente, establecer los Lazos y Motivaciones de tu agente.",
+       
+        // TC: "Operative" changed to "agent" in the second line, since the literal translation "Operativo" also means "operation" in spanish.
+        "intro_welcome_text": "Bienvenido al creador de expedientes de agentes para Delta Green. Continúa presionando 'Siguiente' para comenzar a darle forma a tu agente.",
+        
+        
+        // ====================================================================
+        // PROMOTIONAL BANNER
+        // ====================================================================
+        
+        "banner_headline": "¿Eres escritor?",
+        "banner_text": "Echa un vistazo a mi nueva aplicación <a href=\"https://writersalley.com\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"promo-banner-link\">WritersAlley.com</a> — un gestor de objetivos de escritura que te ayuda a cumplir tus metas.",
+        // NOTE: Keep HTML tags exactly as they are, only translate the text content
+        
+		// TC: "Banner" does not have a proper translation, changed to "anuncio" (advert).
+        "banner_cta": "Visita WritersAlley.com",
+        "banner_dismiss": "Cerrar anuncio",
+        
+        // ====================================================================
+        // ACCESSIBILITY (ARIA) LABELS
+        // ====================================================================
+        // These are screen reader labels for accessibility - keep them descriptive
+        
+        "aria_skill_increase": "Aumentar {skillName} por {amount}%",
+        "aria_skill_decrease": "Disminuir {skillName} por {amount}%",
+        "aria_custom_skill_increase": "Aumentar valor de habilidad por {amount}",
+        "aria_custom_skill_decrease": "Disminuir valor de habilidad por {amount}",
+        "aria_roll_stats": "Generar nuevos valores de características",
+        "aria_share_character": "Compartir personaje, copia el enlace al portapapeles",
+        "aria_print_summary": "Imprimir resumen de personaje",
+        "aria_export_json": "Exportar personaje como archivo JSON",
+        "aria_view_character": "Ver personaje {name}",
+        "aria_delete_character": "Borrar personaje {name}",
+        "aria_edit_name": "Editar nombre de personaje {name}",
+        "aria_import_character": "Importar personaje desde archivo JSON",
+        "aria_load_from_database": "Importar personaje {name} desde base de datos",
+        "aria_report_character": "Denunciar personaje inapropiado {name}",
+        "aria_back_to_list": "Volver a lista de personajes",
+        
+        // ====================================================================
+        // STEP NAMES (Navigation)
+        // ====================================================================
+        
+        "step_name_0": "Introducción",
+        "step_name_1": "Profesión & Habilidades",
+        "step_name_2": "Características",
+        "step_name_3": "Atributos derivados",
+        "step_name_4": "Lazos & Motivaciones",
+        "step_name_4_3": "Antecedentes traumáticos",
+        "step_name_5_personal": "Información personal",
+        "step_name_5": "Resumen",
+        
+        // ====================================================================
+        // STEP 1: PROFESSION & SKILLS
+        // ====================================================================
+        
+        "step1_info1": "La profesión de un agente es fundamental, influyendo en sus habilidades, su número inicial de Lazos personales, los recursos a su disposición, y el alcance de su autoridad y sus funciones. Las profesiones presentadas a continuación representan los antecedentes comunes de los agentes de Delta Green.",
+
+        
+        "step1_info2": "Cada profesión otorga un conjunto específico de habilidades con valores iniciales que sustituyen los valores predeterminados. Aparte de estas habilidades profesionales, tienes 8 bonificaciones de habilidad (cada una con un valor de +20%) que puedes distribuir entre el resto de las habilidades de tu personaje. Puedes asignar varias de estas a una sola habilidad, pero ninguna puede tener un valor inicial superior a 80%.",
+        
+		// TC: Context may change the way these should be worded, due to gendered nouns in spanish.
+        "add_specialization_button_text": "Añadir especialización de {skillName}",
+        "add_another_specialization_button_text": "Añadir otra {skillName}",
+        "remove_button_title": "Eliminar esta especialización",
+        
+        "step1_select_profession_label": "Paso 1.1: Escoge una profesión",
+        "step1_2_profession_specific_label": "Paso 1.2: Opciones específicas a la profesión",
+        "bonds_label": "Lazos",
+        "step1_increase_skills_label": "Paso 1.3: Distribuye las bonificaciones (8 disponibles, +20% cada una)",
+        "increases_chosen_label": "Bonificaciones aplicadas:",
+        
+        // Error/Alert Messages for Step 1
+        "alert_select_profession": "Por favor, selecciona una profesión para continuar.",
+        "alert_max_choices_reached": "Has llegado al máximo de {N} elecciones para esta categoría.",
+        "alert_skill_increase_limit": "Han sido asignadas todas las 8 bonificaciones de habilidad.",
+        "alert_skill_max_value_reached": "El valor de esta habilidad no puede superar el 80% en la creación del personaje.",
+        "alert_type_for_skill_needed": "Hace falta un tipo específico para la habilidad \"{skillName}\".",
+        
+        // ====================================================================
+        // PROFESSION NAMES
+        // ====================================================================
+        
+		// TC: For these, I have used the profession names as they appear in the Spanish translation made by the company "Devir".
+		
+        "profession_anthropologist_name": "Antropólogo, Arqueólogo, o Historiador",
+        "profession_computer_scientist_name": "Programador o ingeniero informático",
+        "profession_federal_agent_name": "Agente federal",
+        "profession_physician_name": "Médico",
+        "profession_scientist_name": "Científico",
+        "profession_special_operator_name": "Agente de élite",
+        
+        // ====================================================================
+        // SKILL NAMES AND DESCRIPTIONS
+        // ====================================================================
+        // Each skill has a name and a description
+        
+        // TC: Likewise, I have used the skill names as they appear in the spanish translation made by the company "Devir".
+		
+        "skill_accounting_name": "Contabilidad",
+        "skill_accounting_desc": "Comprender los registros financieros, las prácticas de negocio, y descubrir irregularidades tributarias.",
+        
+        "skill_alertness_name": "Alerta",
+        "skill_alertness_desc": "Percibir detalles sutiles, amenazas potenciales o notar lo inusual en el entorno.",
+        
+        "skill_anthropology_name": "Antropología",
+        "skill_anthropology_desc": "El estudio académico de las sociedades y culturas humanas, y su formación.",
+        
+        "skill_archeology_name": "Arqueología",
+        "skill_archeology_desc": "Investigación de la historia y la prehistoria humanas mediante excavaciones y análisis de artefactos.",
+        
+        "skill_art_name": "Arte",
+        "skill_art_desc": "Competencia en la creación o interpretación de una forma artística específica (e.g., pintura, música, teatro).",
+        
+        "skill_artillery_name": "Artillería",
+        "skill_artillery_desc": "Operar y desplegar con precisión armas de proyectiles de gran calibre, como morteros o lanzamisiles.",
+        
+        "skill_athletics_name": "Atletismo",
+        "skill_athletics_desc": "Habilidad física en actividades que requieren fuerza, agilidad y coordinación, como correr, saltar o escalar.",
+        
+        "skill_bureaucracy_name": "Burocracia",
+        "skill_bureaucracy_desc": "Navegar por procedimientos o estructuras organizativas complejas, e influir en canales oficiales.",
+        
+        "skill_computer_science_name": "Informática",
+        "skill_computer_science_desc": "Conocimiento profundo de hardware, software, redes, y análisis de datos informáticos.",
+        
+		// TC: Changed "manual creation" for a word more related to trades and crafts.
+        "skill_craft_name": "Oficio",
+        "skill_craft_desc": "Habilidad en algún oficio específico o elaboración artesanal (por ejemplo, mecánica, electrónica, cerrajería).",
+        
+        "skill_criminology_name": "Criminología",
+        "skill_criminology_desc": "Conocimiento de comportamiento criminal, técnicas investigativas, y el funcionamiento de grupos criminales.",
+        
+        "skill_demolitions_name": "Demoliciones",
+        "skill_demolitions_desc": "El uso eficaz y seguro de explosivos para derribar, destruir o crear distracciones.",
+        
+        "skill_disguise_name": "Disfraz",
+        "skill_disguise_desc": "Modificar la apariencia, voz, y gestos, para suplantar de forma convincente a otra persona o crear una identidad falsa.",
+        
+        "skill_dodge_name": "Esquiva",
+        "skill_dodge_desc": "Reaccionar ante y evitar ataques físicos o peligros repentinos mediante reflejos rápidos.",
+        
+        "skill_drive_name": "Conducción",
+        "skill_drive_desc": "Conducir vehículos terrestres como automóviles o motocicletas con destreza, especialmente bajo presión.",
+        
+        "skill_firearms_name": "Armas de fuego",
+        "skill_firearms_desc": "Uso seguro y preciso de pistolas, rifles y escopetas en situaciones de combate.",
+        
+        "skill_first_aid_name": "Primeros auxilios",
+        "skill_first_aid_desc": "Proporcionar atención médica inmediata para estabilizar lesiones y evitar daños mayores.",
+        
+        "skill_foreign_language_name": "Idiomas extranjeros",
+        "skill_foreign_language_desc": "Fluidez en un idioma distinto al materno (especificar idioma).",
+        
+        "skill_forensics_name": "Ciencia forense",
+        "skill_forensics_desc": "Recopilar, analizar e interpretar pruebas físicas de una escena utilizando métodos científicos.",
+        
+        "skill_heavy_machinery_name": "Maquinaria pesada",
+        "skill_heavy_machinery_desc": "Operar maquinaria grande o compleja, como herramientas de construcción o industriales.",
+        
+        "skill_heavy_weapons_name": "Armas pesadas",
+        "skill_heavy_weapons_desc": "Uso competente de armamento pesado portátil, como ametralladoras o lanzagranadas.",
+        
+        "skill_history_name": "Historia",
+        "skill_history_desc": "Conocimiento de acontecimientos y sociedades pasadas, y su importancia (puede requerir especialización).",
+        
+        "skill_humint_name": "HUMINT",
+        
+        "skill_humint_desc": "Human Intelligence: Recopilación de información a través del contacto interpersonal, entrevistas e interrogatorios.",
+        
+        "skill_law_name": "Derecho",
+        "skill_law_desc": "Comprender los sistemas y procedimientos legales, y utilizarlos en beneficio propio o para investigar.",
+        
+        "skill_medicine_name": "Medicina",
+        "skill_medicine_desc": "Diagnóstico avanzado y tratamiento de enfermedades y lesiones, más allá de los primeros auxilios básicos.",
+        
+        "skill_melee_weapons_name": "Armas cuerpo a cuerpo",
+        "skill_melee_desc": "Uso eficaz de armas de combate cuerpo a cuerpo como cuchillos, garrotes o espadas.",
+        
+        "skill_military_science_name": "Ciencia militar",
+        "skill_military_science_desc": "Conocimiento de tácticas, estrategia, organización y cultura militar (especificar rama o especialidad).",
+        
+        "skill_navigate_name": "Orientación",
+        "skill_navigate_desc": "Determinar la posición y planificar rutas, usando mapas, brújulas u otras herramientas.",
+        
+        "skill_occult_name": "Ocultismo",
+        "skill_occult_desc": "Familiaridad con mitología y tradiciones esotéricas, afirmaciones paranormales, sociedades secretas y conocimiento sobre lo arcano.",
+        
+        "skill_persuade_name": "Persuasión",
+        "skill_persuade_desc": "Influir en los pensamientos, decisiones, y acciones de otros usando argumentos, encanto, o negociación.",
+        
+        "skill_pharmacy_name": "Farmacia",
+        "skill_pharmacy_desc": "Entender las drogas, sus efectos, interacciones, y preparación.",
+        
+        "skill_pilot_name": "Pilotaje",
+        "skill_pilot_desc": "Operar y navegar aeronaves, embarcaciones o naves espaciales (especificar el tipo de vehículo).",
+        
+        "skill_psychotherapy_name": "Psicoterapia",
+        "skill_psychotherapy_desc": "Diagnóstico y tratamiento de trastornos mentales y emocionales.",
+        
+        "skill_ride_name": "Montar",
+        "skill_ride_desc": "Habilidad para controlar y montar animales, normalmente caballos o monturas similares.",
+        
+        "skill_science_name": "Ciencia",
+        "skill_science_desc": "Experiencia en un campo científico específico (e.g., biología, química, física).",
+        
+        "skill_search_name": "Búsqueda",
+        "skill_search_desc": "Encontrar metódicamente objetos, información o personas ocultas en un espacio determinado.",
+        
+        "skill_sigint_name": "SIGINT",
+        
+        "skill_sigint_desc": "Signals Intelligence: Interceptar, analizar y descifrar comunicaciones electrónicas.",
+        
+        "skill_stealth_name": "Sigilo",
+        "skill_stealth_desc": "Moverse y actuar sin ser detectado por vista u oído.",
+        
+        "skill_surgery_name": "Cirugía",
+        "skill_surgery_desc": "Realizar procedimientos médicos invasivos para tratar lesiones graves o afecciones complejas.",
+        
+        "skill_survival_name": "Supervivencia",
+        "skill_survival_desc": "Sobrevivir en entornos hostiles utilizando conocimiento de la naturaleza e improvisación.",
+        
+        "skill_swim_name": "Natación",
+        "skill_swim_desc": "Competencia en natación, especialmente en condiciones acuáticas difíciles o peligrosas.",
+        
+        "skill_unarmed_combat_name": "Combate sin armas",
+        "skill_unarmed_combat_desc": "Eficacia en el combate cuerpo a cuerpo sin armas, incorporando diversas técnicas marciales.",
+        
+        "skill_unnatural_name": "Antinatural",
+        
+		// TC: Took part of the description of the skill from the "Devir" translation.
+		
+        "skill_unnatural_desc": "Conocimiento acerca de los secretos más fundamentales y desgarradores del universo, que desafían nuestro entendimiento de la realidad.",
+        
+        // ====================================================================
+        // STEP 2: STATISTICS
+        // ====================================================================
+        
+        "step2_info_stats": "Las seis características de un agente definen sus capacidades físicas y mentales. Estos valores suelen oscilar entre 3 y 18.",
+        // NOTE: There are duplicate keys for step2_info_stats - translate consistently
+        
+        "stat_str_name": "Fuerza (FUE)",
+        "stat_str_desc": "Mide la fuerza física y la musculatura.",
+        
+        "stat_con_name": "Constitución (CON)",
+        "stat_con_desc": "Indica la salud, resistencia y energía física de un agente.",
+        
+        "stat_dex_name": "Destreza (DES)",
+        "stat_dex_desc": "Refleja la agilidad, coordinación y velocidad de reacción de un agente.",
+        
+        "stat_int_name": "Inteligencia (INT)",
+        "stat_int_desc": "Representa el razonamiento, la memoria y la capacidad de resolución de problemas de un agente.",
+        
+        "stat_pow_name": "Poder (POD)",
+        "stat_pow_desc": "Indica la fuerza de voluntad, fortaleza mental y potencial psíquico.",
+        
+        
+        "stat_cha_name": "Carisma (CAR)",
+        "stat_cha_desc": "Mide la fuerza de la personalidad, capacidad de persuasión y el atractivo social de un agente.",
+        
+        "step2_select_array_label": "Paso 2.1: Escoge un conjunto de valores",
+      
+        
+        "step2_assign_stats_label": "Paso 2.2: Asigna los valores escogidos a tus características:",
+        
+        "step2_info_percentile": "Para cada característica, anota su valor percentil (Valor × 5). Si una característica es notablemente baja (por debajo de 9) o alta (por encima de 12), se considera un rasgo distintivo. Describe brevemente ese rasgo.",
+       
+        
+        "distinguishing_feature_label": "Rasgo distintivo:",
+        "distinguishing_feature_placeholder": "e.g., Excepcionalmente fuerte, Engorroso, Ingenioso, Distraído",
+        
+        "alert_assign_all_stats": "Asegúrate de que haya un valor asignado a cada característica.",
+        "alert_unique_stat_values": "Cada valor del conjunto seleccionado debe ir asignado a solo una característica.",
+        
+        "step2_select_method_label": "Paso 2.1: Escoger el método de generación de características.",
+        "stat_method_array": "Usar números predefinidos",
+        "stat_method_roll": "Tirar dados (4d6 descartando más bajo)",
+        // NOTE: "4d6 drop lowest" = roll 4 six-sided dice, remove the lowest result
+        
+        "step2_select_array_sublabel": "Escoge un conjunto:",
+        "btn_roll_stats_text": "Generar nuevos valores",
+        "rolled_values_label": "Tus valores obtenidos:",
+        "click_to_roll_stats_label": "Presiona el botón para generar tus valores.",
+        "step2_select_method_or_roll_label": "Por favor selecciona un método de generación y luego un conjunto, o genera los valores para continuar.",
+        
+        "stat_method_pointbuy": "Compra de puntos (72 puntos)",
+        
+        
+        "pointbuy_info_text": "Distribuye {totalPoints} puntos entre las seis características. Cada característica debe tener un valor entre 3 y 18.",
+        "pointbuy_points_remaining_label": "Puntos por asignar:",
+        "step2_assign_stats_label_or_features": "Paso 2.2: Asignar valores / Definir rasgos distintivos",
+        "step2_define_features_label": "Paso 2.2: Definir rasgos distintivos",
+        "pointbuy_error_total_points": "Debes asignar exactamente {total} puntos. Actualmente has asignado {spent}.",
+        "pointbuy_error_stat_range": "Cada característica debe tener entre 3 y 18 para la compra de puntos.",
+        "pointbuy_points_summary_label": "Puntos asignados: {spent} / {total}  (Puntos pos asignar: {remaining})",
+        
+        "stat_method_manual": "Ingreso manual",
+        "manual_entry_info_text": "Introduce directamente los valores de cada característica. Cada característica debe tener un valor entre 3 y 18.",
+        "manual_entry_error_stat_range": "Para ingreso manual, cada característica debe tener entre 3 y 18.",
+        
+        // NOTE: There are duplicate entries for some step 2 keys below - translate consistently
+        "step2_info_stats": "Las seis características de un agente definen sus capacidades físicas y mentales. Estos valores oscilan entre 3 y 18.",
+        
+        "stat_str_name": "Fuerza (FUE)",
+        "stat_str_desc": "Mide la fuerza física bruta y la capacidad de levantamiento.",
+        
+        "stat_con_name": "Constitución (CON)",
+        "stat_con_desc": "Refleja la salud, resistencia a daño, y aguante.",
+        
+        "stat_dex_name": "Destreza (DES)",
+        "stat_dex_desc": "Denota agilidad, coordinación entre mano y ojo, y reflejos.",
+        
+        "stat_int_name": "Inteligencia (INT)",
+        "stat_int_desc": "Gobierna el razonamiento, la memoria, intución, y habilidades analíticas.",
+        
+        "stat_pow_name": "Poder (POD)",
+        "stat_pow_desc": "Representa la fuerza de voluntad, fortaleza mental, y potencial para habilidades inusuales.",
+        
+        "stat_cha_name": "Carisma (CAR)",
+        "stat_cha_desc": "Indica magnetismo personal, cualidades de liderazgo, e influencia social.",
+        
+        "step2_select_array_label": "Paso 2.1: Escoge un conjunto de valores para distribuir entre las características.",
+        "step2_assign_stats_label": "Paso 2.2: Asigna los números seleccionados a tus características:",
+        "step2_stat_value_label": "Valor",
+        "step2_stat_x5_label": "Valoración x5",
+       
+        
+        "step2_info_distinguishing_feature": "Si el valor de una característica es 8 o menos, o 13 o más, es digna de una mención. Utiliza un adjetivo o frase para describir esta característica.",
+        "distinguishing_feature_label": "Rasgo distintivo:",
+        "distinguishing_feature_placeholder": "e.g., Corpulento, Frágil, Perspicaz, Obsesivo",
+        
+        "alert_select_stat_array": "Primero debes seleccionar un conjunto de valores.",
+        "alert_assign_all_stats": "Por favor asigna un valor del conjunto a cada característica.",
+        "alert_unique_stat_values": "Cada valor del conjunto seleccionado solo se puede usar una vez por característica.",
+        
+        "stat_array_option_label": "{values}",
+        // NOTE: {values} will be replaced with something like "15, 14, 13, 12, 10, 8"
+        
+        // ====================================================================
+        // STEP 3: DERIVED ATTRIBUTES
+        // ====================================================================
+        // These are calculated from the base statistics
+        
+        "step3_info_derived": "Los atributos derivados son características secundarias, calculadas usando las características principales de tu agente.",
+        "step3_info_derived_title": "Paso 3: Definir los atributos derivados",
+        "step3_info_derived_intro": "Estos atributos son calculados directamente usando los valores de las características principales de tu agente, definiendo aún más sus habilidades.",
+        
+        "attr_hp_name": "Puntos de salud (PS)",
+        "attr_hp_desc": "Indica la capacidad de un agente de resistir daño físico. Se calcula como (FUE + CON) / 2, redondeado hacia arriba.",
+        // NOTE: There are two versions of attr_hp_desc - translate consistently
+        
+        "attr_wp_name": "Puntos de voluntad (PV)",
+        
+        "attr_wp_desc": "Indica resiliencia mental y la capacidad de superar la adversidad. Equivalente al POD.",
+        
+        "attr_san_name": "Puntos de cordura (COR)",
+        "attr_san_desc": "Mide el apego de un agente a la realidad convencional. Calculado como POD × 5.",
+        
+        // TC: This key, "attr_san_desc", is duplicated.
+        "attr_san_desc": "Mide la estabilidad mental de un agente y su conexión con la realidad. Calculado como POD × 5.",
+        
+		// TC: The "Devir" translation does not have an abbreviation for the breaking point. I am adding the first letters of the translation (PR) as one.
+        "attr_bp_name": "Punto de Ruptura (PR)",
+        "attr_bp_desc": "El límite de cordura a partir del cual trauma adicional puede provocar un nuevo trastorno mental. Calculado como COR - POD.",
+		
+       // TC: This key, "attr_bp_desc", is duplicated.
+        "attr_bp_desc": "El nivel de cordura a partir del cual un trauma significativo puede provocar un trastorno mental duradero. Calculado como COR - POD.",
+        
+        "derived_attributes_title": "Paso 3: Atributos derivados",
+        "derived_attribute_label": "Atributo",
+        "derived_value_label": "Valor",
+        "derived_description_label": "Descripción",
+        
+        // ====================================================================
+        // STEP 4: BONDS & MOTIVATIONS
+        // ====================================================================
+        
+        "step4_info_bonds_mot": "Si bien su profesión, habilidades y características describen las aptitudes de tu agente, sus Lazos y Motivaciones aportan profundidad a su personalidad como individuo.",
+        "step4_title_bonds_motivations": "Paso 4: Detallar Lazos y Motivaciones",
+        "step4_info_bonds_mot_intro": "Más allá de sus aptitudes, un agente está definido por sus conexiones personales (Lazos), y su impulso interior (Motivaciones). Estos elementos aportan una profundidad crucial a tu personaje.",
+        
+        // Bonds Section
+        "step4_1_bonds_title": "Paso 4.1: Definir los Lazos",
+
+        
+        "step4_info_bonds1": "Los Lazos representan las conexiones humanas más importantes de la vida de tu agente. Pueden ser personas concretas (como su pareja, hijos, o mentor) o grupos muy unidos (como una antigua unidad militar, o una familia muy unida).",
+      
+        
+        "step4_info_bonds2": "Las profesiones más exigentes suelen limitar el número de Lazos que un agente puede mantener. Inicialmente, los Lazos solo requieren un nombre y la naturaleza de la relación.",
+        "step4_info_bonds2": "El valor inicial de cada Lazo se determina por Carisma (CAR) del agente. Cuando se deteriora el valor de un Lazo, se deteriora la relación que representa.",
+        "step4_info_bonds3": "La naturaleza de la profesión de un agente puede afectar el número de Lazos que puede mantener de forma realista. Consulta la profesión escogida para conocer el número específico, o el número que has establecido si has creado una personalizada. ",
+        "step4_info_bonds4": "Por ahora, cada Lazo necesita una breve descripción que identifique a la persona o grupo y la naturaleza de la conexión, e.g., \"Mi exmujer, Sarah\" o \"El sargento Miller, mi antiguo jefe de pelotón\".",
+        
+
+        "bond_examples_label": "Ejemplos de Lazos:",
+        // NOTE: Duplicate - use "Illustrative Bond Examples:"
+        
+        "bond_examples_list": "Pareja/Ex-pareja; Hijo/Hija; Hermano cercano; Amigo de la infancia; Contacto profesional de confianza; Terapeuta; Unidad familiar (e.g., pareja e hijos); Equipo de trabajo cercano; Grupo de supervivientes de un evento traumático.",
+       
+        
+        "bond_name_label": "Relación con Lazo",
+        "bond_label_number": "Lazo {number}",
+        "bond_description_placeholder": "e.g., Mi pareja, Alex Chen",
+ 
+        "bond_score_label": "Valor inicial (CAR):",
+       
+        
+        "num_bonds_for_profession": "Tu profesión escogida permite {count} Lazos.",
+        
+        "alert_define_bonds": "Por favor describe brevemente cada uno de los Lazos de tu agente.",
+        
+        // Motivations Section
+        
+        "step4_2_motivations_title": "Paso 4.2: Define las motivaciones",
+        
+        
+        "step4_info_motivations1": "Las motivaciones son las creencias esenciales, los impulsos personales o incluso las obsesiones que mueven a tu agente. ¿Qué es lo que realmente les hace continuar? ¿Es el deseo de conocimiento, lealtad a una causa, una relación muy importante o algo más complejo?",
+        
+        "step4_info_motivations2": "Si la cordura de un agente cae hasta su Punto de Ruptura, normalmente se sustituye una motivación por un nuevo trastorno mental.",
+        "step4_info_motivations2": "Puedes definir hasta cinco motivaciones iniciales. Estas pueden cambiar o ser sustituidas a medida que tu agente se enfrenta a los horrores de su trabajo y su personalidad se desarrolla.",
+        "step4_info_motivations3": "Cuando la cordura de un agente alcanza su Punto de Ruptura debido a un trauma, una motivación suele ser sustituida por un nuevo trastorno mental, lo que refleja el impacto de sus experiencias.",
+        
+        "motivation_label": "Motivación",
+        "motivation_label_number": "Motivación {number}",
+        "motivation_placeholder": "e.g., Descubrir la verdad, cueste lo que cueste",
+        
+        // ====================================================================
+        // STEP 4.3: TRAUMATIC BACKGROUND
+        // ====================================================================
+        
+        "step4_3_traumatic_background_title": "Paso 4.3: Antecedentes traumáticos (Opcional)",
+        "step4_3_traumatic_background_info": "Si tu agente es nuevo en Delta Green, puedes saltarte este paso. Sin embargo, si tu agente es un veterano que ya se ha enfrentado a los horrores sobrenaturales de Delta Green, puedes seleccionar un pasado traumático de entre las opciones que se indican a continuación. Cada pasado traumático representa una experiencia significativa del pasado que ha moldeado a tu agente y lo ha sumergido aun más en el mundo de Delta Green. Estos pasados modifican las características, habilidades y cordura de tu agente, reflejando el impacto duradero de sus experiencias traumáticas. Conversa con tu Supervisor para determinar los detalles específicos de lo que sucedió, y cómo llevó a tu agente a Delta Green.",
+        
+        "step4_traumatic_background_warning": "Por favor consulta con tu Supervisor antes de seleccionar un antecedente traumático.",
+        
+        "traumatic_background_none": "Ninguno",
+        "traumatic_background_extreme_violence": "Violencia extrema",
+        "traumatic_background_extreme_violence_desc": "+10% Ocultismo; -5 COR; -3 CAR (reduce 3 a cada Lazo). Estás adaptado a la violencia.",
+       
+        "traumatic_background_captivity": "Cautiverio o encarcelamiento",
+        "traumatic_background_captivity_desc": "+10% Ocultismo; -5 COR; -3 POD (no afecta a COR). Estás adaptado a la indefensión.",
+        
+        "traumatic_background_hard_experience": "Experiencia dura",
+        "traumatic_background_hard_experience_desc": "+10% Ocultismo; -5 COR; +10% a cuatro habilidades cualesquiera (excepto Antinatural). Elimina un Lazo.",
+        
+		// TC: Spanish does not capitalize words this way, but it's how it appears in the "Devir" translation.
+        "traumatic_background_things_man": "Cosas que el Ser Humano no Debería Saber",
+        "traumatic_background_things_man_desc": "+20% Ocultismo; reduce COR en POD; +10% Antinatural. Establece un nuevo Punto de Ruptura a la nueva COR menos POD. Obtén un trastorno causado por lo Antinatural.",
+        
+        "hard_experience_skill_selection_label": "Escoge cuatro habilidades para aumentar +10% (excepto Antinatural):",
+        "hard_experience_skill_label": "Habilidad {number}:",
+        "hard_experience_bond_removal_label": "Escoge un Lazo a eliminar:",
+        "disorder_label": "Trastorno:",
+        "disorder_placeholder": "e.g., Paranoia, Obsesión, etc.",
+        
+        // ====================================================================
+        // STEP 5: PERSONAL INFORMATION
+        // ====================================================================
+        
+        "step5_personal_info_title": "Información personal",
+        "step5_personal_info_description": "Por favor, indica los siguientes datos personales de tu agente.",
+        "personal_info_name_label": "Nombre",
+        "personal_info_name_placeholder": "Introduce el nombre del agente",
+		// TC: "Empleador" is the correct word, but the officially translated character sheets use "Compañía o agencia" instead.
+        "personal_info_employer_label": "Compañía o agencia",
+        "personal_info_employer_placeholder": "Introduce el empleador",
+        "personal_info_sex_label": "Género",
+        "personal_info_sex_placeholder": "Introduce el género",
+        "personal_info_nationality_label": "Nacionalidad",
+        "personal_info_nationality_placeholder": "Introduce la nacionalidad",
+        "personal_info_age_label": "Edad",
+        "personal_info_age_placeholder": "Introduce la edad",
+        "personal_info_dob_label": "Fecha de nacimiento",
+        "personal_info_dob_placeholder": "Introduce la fecha de nacimiento",
+        
+        // ====================================================================
+        // SUMMARY / FINAL STEP
+        // ====================================================================
+        
+        "summary_title": "Resumen del expediente del agente",
+        "summary_label_name": "Nombre:",
+        "summary_label_profession": "Profesión:",
+        "summary_label_employer": "Compañía o agencia:",
+        "summary_label_nationality": "Nacionalidad:",
+        "summary_label_sex": "Género:",
+        "summary_label_age_dob": "Edad/Nacimiento:",
+        // NOTE: D.O.B. = Date of Birth
+        
+        "summary_label_education": "Educación/Vida Laboral:",
+        "summary_label_statistical_data": "Datos característicos",
+        "summary_label_psychological_data": "Datos psicológicos",
+        "summary_col_statistic": "Característica",
+        "summary_col_score": "Valor",
+        "summary_col_x5": "x5",
+        "summary_col_features": "Rasgos distintivos",
+        "summary_label_physical_desc": "Descripción física",
+        "summary_col_derived_attribute": "Atributo",
+        "summary_col_maximum_value": "Máximo",
+        "summary_col_current_value": "Actual",
+        
+        "profession_label": "Profesión",
+        "statistics_label": "Característica",
+        "derived_attributes_label": "Atributos derivados",
+        "skills_label": "Habilidades",
+        "bonds_summary_label": "Lazos",
+        "motivations_summary_label": "Motivaciones",
+        "not_selected": "No seleccionado",
+        "not_defined": "No definido",
+        
+        "btn_print_summary": "Imprimir expediente",
+        "btn_export_json": "Exportar como JSON",
+        "btn_download_txt": "Descargar como TXT",
+        
+        "summary_section_personal_details": "Detalles personales",
+        "summary_section_profession": "Profesión",
+        "summary_section_statistics": "Características",
+        "summary_section_derived_attr": "Atributos derivados",
+        "summary_section_skills": "Habilidades",
+        "summary_section_bonds": "Lazos",
+        "summary_section_motivations": "Motivaciones",
+        "summary_section_traumatic_background": "Antecedentes traumáticos",
+        
+        "summary_placeholder_name": "Nombre: _______________",
+        "summary_placeholder_age": "Edad: __________",
+        "summary_placeholder_sex": "Género: __________",
+        "summary_placeholder_employer": "Compañía o agencia: ________________________",
+        "summary_placeholder_nationality": "Nacionalidad: _____________________",
+        
+        // ====================================================================
+        // CHARACTER MANAGEMENT
+        // ====================================================================
+        
+        "character_list_title": "Personajes guardados",
+        "no_characters_saved": "Ningún personaje se ha guardado todavía.",
+        "view_character": "Ver",
+        "delete_character": "Borrar",
+        "rename_character": "Renombrar",
+        "edit_name": "Editar nombre",
+        "enter_new_name": "Introducir nuevo nombre:",
+        "confirm_delete_character": "¿Estás seguro de querer eliminar a {name}?",
+        "back_to_list": "Volver a lista",
+        "character_not_found": "Personaje no encontrado.",
+        "storage_limit_reached": "Límite de almacenamiento alcanzado. Se puede guardar un máximo de {limit} personajes. Por favor eliminar un personaje antes de guardar uno nuevo.",
+        
+        // ====================================================================
+        // SHARING & IMPORT/EXPORT
+        // ====================================================================
+        
+        "share_character": "Compartir personaje",
+        "share_url_copied": "¡Enlace para compartir copiado en el portapapeles!",
+        "share_error": "Error creando enlace para compartir",
+        "import_character": "Importar personaje (JSON)",
+        "import_success": "¡Personaje importado exitosamente!",
+        "import_error": "Error importando personaje",
+        "own_characters_title": "Mis personajes",
+        "imported_characters_title": "Personajes importados",
+        "characters_title": "Personajes",
+        "create_character": "Crear personaje",
+        "imported_character_label": "Importado",
+        
+        "made_by_others_title": "Creado por otros",
+        "made_by_others_info": "Ayuda a mantener este espacio limpio: Denuncia los personajes incompletos o con contenido o texto ofensivo. Serán eliminados inmediatamente y revisados eventualmente.",
+        "made_by_others_filter_all": "Todas las profesiones",
+        "made_by_others_filter_custom": "Personalizados",
+        "made_by_others_filter_empty": "Aún no hay personajes que coincidan con esta profesión.",
+        "made_by_others_filter_aria_label": "Filtrar personajes de la comunidad por profesión",
+        
+        "load_from_database": "Importar",
+        "load_more_characters": "Cargar más",
+        "loading": "Cargando...",
+        "load_more_error": "Error cargando más personajes",
+        "upload_to_database": "Subir a base de datos",
+        "uploading": "Subiendo...",
+        "upload_success": "¡Personaje subido exitosamente!",
+        "upload_error": "Error subiendo personaje",
+        "upload_blocked_content": "El personaje contiene contenido prohibido y no puede ser subido.",
+        "report_character": "Denunciar",
+        "report_reason_prompt": "Por favor, indica el motivo por el que denuncias a este personaje:",
+        "report_success": "Gracias por denunciar. Este personaje ha sido marcado para revisión.",
+        "report_error": "Error denunciando personaje",
+        "moderation_pending": "Esperando revisión",
+        
+        // ====================================================================
+        // CUSTOM PROFESSION CREATION
+        // ====================================================================
+        
+        "profession_custom_build_name": "Construcción de profesión personalizada",
+        "label_custom_profession_name": "Indica el nombre de la profesión:",
+        "custom_prof_title_bond_setup": "Profesión personalizada: Parte 1 - Indica Lazos & puntos de habilidad iniciales",
+        "custom_prof_info_rules_title": "Pautas para crear una profesión personalizada:",
+        "custom_prof_info_pick_skills": "Selecciona diez habilidades clave que definen esta nueva profesión.",
+        "custom_prof_info_divide_points": "Tienes <strong>{totalPoints}</strong> puntos (base 400, modificado por los Lazos) para distribuir entre estas 10 habilidades.",
+        "custom_prof_info_add_to_start": "Estos puntos asignados se añadirán al valor por defecto (base) de cada habilidad.",
+        "custom_prof_info_rule_of_thumb": "Como regla general, intenta que el valor de las habilidades oscile entre 30% y 50% después de añadir estos puntos.",
+        "custom_prof_info_max_skill": "Ninguna habilidad escogida puede tener un valor superior a 60% luego de asignar estos puntos (base + asignados).",
+        "custom_prof_info_default_bonds": "Una profesión personalizada comienza con 3 Lazos por defecto.",
+        "custom_prof_info_customize_bonds": "Ajustar Lazos: Gana 50 puntos de habilidad por cada Lazo eliminado (minimum 1). Pierde 50 puntos por cada Lazo añadido (máximo 4).",
+        "custom_prof_label_current_bonds": "Lazos actuales:",
+        "custom_prof_label_skill_point_budget": "Total de puntos de habilidad:",
+        "custom_prof_btn_confirm_bonds": "Confirmar Lazos & continuar a asignación de habilidades",
+        "custom_prof_title_skill_allocation": "Profesión personalizada: Parte 2 - Asignar puntos de habilidad",
+        "custom_prof_info_skill_allocation": "Escoge hasta 10 habilidades y asigna tus <strong>{currentBudget}</strong> puntos. Recuerda, ninguna habilidad puede superar el 60% (base + asignados). Puntos restantes: <strong id='custom-skill-points-remaining'>{remainingPoints}</strong>",
+        "custom_prof_skills_selected_label_prefix": "Habilidades escogidas:",
+        "custom_prof_label_assign_points": "Puntos asignados:",
+        "custom_prof_label_skill_total": "Resultado total:",
+        "custom_prof_btn_confirm_skills": "Finalizar habilidades",
+        "alert_max_10_custom_skills": "Debes seleccionar 10 habilidades.",
+        "alert_distribute_all_custom_points": "Todos los {totalBudget} puntos de habilidad deben ser asignados. Te quedan {remainingPoints} puntos.",
+        "alert_custom_skill_max_60": "La habilidad \"{skillName}\" no puede superar el 60% con los puntos asignados.",
+        "alert_specify_type_for_custom_skill": "Por favor indica un tipo específico para la habilidad personalizada \"{skillName}\"."
     }
 };
