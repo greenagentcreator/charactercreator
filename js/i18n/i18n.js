@@ -8,6 +8,7 @@ let currentLanguage = 'en';
 export function setupTranslations() {
     if (i18nData && i18nData.en) translations.en = i18nData.en;
     if (i18nData && i18nData.de) translations.de = i18nData.de;
+    if (i18nData && i18nData.es) translations.es = i18nData.es;
 }
 
 export function t(key, replacements = {}) {
@@ -109,8 +110,10 @@ export function setLanguage(lang) {
     }
     const langDeButton = document.getElementById('lang-de');
     const langEnButton = document.getElementById('lang-en');
+    const langEsButton = document.getElementById('lang-es');
     if (langDeButton) langDeButton.classList.toggle('active', lang === 'de');
     if (langEnButton) langEnButton.classList.toggle('active', lang === 'en');
+    if (langEsButton) langEsButton.classList.toggle('active', lang === 'es');
 }
 
 export function getCurrentLanguage() {
@@ -131,6 +134,8 @@ export function initI18n() {
 
             if (browserLangBase === 'de' && translations.de) {
                 langToSet = 'de';
+            } else if (browserLangBase === 'es' && translations.es) {
+                langToSet = 'es';
             }
         }
     }

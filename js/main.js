@@ -115,6 +115,7 @@ function initializeApplication() {
         // Set up language switcher buttons
         const langDeButton = document.getElementById('lang-de');
         const langEnButton = document.getElementById('lang-en');
+        const langEsButton = document.getElementById('lang-es');
         
         // Update aria-pressed based on current language
         const updateLanguageButtons = () => {
@@ -126,6 +127,10 @@ function initializeApplication() {
             if (langEnButton) {
                 langEnButton.setAttribute('aria-pressed', currentLang === 'en' ? 'true' : 'false');
                 langEnButton.classList.toggle('active', currentLang === 'en');
+            }
+            if (langEsButton) {
+                langEsButton.setAttribute('aria-pressed', currentLang === 'es' ? 'true' : 'false');
+                langEsButton.classList.toggle('active', currentLang === 'es');
             }
         };
         
@@ -139,6 +144,13 @@ function initializeApplication() {
         if (langEnButton) {
             langEnButton.addEventListener('click', () => {
                 setLanguage('en');
+                updateLanguageButtons();
+            });
+        }
+        
+        if (langEsButton) {
+            langEsButton.addEventListener('click', () => {
+                setLanguage('es');
                 updateLanguageButtons();
             });
         }
