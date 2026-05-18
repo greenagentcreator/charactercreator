@@ -6,16 +6,18 @@ import { PROFESSIONS } from '../config/professions.js';
 import { ALL_SKILLS } from '../config/skills.js';
 import { t } from '../i18n/i18n.js';
 import { updateNavigationButtons } from '../app.js';
-import { findSkillInstance, modifySkillValue, calculateDerivedAttributes } from '../model/character.js';
+import { showInlineError } from '../utils/validation.js';
+import { findSkillInstance, modifySkillValue, calculateDerivedAttributes, normalizeTraumaticBackgroundFields, syncStatsFromAssignments } from '../model/character.js';
 
 // Remove all traumatic background effects
 function removeTraumaticBackgroundEffects() {
     const character = getCharacter();
+    normalizeTraumaticBackgroundFields(character);
     const oldBg = character.traumaticBackground;
     if (!oldBg) return;
 
     // Store base POW before removing effects if it was Captivity
-    if (oldBg === 'captivity' && character.basePOW !== null) {
+    if (oldBg === 'captivity' && character.basePOW != null) {
         character.stats.POW = character.basePOW;
         character.basePOW = null;
     }
@@ -67,6 +69,9 @@ function removeTraumaticBackgroundEffects() {
 // Apply traumatic background effects
 function applyTraumaticBackgroundEffects(backgroundType) {
     const character = getCharacter();
+    normalizeTraumaticBackgroundFields(character);
+    syncStatsFromAssignments();
+
     if (!backgroundType || backgroundType === 'none') {
         removeTraumaticBackgroundEffects();
         character.traumaticBackground = null;
@@ -75,7 +80,7 @@ function applyTraumaticBackgroundEffects(backgroundType) {
     }
 
     // Store base POW for Captivity (POW reduction doesn't affect SAN)
-    if (backgroundType === 'captivity' && character.basePOW === null) {
+    if (backgroundType === 'captivity' && character.basePOW == null && character.stats.POW >= 3) {
         character.basePOW = character.stats.POW;
     }
 
@@ -100,10 +105,8 @@ function applyTraumaticBackgroundEffects(backgroundType) {
     }
 
     // Apply Hard Experience effects (skills will be applied when selected)
-    if (backgroundType === 'hard_experience') {
-        if (!character.traumaticBackgroundEffects.hardExperienceSkills) {
-            character.traumaticBackgroundEffects.hardExperienceSkills = ['', '', '', ''];
-        }
+    if (backgroundType === 'hard_experience' && !character.traumaticBackgroundEffects.hardExperienceSkills) {
+        character.traumaticBackgroundEffects.hardExperienceSkills = ['', '', '', ''];
     }
 
     character.traumaticBackground = backgroundType;
@@ -117,7 +120,6 @@ export function renderStep4_TraumaticBackground() {
     // Ensure traumatic background effects are applied if a background is already selected
     if (character.traumaticBackground && !character.traumaticBackgroundEffects._effectsApplied) {
         applyTraumaticBackgroundEffects(character.traumaticBackground);
-        character.traumaticBackgroundEffects._effectsApplied = true;
     }
     
     // Get number of bonds for Hard Experience bond removal dropdown
@@ -308,6 +310,8 @@ export function attachStep4_3Listeners() {
                     window.app.renderCurrentStep(true); // Skip focus
                 }
             }
+
+            updateNavigationButtons();
         });
     });
 
@@ -348,6 +352,8 @@ export function attachStep4_3Listeners() {
                 character.traumaticBackgroundEffects.hardExperienceSkills = ['', '', '', ''];
             }
             character.traumaticBackgroundEffects.hardExperienceSkills[skillIndex] = selectedSkill;
+
+            updateNavigationButtons();
             
             // Re-render to update all dropdowns (to show/hide skills based on selections)
             if (window.app && window.app.renderCurrentStep) {
@@ -418,16 +424,40 @@ export function attachStep4_3Listeners() {
                 }
             }
             
+            updateNavigationButtons();
+
             // Re-render to update UI
             if (window.app && window.app.renderCurrentStep) {
                 window.app.renderCurrentStep(true);
             }
         });
     }
+
+    updateNavigationButtons();
 }
 
-export function validateStep4_3() {
-    // Traumatic background is optional, so validation always passes
+export function validateStep4_3(showAlerts = true) {
+    const character = getCharacter();
+
+    if (character.traumaticBackground !== 'hard_experience') {
+        return true;
+    }
+
+    const effects = character.traumaticBackgroundEffects || {};
+    const skills = effects.hardExperienceSkills || ['', '', '', ''];
+    const filledSkills = skills.filter(sk => sk && sk !== 'unnatural');
+    const uniqueSkills = new Set(filledSkills);
+
+    if (filledSkills.length !== 4 || uniqueSkills.size !== 4) {
+        if (showAlerts) showInlineError(t('hard_experience_error_select_skills'));
+        return false;
+    }
+
+    if (effects.removedBondIndex === undefined || effects.removedBondIndex === null) {
+        if (showAlerts) showInlineError(t('hard_experience_error_select_bond'));
+        return false;
+    }
+
     return true;
 }
 
@@ -435,7 +465,7 @@ export function saveStep4_3() {
     // Data is saved through event listeners
     // Just ensure effects are applied
     const character = getCharacter();
-    if (character.traumaticBackground && !character.traumaticBackgroundEffects._effectsApplied) {
+    if (character.traumaticBackground && !character.traumaticBackgroundEffects?._effectsApplied) {
         applyTraumaticBackgroundEffects(character.traumaticBackground);
     }
 }

@@ -1,6 +1,6 @@
 // Main entry point for Delta Green Character Creator
 
-import { initI18n, setLanguage, getCurrentLanguage } from './i18n/i18n.js';
+import { initI18n, initLanguageSwitcher, setLanguage, getCurrentLanguage } from './i18n/i18n.js';
 import { initializeApp } from './app.js';
 import { getCharacterFromUrl } from './utils/sharing.js';
 import { initFirebase } from './utils/database.js';
@@ -94,6 +94,7 @@ function initializeApplication() {
         
         // Initialize i18n
         initI18n();
+        initLanguageSwitcher();
         console.log('main.js: i18n initialized');
         
         // Initialize Firebase
@@ -112,51 +113,12 @@ function initializeApplication() {
         // Set the language (this will trigger initial translation)
         setLanguage(getCurrentLanguage());
         
-        // Set up language switcher buttons
-        const langDeButton = document.getElementById('lang-de');
-        const langEnButton = document.getElementById('lang-en');
-        const langEsButton = document.getElementById('lang-es');
-        
-        // Update aria-pressed based on current language
-        const updateLanguageButtons = () => {
-            const currentLang = getCurrentLanguage();
-            if (langDeButton) {
-                langDeButton.setAttribute('aria-pressed', currentLang === 'de' ? 'true' : 'false');
-                langDeButton.classList.toggle('active', currentLang === 'de');
-            }
-            if (langEnButton) {
-                langEnButton.setAttribute('aria-pressed', currentLang === 'en' ? 'true' : 'false');
-                langEnButton.classList.toggle('active', currentLang === 'en');
-            }
-            if (langEsButton) {
-                langEsButton.setAttribute('aria-pressed', currentLang === 'es' ? 'true' : 'false');
-                langEsButton.classList.toggle('active', currentLang === 'es');
-            }
-        };
-        
-        if (langDeButton) {
-            langDeButton.addEventListener('click', () => {
-                setLanguage('de');
-                updateLanguageButtons();
+        const languageSelect = document.getElementById('language-select');
+        if (languageSelect) {
+            languageSelect.addEventListener('change', () => {
+                setLanguage(languageSelect.value);
             });
         }
-        
-        if (langEnButton) {
-            langEnButton.addEventListener('click', () => {
-                setLanguage('en');
-                updateLanguageButtons();
-            });
-        }
-        
-        if (langEsButton) {
-            langEsButton.addEventListener('click', () => {
-                setLanguage('es');
-                updateLanguageButtons();
-            });
-        }
-        
-        // Initial update
-        updateLanguageButtons();
         
         // Handle shared character if present
         if (hasSharedCharacter && sharedCharacterData) {

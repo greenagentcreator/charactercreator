@@ -1,7 +1,7 @@
 // Step 2: Statistics
 // This module handles statistic generation methods (array, roll, point buy, manual) and assignment
 
-import { getCharacter } from '../model/character.js';
+import { getCharacter, syncStatsFromAssignments } from '../model/character.js';
 import { STAT_ARRAYS, STAT_KEYS } from '../config/constants.js';
 import { t, translateAllElements } from '../i18n/i18n.js';
 import { updateNavigationButtons } from '../app.js';
@@ -450,6 +450,8 @@ export function updatePointBuyDistinguishingFeaturesUI() {
 // Dann in attachStep2Listeners:
 export function attachStep2Listeners() {
     const character = getCharacter();
+    syncStatsFromAssignments();
+
     const methodRadios = document.querySelectorAll('input[name="stat-method"]');
     methodRadios.forEach(radio => {
         radio.removeEventListener('change', handleStatMethodChange);
@@ -792,12 +794,19 @@ export function validateStep2(showAlerts = true) {
             return false;
         }
     }
+
+    syncStatsFromAssignments();
+    const statsInvalid = STAT_KEYS.some(key => {
+        const val = character.stats[key] || 0;
+        return val < 3 || val > 18;
+    });
+    if (statsInvalid) {
+        if (showAlerts) showInlineError(t('alert_assign_all_stats'));
+        return false;
+    }
     return true;
 }
 
 export function saveStep2() {
-    const character = getCharacter();
-    // Die Werte sind bereits in character.stats und character.distinguishingFeatures durch die Handler.
-    // character.statAssignments ist ein Hilfsobjekt für die UI-Logik dieses Schritts.
-    // console.log("Step 2 Data Saved:", JSON.parse(JSON.stringify(character.stats)), JSON.parse(JSON.stringify(character.distinguishingFeatures)));
+    syncStatsFromAssignments();
 }

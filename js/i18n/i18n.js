@@ -1,14 +1,15 @@
 // i18n (Internationalization) system for Delta Green Character Creator
 
-import { i18nData } from './translations.js';
+import { i18nData, languageLabels } from './translations.js';
 
 const translations = {};
 let currentLanguage = 'en';
 
 export function setupTranslations() {
-    if (i18nData && i18nData.en) translations.en = i18nData.en;
-    if (i18nData && i18nData.de) translations.de = i18nData.de;
-    if (i18nData && i18nData.es) translations.es = i18nData.es;
+    if (!i18nData) return;
+    for (const [lang, data] of Object.entries(i18nData)) {
+        if (data) translations[lang] = data;
+    }
 }
 
 export function t(key, replacements = {}) {
@@ -108,12 +109,29 @@ export function setLanguage(lang) {
             window.app.renderCurrentStep(); 
         }
     }
-    const langDeButton = document.getElementById('lang-de');
-    const langEnButton = document.getElementById('lang-en');
-    const langEsButton = document.getElementById('lang-es');
-    if (langDeButton) langDeButton.classList.toggle('active', lang === 'de');
-    if (langEnButton) langEnButton.classList.toggle('active', lang === 'en');
-    if (langEsButton) langEsButton.classList.toggle('active', lang === 'es');
+    const languageSelect = document.getElementById('language-select');
+    if (languageSelect && languageSelect.value !== lang) {
+        languageSelect.value = lang;
+    }
+}
+
+export function initLanguageSwitcher() {
+    const languageSelect = document.getElementById('language-select');
+    if (!languageSelect) return;
+
+    languageSelect.replaceChildren();
+    const sortedLangCodes = Object.keys(translations).sort((a, b) => {
+        const labelA = languageLabels[a] || a;
+        const labelB = languageLabels[b] || b;
+        return labelA.localeCompare(labelB);
+    });
+
+    for (const code of sortedLangCodes) {
+        const option = document.createElement('option');
+        option.value = code;
+        option.textContent = languageLabels[code] || code.toUpperCase();
+        languageSelect.appendChild(option);
+    }
 }
 
 export function getCurrentLanguage() {
@@ -132,10 +150,8 @@ export function initI18n() {
         if (browserLangFull) {
             const browserLangBase = browserLangFull.split('-')[0].toLowerCase();
 
-            if (browserLangBase === 'de' && translations.de) {
-                langToSet = 'de';
-            } else if (browserLangBase === 'es' && translations.es) {
-                langToSet = 'es';
+            if (translations[browserLangBase]) {
+                langToSet = browserLangBase;
             }
         }
     }

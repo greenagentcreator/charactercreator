@@ -1,6 +1,7 @@
 // Character model and related functions for Delta Green Character Creator
 
 import { ALL_SKILLS } from '../config/skills.js';
+import { STAT_KEYS } from '../config/constants.js';
 
 // Character data structure
 let character = {};
@@ -40,6 +41,11 @@ export function resetCharacter() {
         bonds: [],
         motivations: ["", "", "", "", ""],
         personalInfo: {},
+        traumaticBackground: null,
+        traumaticBackgroundEffects: {},
+        basePOW: null,
+        adaptations: [],
+        disorder: null,
         id: null,
         createdDate: null
     };
@@ -71,18 +77,79 @@ export function initializeCharacterSkills() {
     console.log("Character skills initialized and skillBoostsUsed reset to 0.");
 }
 
+// Copy array/roll assignments into character.stats when stats were lost (e.g. after re-render)
+export function syncStatsFromAssignments() {
+    if (!character.stats) {
+        character.stats = { STR: 0, CON: 0, DEX: 0, INT: 0, POW: 0, CHA: 0 };
+    }
+    if (character.statGenerationMethod !== 'array' && character.statGenerationMethod !== 'roll') {
+        return;
+    }
+    const assignments = character.statAssignments;
+    if (!assignments || typeof assignments !== 'object') {
+        return;
+    }
+
+    STAT_KEYS.forEach(key => {
+        const assigned = assignments[key];
+        if (assigned === null || assigned === undefined) {
+            return;
+        }
+        // Captivity intentionally lowers POW below the assigned value
+        if (key === 'POW' && character.traumaticBackground === 'captivity' && character.basePOW != null) {
+            return;
+        }
+        const current = character.stats[key] || 0;
+        if (current === 0) {
+            character.stats[key] = assigned;
+        }
+    });
+}
+
+function getEffectiveStatValue(statKey) {
+    const stats = character.stats || {};
+    const statValue = stats[statKey];
+    if (statValue != null && statValue > 0) {
+        return statValue;
+    }
+    const assigned = character.statAssignments?.[statKey];
+    if (assigned != null && assigned > 0) {
+        return assigned;
+    }
+    return statValue || 0;
+}
+
 // Calculate derived attributes based on primary statistics
 export function calculateDerivedAttributes() {
-    const stats = character.stats;
-    if (!stats.STR || !stats.CON || !stats.POW) {
+    syncStatsFromAssignments();
+
+    const str = getEffectiveStatValue('STR');
+    const con = getEffectiveStatValue('CON');
+    const pow = getEffectiveStatValue('POW');
+
+    if (str < 1 || con < 1 || pow < 1) {
         character.derivedAttributes = { HP: 0, WP: 0, SAN: 0, BP: 0 };
         return;
     }
 
-    const HP = Math.ceil((stats.STR + stats.CON) / 2);
-    const WP = stats.POW;
-    const SAN = stats.POW * 5;
-    const BP = SAN - stats.POW;
+    const HP = Math.ceil((str + con) / 2);
+    const WP = character.stats.POW > 0 ? character.stats.POW : pow;
+
+    // Captivity lowers POW for checks but SAN max uses the original POW (stored in basePOW)
+    const powForSan = (character.traumaticBackground === 'captivity' && character.basePOW != null)
+        ? character.basePOW
+        : pow;
+
+    let SAN = powForSan * 5;
+    const bg = character.traumaticBackground;
+
+    if (bg === 'extreme_violence' || bg === 'captivity' || bg === 'hard_experience') {
+        SAN = Math.max(0, SAN - 5);
+    } else if (bg === 'things_man_was_not_meant_to_know') {
+        SAN = Math.max(0, SAN - WP);
+    }
+
+    const BP = Math.max(0, SAN - WP);
 
     character.derivedAttributes = {
         HP: HP,
@@ -92,14 +159,35 @@ export function calculateDerivedAttributes() {
     };
 }
 
+// Ensure traumatic-background fields exist (older saves may omit them)
+export function normalizeTraumaticBackgroundFields(char = character) {
+    if (!char.traumaticBackgroundEffects || typeof char.traumaticBackgroundEffects !== 'object') {
+        char.traumaticBackgroundEffects = {};
+    }
+    if (!Array.isArray(char.adaptations)) {
+        char.adaptations = [];
+    }
+    if (char.traumaticBackground === undefined) {
+        char.traumaticBackground = null;
+    }
+    if (char.basePOW === undefined) {
+        char.basePOW = null;
+    }
+    if (char.disorder === undefined) {
+        char.disorder = null;
+    }
+}
+
 // Get the current character object
 export function getCharacter() {
+    normalizeTraumaticBackgroundFields(character);
     return character;
 }
 
 // Set the character object (useful for loading saved data)
 export function setCharacter(newCharacter) {
     character = newCharacter;
+    normalizeTraumaticBackgroundFields(character);
 }
 
 // Find a skill instance by key (for non-typed skills, returns first instance)
