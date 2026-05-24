@@ -1,8 +1,10 @@
 // Firebase Firestore database utilities
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js';
-import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, limit, startAfter, doc, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
+import { getFirestore, collection, addDoc, getDocs, getDoc, query, where, orderBy, limit, startAfter, doc, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
 import { firebaseConfig, COLLECTIONS, MODERATION_STATUS } from '../config/database.js';
+import { getProfessionFilterKey } from './profession-filter.js';
+import { SUPPORTED_LIBRARY_LANGUAGES } from '../i18n/translations.js';
 import {
     sanitizeCharacterContent,
     validateCharacterContent,
@@ -16,6 +18,97 @@ let app = null;
 let db = null;
 
 const MAX_CHARACTER_BYTES = 750 * 1024; // keep well below Firestore 1MB limit
+const LIBRARY_LANGUAGE_CODES = new Set(SUPPORTED_LIBRARY_LANGUAGES);
+const FALLBACK_SCAN_BATCH = 100;
+const MAX_FALLBACK_FILL_ITERATIONS = 15;
+const STAT_PREVIEW_KEYS = ['STR', 'CON', 'DEX', 'INT', 'POW', 'CHA'];
+
+function normalizeLibraryLanguage(value) {
+    const base = String(value || 'en').split('-')[0].toLowerCase();
+    return LIBRARY_LANGUAGE_CODES.has(base) ? base : 'en';
+}
+
+function matchesLibraryFilters(character, professionFilter, languageFilter) {
+    if (professionFilter && professionFilter !== 'all') {
+        const filterKey = character.professionFilterKey || getProfessionFilterKey(character.profession);
+        if (filterKey !== professionFilter) {
+            return false;
+        }
+    }
+
+    if (languageFilter && languageFilter !== 'all') {
+        if (character.language !== languageFilter) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function buildLibraryPreviewFields(characterData) {
+    const stats = characterData?.stats;
+    const previewStats = {};
+
+    if (stats && typeof stats === 'object') {
+        STAT_PREVIEW_KEYS.forEach((key) => {
+            if (stats[key] != null) {
+                previewStats[key] = stats[key];
+            }
+        });
+    }
+
+    return {
+        previewStats: Object.keys(previewStats).length > 0 ? previewStats : null,
+        bondCount: Array.isArray(characterData?.bonds) ? characterData.bonds.length : 0
+    };
+}
+
+function buildPreviewStatsFromData(characterData) {
+    return buildLibraryPreviewFields(characterData).previewStats;
+}
+
+function toPublicListCharacter(id, data) {
+    const previewStats = data.previewStats ?? buildPreviewStatsFromData(data.data);
+
+    return {
+        id,
+        name: data.name,
+        profession: data.profession,
+        professionFilterKey: data.professionFilterKey,
+        language: data.language,
+        uploadedAt: data.uploadedAt,
+        createdDate: data.createdDate,
+        previewStats,
+        bondCount: data.bondCount ?? (Array.isArray(data.data?.bonds) ? data.data.bonds.length : 0)
+    };
+}
+
+async function resolveLibraryPaginationCursor(lastDoc, lastDocId) {
+    if (lastDoc) {
+        return lastDoc;
+    }
+
+    if (!lastDocId || !ensureInitialized()) {
+        return null;
+    }
+
+    try {
+        const docSnap = await getDoc(doc(db, COLLECTIONS.CHARACTERS, lastDocId));
+        return docSnap.exists() ? docSnap : null;
+    } catch (error) {
+        console.warn('Could not resolve library pagination cursor:', error);
+        return null;
+    }
+}
+
+function buildPublicCharactersResult(characters, lastDoc, hasMore) {
+    return {
+        characters,
+        lastDoc,
+        lastDocId: lastDoc?.id ?? null,
+        hasMore
+    };
+}
 
 function sanitizeShortText(value, maxLength = 120) {
     if (!value) {
@@ -110,9 +203,19 @@ export async function uploadCharacter(characterData) {
         sanitizeShortText(characterData.profession || sanitizedData.profession || 'Unknown', 80) ||
         'Unknown';
 
+    const professionFilterKey = getProfessionFilterKey(profession);
+    const nameLower = characterName.toLowerCase();
+    const language = normalizeLibraryLanguage(characterData.language);
+    const { previewStats, bondCount } = buildLibraryPreviewFields(sanitizedData);
+
     const characterDoc = {
         name: characterName,
+        nameLower,
         profession: profession,
+        professionFilterKey,
+        language,
+        previewStats,
+        bondCount,
         data: sanitizedData,
         createdDate: characterData.createdDate || new Date().toISOString(),
         moderationStatus: MODERATION_STATUS.APPROVED, // Auto-approve uploaded characters
@@ -134,67 +237,157 @@ export async function uploadCharacter(characterData) {
 }
 
 /**
- * Get all approved characters from database
+ * Fetch a single approved public character by document ID.
+ * @param {string} id - Firestore document ID
+ * @returns {Promise<Object|null>}
+ */
+export async function getPublicCharacterById(id) {
+    if (!ensureInitialized() || !id) {
+        return null;
+    }
+
+    try {
+        const docSnap = await getDoc(doc(db, COLLECTIONS.CHARACTERS, id));
+        if (!docSnap.exists()) {
+            return null;
+        }
+
+        const data = docSnap.data();
+        if (data.moderationStatus !== MODERATION_STATUS.APPROVED) {
+            return null;
+        }
+
+        return {
+            id: docSnap.id,
+            ...data
+        };
+    } catch (error) {
+        console.error('Error fetching public character by ID:', error);
+        return null;
+    }
+}
+
+/**
+ * Get approved characters from database
  * @param {number} maxResults - Maximum number of results (default: 50)
  * @param {DocumentSnapshot} lastDoc - Last document from previous query (for pagination)
- * @returns {Promise<{characters: Array, lastDoc: DocumentSnapshot|null, hasMore: boolean}>} Object with characters array, last document, and hasMore flag
+ * @param {string|null} professionFilter - 'all', 'custom', or a profession nameKey
+ * @param {string|null} languageFilter - 'all' or a supported language code (de, en, es, fr, it, nl, pl, pt, ru)
+ * @param {string|null} lastDocId - Optional document ID when resuming without a snapshot
+ * @returns {Promise<{characters: Array, lastDoc: DocumentSnapshot|null, lastDocId: string|null, hasMore: boolean}>}
  */
-export async function getPublicCharacters(maxResults = 50, lastDoc = null) {
+export async function getPublicCharacters(
+    maxResults = 50,
+    lastDoc = null,
+    professionFilter = 'all',
+    languageFilter = 'all',
+    lastDocId = null
+) {
     if (!ensureInitialized()) {
-        return { characters: [], lastDoc: null, hasMore: false };
+        return buildPublicCharactersResult([], null, false);
     }
-    
-    try {
-        let q = query(
-            collection(db, COLLECTIONS.CHARACTERS),
-            where('moderationStatus', '==', MODERATION_STATUS.APPROVED),
-            orderBy('uploadedAt', 'desc'),
-            limit(maxResults)
-        );
-        
-        // Add pagination if lastDoc is provided
-        if (lastDoc) {
-            q = query(
-                collection(db, COLLECTIONS.CHARACTERS),
-                where('moderationStatus', '==', MODERATION_STATUS.APPROVED),
-                orderBy('uploadedAt', 'desc'),
-                startAfter(lastDoc),
-                limit(maxResults)
-            );
+
+    const cursor = await resolveLibraryPaginationCursor(lastDoc, lastDocId);
+    const indexedResult = await queryPublicCharacters(maxResults, cursor, professionFilter, languageFilter);
+    if (indexedResult !== null) {
+        return indexedResult;
+    }
+
+    const usesFilters =
+        (professionFilter && professionFilter !== 'all') ||
+        (languageFilter && languageFilter !== 'all');
+
+    if (!usesFilters) {
+        return buildPublicCharactersResult([], null, false);
+    }
+
+    const accumulated = [];
+    let scanCursor = cursor;
+    let scanHasMore = true;
+    let iterations = 0;
+
+    while (
+        accumulated.length < maxResults &&
+        scanHasMore &&
+        iterations < MAX_FALLBACK_FILL_ITERATIONS
+    ) {
+        const batch = await queryPublicCharacters(FALLBACK_SCAN_BATCH, scanCursor, 'all', 'all');
+        if (!batch) {
+            break;
         }
+
+        const matchingCharacters = batch.characters.filter((character) =>
+            matchesLibraryFilters(character, professionFilter, languageFilter)
+        );
+        accumulated.push(...matchingCharacters);
+
+        scanCursor = batch.lastDoc;
+        scanHasMore = batch.hasMore;
+        iterations += 1;
+
+        if (batch.characters.length === 0) {
+            scanHasMore = false;
+            break;
+        }
+    }
+
+    const trimmedCharacters = accumulated.slice(0, maxResults);
+    const hasMoreResults = scanHasMore || accumulated.length > maxResults;
+
+    return buildPublicCharactersResult(trimmedCharacters, scanCursor, hasMoreResults);
+}
+
+async function queryPublicCharacters(maxResults, lastDoc, professionFilter, languageFilter) {
+    try {
+        const constraints = [
+            where('moderationStatus', '==', MODERATION_STATUS.APPROVED)
+        ];
+
+        if (professionFilter && professionFilter !== 'all') {
+            constraints.push(where('professionFilterKey', '==', professionFilter));
+        }
+
+        if (languageFilter && languageFilter !== 'all') {
+            constraints.push(where('language', '==', languageFilter));
+        }
+
+        constraints.push(orderBy('uploadedAt', 'desc'));
+
+        if (lastDoc) {
+            constraints.push(startAfter(lastDoc));
+        }
+
+        constraints.push(limit(maxResults));
+
+        const q = query(collection(db, COLLECTIONS.CHARACTERS), ...constraints);
         
         const querySnapshot = await getDocs(q);
         const characters = [];
         let newLastDoc = null;
         
-        querySnapshot.forEach((doc) => {
-            characters.push({
-                id: doc.id,
-                ...doc.data()
-            });
-            newLastDoc = doc; // Keep track of the last document
+        querySnapshot.forEach((docSnap) => {
+            characters.push(toPublicListCharacter(docSnap.id, docSnap.data()));
+            newLastDoc = docSnap;
         });
-        
-        // Check if there are more results
+
         const hasMore = querySnapshot.size === maxResults;
-        
-        return {
-            characters: characters,
-            lastDoc: newLastDoc,
-            hasMore: hasMore
-        };
+
+        return buildPublicCharactersResult(characters, newLastDoc, hasMore);
     } catch (error) {
         console.error('Error fetching public characters:', error);
-        
-        // Check if it's a CORS error (common when testing locally)
+
+        if (error.code === 'failed-precondition' || error.message.includes('index')) {
+            console.warn('Firestore index may be missing for library filter queries.');
+        }
+
         if (error.code === 'failed-precondition' || error.message.includes('CORS') || error.message.includes('access control')) {
             console.warn('CORS error detected. Make sure you are:');
             console.warn('1. Running on an authorized domain (localhost or your GitHub Pages domain)');
             console.warn('2. Not opening the HTML file directly (use a local server instead)');
             console.warn('3. Your domain is added to Firebase Authorized Domains');
         }
-        
-        return { characters: [], lastDoc: null, hasMore: false };
+
+        return null;
     }
 }
 
