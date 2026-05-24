@@ -1,13 +1,13 @@
 // Step 5: Summary
 // This module displays the final character summary with print/download functionality
 
-import { getCharacter } from '../model/character.js?v=99fd89c';
-import { calculateDerivedAttributes } from '../model/character.js?v=99fd89c';
-import { ALL_SKILLS } from '../config/skills.js?v=99fd89c';
-import { PROFESSIONS } from '../config/professions.js?v=99fd89c';
-import { STAT_KEYS } from '../config/constants.js?v=99fd89c';
-import { t, getCurrentLanguage } from '../i18n/i18n.js?v=99fd89c';
-import { escapeHtml, normalizeSheetCharacterFields } from '../utils/sheet-edit.js?v=99fd89c';
+import { getCharacter } from '../model/character.js?v=eb448c0';
+import { calculateDerivedAttributes } from '../model/character.js?v=eb448c0';
+import { ALL_SKILLS } from '../config/skills.js?v=eb448c0';
+import { PROFESSIONS } from '../config/professions.js?v=eb448c0';
+import { STAT_KEYS } from '../config/constants.js?v=eb448c0';
+import { t, getCurrentLanguage } from '../i18n/i18n.js?v=eb448c0';
+import { escapeHtml, normalizeSheetCharacterFields, getBondScoreMax } from '../utils/sheet-edit.js?v=eb448c0';
 
 function renderPersonalSection(character, professionDisplayName, isEditable) {
     const pi = character.personalInfo || {};
@@ -102,6 +102,7 @@ function renderBondsList(character, isEditable) {
         return `<li><em>${t('not_defined')}</em></li>`;
     }
     return character.bonds.map((bond, index) => {
+        const bondScoreMax = getBondScoreMax(character.stats?.CHA, bond.score);
         if (isEditable) {
             return `<li class="sheet-bond-row" data-sheet-bond-index="${index}">
                 <label class="sheet-bond-field sheet-bond-field-desc">
@@ -110,7 +111,7 @@ function renderBondsList(character, isEditable) {
                 </label>
                 <label class="sheet-bond-field sheet-bond-field-score">
                     <span class="sheet-bond-field-label">${escapeHtml(t('bond_score_short'))}</span>
-                    <input type="number" class="sheet-edit-input sheet-edit-input-bond-score" data-sheet-field="bond-score" min="0" max="3" value="${bond.score ?? 0}" aria-label="${escapeHtml(t('bond_score_short'))}">
+                    <input type="number" class="sheet-edit-input sheet-edit-input-bond-score" data-sheet-field="bond-score" min="0" max="${bondScoreMax}" value="${bond.score ?? 0}" aria-label="${escapeHtml(t('bond_score_short'))}">
                 </label>
             </li>`;
         }

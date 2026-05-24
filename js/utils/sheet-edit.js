@@ -1,11 +1,11 @@
 // Collect sheet edits from DOM and persist local characters
 
-import { getCharacter, calculateDerivedAttributes } from '../model/character.js?v=99fd89c';
-import { saveCharacter } from './storage.js?v=99fd89c';
-import { PROFESSIONS } from '../config/professions.js?v=99fd89c';
-import { STAT_KEYS } from '../config/constants.js?v=99fd89c';
-import { t } from '../i18n/i18n.js?v=99fd89c';
-export { escapeHtml, escapeAttr } from './escape-html.js?v=99fd89c';
+import { getCharacter, calculateDerivedAttributes } from '../model/character.js?v=eb448c0';
+import { saveCharacter } from './storage.js?v=eb448c0';
+import { PROFESSIONS } from '../config/professions.js?v=eb448c0';
+import { STAT_KEYS } from '../config/constants.js?v=eb448c0';
+import { t } from '../i18n/i18n.js?v=eb448c0';
+export { escapeHtml, escapeAttr } from './escape-html.js?v=eb448c0';
 
 export function normalizeSheetCharacterFields(char) {
     if (!char.personalInfo || typeof char.personalInfo !== 'object') {
@@ -78,12 +78,20 @@ function clampSkill(value) {
     return Math.max(0, Math.min(99, n));
 }
 
-function clampBondScore(value) {
+function clampBondScore(value, maxScore = 18) {
     const n = parseInt(value, 10);
     if (Number.isNaN(n)) {
         return null;
     }
-    return Math.max(0, Math.min(3, n));
+    const max = Math.max(3, Math.min(18, maxScore));
+    return Math.max(0, Math.min(max, n));
+}
+
+/** Upper bound for bond score inputs: CHA, but never below an existing score on the sheet. */
+export function getBondScoreMax(chaValue, currentScore = 0) {
+    const chaMax = clampStat(chaValue) ?? 18;
+    const current = parseInt(currentScore, 10);
+    return Math.max(chaMax, Number.isNaN(current) ? 0 : current);
 }
 
 export function collectSheetEditsFromDOM() {
@@ -152,7 +160,8 @@ export function collectSheetEditsFromDOM() {
         }
         const desc = row.querySelector('[data-sheet-field="bond-desc"]')?.value?.trim() ?? '';
         const scoreRaw = row.querySelector('[data-sheet-field="bond-score"]')?.value;
-        const score = clampBondScore(scoreRaw);
+        const chaScore = clampStat(character.stats?.CHA) ?? 18;
+        const score = clampBondScore(scoreRaw, chaScore);
         character.bonds[index].description = desc;
         if (score != null) {
             character.bonds[index].score = score;
@@ -446,6 +455,9 @@ export function attachSheetEditListeners() {
         statInput.addEventListener('change', () => {
             updateX5();
             refreshDerivedMaximums();
+            if (key === 'CHA') {
+                refreshBondScoreMaxes();
+            }
         });
     });
     attachMotivationDynamicRows();
@@ -466,5 +478,12 @@ function refreshDerivedMaximums() {
         if (maxCell) {
             maxCell.textContent = value ?? 0;
         }
+    });
+}
+
+function refreshBondScoreMaxes() {
+    const chaInput = document.querySelector('[data-sheet-field="stat-CHA"]');
+    document.querySelectorAll('[data-sheet-field="bond-score"]').forEach((input) => {
+        input.max = String(getBondScoreMax(chaInput?.value, input.value));
     });
 }

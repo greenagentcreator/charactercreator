@@ -1,6 +1,6 @@
 // Browser history integration for in-app navigation (steps, character views)
 
-import { persistAppNavigationState } from './app-session.js?v=99fd89c';
+import { persistAppNavigationState } from './app-session.js?v=eb448c0';
 
 let navigatingFromHistory = false;
 

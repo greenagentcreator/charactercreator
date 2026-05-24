@@ -1,4 +1,4 @@
-import { configureLogging } from './config/environment.js?v=99fd89c';
+import { configureLogging } from './config/environment.js?v=eb448c0';
 
 console.log('bootstrap.js: Starting initialization...');
 
@@ -10,9 +10,9 @@ try {
         console.log('bootstrap.js: main.js loaded successfully');
     }).catch((error) => {
         console.error('bootstrap.js: Error loading main.js:', error);
-        import('./utils/app-loading.js?v=99fd89c').then(({ failAppLoading }) => failAppLoading()).catch(() => {});
+        import('./utils/app-loading.js?v=eb448c0').then(({ failAppLoading }) => failAppLoading()).catch(() => {});
     });
 } catch (error) {
     console.error('bootstrap.js: Error during initialization:', error);
-    import('./utils/app-loading.js?v=99fd89c').then(({ failAppLoading }) => failAppLoading()).catch(() => {});
+    import('./utils/app-loading.js?v=eb448c0').then(({ failAppLoading }) => failAppLoading()).catch(() => {});
 }

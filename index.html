@@ -53,19 +53,20 @@
     <script type="importmap">
     {
         "imports": {
-            "app": "./js/app.js?v=99fd89c",
-            "main": "./js/main.js?v=99fd89c"
+            "app": "./js/app.js?v=eb448c0",
+            "main": "./js/main.js?v=eb448c0"
         }
     }
     </script>
     <script>
-        window.__APP_BUILD__ = '99fd89c';
+        window.__APP_BUILD__ = 'eb448c0';
         (function () {
-            var BUILD = '99fd89c';
+            var BUILD = 'eb448c0';
             var key = 'dg_app_build';
             try {
                 var previous = localStorage.getItem(key);
-                if (previous && previous !== BUILD && !/[?&]v=/.test(location.search)) {
+                var urlVersion = new URLSearchParams(location.search).get('v');
+                if (BUILD !== urlVersion || (previous && previous !== BUILD)) {
                     localStorage.setItem(key, BUILD);
                     location.replace(location.pathname + '?v=' + encodeURIComponent(BUILD) + location.hash);
                     return;
@@ -75,7 +76,7 @@
         })();
     </script>
     
-    <link rel="stylesheet" href="css/styles.css?v=99fd89c">
+    <link rel="stylesheet" href="css/styles.css?v=eb448c0">
     
     <!-- LZ-String for URL compression -->
     <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
@@ -163,7 +164,7 @@
         <button id="btn-next" data-i18n="btn_next_text" class="nav-button">Next</button>
     </nav>
 
-    <script type="module" src="js/bootstrap.js?v=99fd89c"></script>
+    <script type="module" src="js/bootstrap.js?v=eb448c0"></script>
     <noscript>
         <p>Delta Green Agent Creator — free online character sheet tool for Delta Green RPG. Create, save, print, and share agent dossiers in English, Deutsch, Español, Français, and Русский. Enable JavaScript to use the creator.</p>
     </noscript>

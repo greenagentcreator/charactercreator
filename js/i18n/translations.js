@@ -1,8 +1,8 @@
-import { en } from './en.js?v=99fd89c';
-import { de } from './de.js?v=99fd89c';
-import { es } from './es.js?v=99fd89c';
-import { fr } from './fr.js?v=99fd89c';
-import { ru } from './ru.js?v=99fd89c';
+import { en } from './en.js?v=eb448c0';
+import { de } from './de.js?v=eb448c0';
+import { es } from './es.js?v=eb448c0';
+import { fr } from './fr.js?v=eb448c0';
+import { ru } from './ru.js?v=eb448c0';
 
 export const i18nData = {
     en,
