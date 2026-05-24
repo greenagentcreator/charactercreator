@@ -7,7 +7,3 @@ export function getBuildQuery() {
     }
     return `?v=${encodeURIComponent(version)}`;
 }
-
-export function versionedImport(relativePath) {
-    return import(`${relativePath}${getBuildQuery()}`);
-}

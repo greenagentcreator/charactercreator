@@ -28,6 +28,7 @@ let indexHtml = fs.readFileSync(indexPath, 'utf8');
 indexHtml = indexHtml
     .replace(/css\/styles\.css\?v=[^"']+/, `css/styles.css?v=${buildId}`)
     .replace(/js\/bootstrap\.js\?v=[^"']+/, `js/bootstrap.js?v=${buildId}`)
+    .replace(/"\.\/js\/app\.js\?v=[^"]+"/, `"./js/app.js?v=${buildId}"`)
     .replace(/window\.__APP_BUILD__ = '[^']+'/, `window.__APP_BUILD__ = '${buildId}'`)
     .replace(/var BUILD = '[^']+'/, `var BUILD = '${buildId}'`);
 
