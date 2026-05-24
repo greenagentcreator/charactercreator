@@ -55,6 +55,32 @@ export function decodeCharacterFromUrl(compressedBase64) {
 }
 
 /**
+ * Normalize payload from a shared URL (raw character model or storage wrapper).
+ * @param {unknown} raw
+ * @returns {Object|null}
+ */
+export function normalizeSharedCharacterPayload(raw) {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+        return null;
+    }
+
+    const payload = /** @type {Record<string, unknown>} */ (raw);
+
+    if (payload.data && typeof payload.data === 'object' && !Array.isArray(payload.data)) {
+        const nested = /** @type {Record<string, unknown>} */ (payload.data);
+        if (nested.stats || nested.skills || nested.professionKey) {
+            return nested;
+        }
+    }
+
+    if (payload.stats || payload.skills || payload.professionKey) {
+        return payload;
+    }
+
+    return null;
+}
+
+/**
  * Get character data from URL hash
  * @returns {Object|null} Character data if found in URL, null otherwise
  */
@@ -69,7 +95,8 @@ export function getCharacterFromUrl() {
         return null;
     }
     
-    return decodeCharacterFromUrl(base64Data);
+    const decoded = decodeCharacterFromUrl(base64Data);
+    return normalizeSharedCharacterPayload(decoded);
 }
 
 /**

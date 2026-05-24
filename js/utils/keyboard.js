@@ -55,7 +55,7 @@ function handleKeyboardNavigation(event) {
                 return;
             }
             // Otherwise, try to proceed to next step
-            if (activeElement && !activeElement.tagName === 'BUTTON') {
+            if (!activeElement || activeElement.tagName !== 'BUTTON') {
                 event.preventDefault();
                 navigateToNextStep();
             }
@@ -68,7 +68,7 @@ function handleKeyboardNavigation(event) {
  */
 function navigateToNextStep() {
     const btnNext = document.getElementById('btn-next');
-    if (btnNext && !btnNext.disabled) {
+    if (btnNext && btnNext.style.display !== 'none' && btnNext.offsetParent !== null) {
         btnNext.click();
     }
 }
