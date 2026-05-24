@@ -2,6 +2,7 @@
 
 import { i18nData, languageLabels } from './translations.js';
 import { syncRussianFontsWithLanguage } from '../utils/locale-fonts.js';
+import { updateSeoMeta } from '../utils/seo.js';
 
 const translations = {};
 let currentLanguage = 'en';
@@ -107,6 +108,7 @@ export function setLanguage(lang) {
     }
     
     translateAllElements(); 
+    updateSeoMeta(lang);
 
     // Don't re-render wizard/home while restoring, loading a share, or viewing a sheet
     if (window.app && typeof window.app.renderCurrentStep === 'function') {
@@ -154,16 +156,21 @@ export function initI18n() {
     setupTranslations();
     let langToSet = 'en';
 
-    const storedLang = localStorage.getItem('preferredLanguage');
-    if (storedLang && translations[storedLang]) {
-        langToSet = storedLang;
+    const urlLang = new URLSearchParams(window.location.search).get('lang')?.toLowerCase();
+    if (urlLang && translations[urlLang]) {
+        langToSet = urlLang;
     } else {
-        const browserLangFull = navigator.language || navigator.userLanguage;
-        if (browserLangFull) {
-            const browserLangBase = browserLangFull.split('-')[0].toLowerCase();
+        const storedLang = localStorage.getItem('preferredLanguage');
+        if (storedLang && translations[storedLang]) {
+            langToSet = storedLang;
+        } else {
+            const browserLangFull = navigator.language || navigator.userLanguage;
+            if (browserLangFull) {
+                const browserLangBase = browserLangFull.split('-')[0].toLowerCase();
 
-            if (translations[browserLangBase]) {
-                langToSet = browserLangBase;
+                if (translations[browserLangBase]) {
+                    langToSet = browserLangBase;
+                }
             }
         }
     }

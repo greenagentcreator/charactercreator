@@ -172,7 +172,7 @@ export function renderCharacterView(characterId, characterData = null) {
                     <button type="button" class="sheet-toolbar-back" data-sheet-action="home" aria-label="${t('aria_back_to_list')}">
                         <span aria-hidden="true">←</span>
                     </button>
-                    <h2>Agent ${agentName}</h2>
+                    <h2>Agent ${escapeHtml(agentName)}</h2>
                 </header>
                 ${toolbarHtml}
                 ${saveStatusHtml}

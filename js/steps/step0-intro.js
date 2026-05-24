@@ -10,6 +10,7 @@ import { getPublicCharacters, importCharacterFromDatabase, reportCharacter, getP
 import { shouldShowBanner, dismissBanner } from '../utils/banner.js';
 import { resolveProfessionMetadata, getStandardProfessionFilters } from '../utils/profession-filter.js';
 import { showModal, closeModal, showConfirmDialog, showPromptDialog, showAlertDialog } from '../utils/modal.js';
+import { escapeHtml, escapeAttr } from '../utils/escape-html.js';
 
 const DEFAULT_PROFESSION_FILTER = 'all';
 const DEFAULT_LANGUAGE_FILTER = 'all';
@@ -81,10 +82,10 @@ function getCharacterCardMenuMarkup({ characterId = '', draftId = '', showRename
         items.push(`<button type="button" class="character-menu-item character-rename-btn" data-character-id="${characterId}" data-i18n="edit_name"></button>`);
     }
     if (showDelete && characterId) {
-        items.push(`<button type="button" class="character-menu-item character-menu-delete character-delete-btn" data-character-id="${characterId}" data-i18n="delete_character" aria-label="${t('aria_delete_character', { name: agentName })}"></button>`);
+        items.push(`<button type="button" class="character-menu-item character-menu-delete character-delete-btn" data-character-id="${characterId}" data-i18n="delete_character" aria-label="${escapeAttr(t('aria_delete_character', { name: agentName }))}"></button>`);
     }
     if (showDiscard && draftId) {
-        items.push(`<button type="button" class="character-menu-item character-menu-delete character-discard-draft-btn" data-draft-id="${draftId}" data-i18n="btn_discard_unfinished" aria-label="${t('aria_discard_unfinished', { name: agentName })}"></button>`);
+        items.push(`<button type="button" class="character-menu-item character-menu-delete character-discard-draft-btn" data-draft-id="${draftId}" data-i18n="btn_discard_unfinished" aria-label="${escapeAttr(t('aria_discard_unfinished', { name: agentName }))}"></button>`);
     }
 
     if (items.length === 0) {
@@ -125,20 +126,9 @@ function getUnfinishedCharacterCardMarkup(draft) {
                 ${getCharacterStatsPreview({ data: draft.character })}
             </div>
             <div class="character-card-actions character-card-actions-single">
-                <button type="button" class="character-continue-draft-btn character-view-db-btn" data-draft-id="${draft.id}" data-i18n="btn_continue_unfinished" aria-label="${t('aria_continue_unfinished', { name: draft.name })}"></button>
+                <button type="button" class="character-continue-draft-btn character-view-db-btn" data-draft-id="${draft.id}" data-i18n="btn_continue_unfinished" aria-label="${escapeAttr(t('aria_continue_unfinished', { name: draft.name }))}"></button>
             </div>
         </div>`;
-}
-
-function escapeHtml(text) {
-    if (text == null) {
-        return '';
-    }
-    return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
 }
 
 function getOwnCharacterCardMarkup(char) {
@@ -153,7 +143,7 @@ function getOwnCharacterCardMarkup(char) {
         <div class="character-card character-card-public character-card-own${isImported ? ' character-card-imported' : ''}" data-character-id="${char.id}">
             <div class="character-card-content">
                 <div class="character-card-header">
-                    <h4 class="character-name" data-character-id="${char.id}">${displayName}</h4>
+                    <h4 class="character-name" data-character-id="${char.id}">${escapeHtml(displayName)}</h4>
                     <div class="character-card-header-actions">
                         ${isImported ? `<span class="imported-badge" data-i18n="imported_character_label"></span>` : ''}
                         ${getCharacterCardMenuMarkup({
@@ -165,14 +155,14 @@ function getOwnCharacterCardMarkup(char) {
                     </div>
                 </div>
                 <div class="character-card-info">
-                    <span class="character-profession">${professionDisplay}</span>
-                    <span class="character-date">${dateStr}</span>
+                    <span class="character-profession">${escapeHtml(professionDisplay)}</span>
+                    <span class="character-date">${escapeHtml(dateStr)}</span>
                 </div>
                 ${getCharacterStatsPreview(char)}
             </div>
             <div class="character-card-actions">
-                <button type="button" class="character-open-btn character-view-db-btn" data-character-id="${char.id}" data-i18n="btn_open_character" aria-label="${t('aria_view_character', { name: agentName })}"></button>
-                <button type="button" class="character-print-btn character-load-btn" data-character-id="${char.id}" data-i18n="btn_print_character" aria-label="${t('aria_print_summary')}"></button>
+                <button type="button" class="character-open-btn character-view-db-btn" data-character-id="${char.id}" data-i18n="btn_open_character" aria-label="${escapeAttr(t('aria_view_character', { name: agentName }))}"></button>
+                <button type="button" class="character-print-btn character-load-btn" data-character-id="${char.id}" data-i18n="btn_print_character" aria-label="${escapeAttr(t('aria_print_summary'))}"></button>
             </div>
         </div>`;
 }
@@ -424,24 +414,24 @@ function getPublicCharacterCardTemplate(char) {
         : '';
 
     return `
-        <div class="character-card character-card-public" data-character-id="${char.id}" data-db-id="${char.id}" data-profession-key="${filterKey}" data-profession-custom="${isCustom}">
+        <div class="character-card character-card-public" data-character-id="${char.id}" data-db-id="${char.id}" data-profession-key="${escapeAttr(filterKey)}" data-profession-custom="${isCustom}">
             <div class="character-card-content">
                 <div class="character-card-header">
-                    <h4 class="character-name">Agent ${agentName}</h4>
-                    <button type="button" class="character-report-btn-icon" data-db-id="${char.id}" title="${t('report_character')}" aria-label="${t('aria_report_character', { name: agentName })}">
+                    <h4 class="character-name">Agent ${escapeHtml(agentName)}</h4>
+                    <button type="button" class="character-report-btn-icon" data-db-id="${char.id}" title="${escapeAttr(t('report_character'))}" aria-label="${escapeAttr(t('aria_report_character', { name: agentName }))}">
                         <span aria-hidden="true">⚑</span>
                         <span class="character-report-btn-label sr-only" data-i18n="report_character"></span>
                     </button>
                 </div>
                 <div class="character-card-info">
-                    <span class="character-profession">${displayName}${customBadge}</span>
-                    <span class="character-date">${dateStr}</span>
+                    <span class="character-profession">${escapeHtml(displayName)}${customBadge}</span>
+                    <span class="character-date">${escapeHtml(dateStr)}</span>
                 </div>
                 ${getCharacterStatsPreview(char)}
             </div>
             <div class="character-card-actions">
-                <button type="button" class="character-view-db-btn" data-db-id="${char.id}" data-i18n="view_character" aria-label="${t('aria_view_character', { name: agentName })}"></button>
-                <button type="button" class="character-load-btn" data-db-id="${char.id}" data-i18n="load_from_database" aria-label="${t('aria_load_from_database', { name: agentName })}"></button>
+                <button type="button" class="character-view-db-btn" data-db-id="${char.id}" data-i18n="view_character" aria-label="${escapeAttr(t('aria_view_character', { name: agentName }))}"></button>
+                <button type="button" class="character-load-btn" data-db-id="${char.id}" data-i18n="load_from_database" aria-label="${escapeAttr(t('aria_load_from_database', { name: agentName }))}"></button>
             </div>
         </div>
     `;
@@ -698,7 +688,7 @@ async function importLibraryCharacter(dbId) {
 
 function openReportDialog(dbId, characterName) {
     const bodyHtml = `
-        <p>${t('report_modal_intro', { name: characterName })}</p>
+        <p>${escapeHtml(t('report_modal_intro', { name: characterName }))}</p>
         <fieldset class="report-reasons">
             <legend class="sr-only">${t('report_modal_title')}</legend>
             <label class="report-reason-option">

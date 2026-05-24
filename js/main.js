@@ -5,6 +5,8 @@ import { initializeApp, processSharedCharacterLink } from './app.js';
 import { getCharacterFromUrl } from './utils/sharing.js';
 import { initFirebase } from './utils/database.js';
 import { initNews, refreshNewsButton } from './utils/news.js';
+import { initSeoMeta } from './utils/seo.js';
+import { failAppLoading } from './utils/app-loading.js';
 
 // Theme management
 function initTheme() {
@@ -111,6 +113,7 @@ async function initializeApplication() {
         
         // Set the language (this will trigger initial translation)
         setLanguage(getCurrentLanguage());
+        initSeoMeta();
         refreshNewsButton();
         
         const languageSelect = document.getElementById('language-select');
@@ -123,8 +126,11 @@ async function initializeApplication() {
         if (sharedCharacterData) {
             processSharedCharacterLink(sharedCharacterData);
         }
+
+        window.setTimeout(failAppLoading, 12000);
     } catch (error) {
         console.error('main.js: Error during initialization:', error);
+        failAppLoading();
         throw error; // Re-throw to see in console
     }
 }

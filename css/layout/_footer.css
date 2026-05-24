@@ -74,6 +74,70 @@ footer p {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+.footer-privacy {
+    max-width: 42rem;
+    margin: 0 auto var(--spacing-lg);
+    text-align: left;
+    font-style: normal;
+    opacity: 1;
+    border: 1px solid var(--color-border-light);
+    border-radius: 4px;
+    background-color: var(--color-bg-secondary);
+}
+
+.footer-privacy summary {
+    cursor: pointer;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-weight: 600;
+    font-size: var(--font-size-base);
+    color: var(--color-text);
+    list-style: none;
+}
+
+.footer-privacy summary::-webkit-details-marker {
+    display: none;
+}
+
+.footer-privacy summary::before {
+    content: '▸';
+    display: inline-block;
+    margin-right: var(--spacing-sm);
+    transition: transform var(--transition-fast);
+}
+
+.footer-privacy[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.footer-privacy-body {
+    padding: 0 var(--spacing-md) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    line-height: 1.55;
+    color: var(--color-text-muted);
+}
+
+.footer-privacy-body p {
+    margin: 0 0 var(--spacing-sm);
+}
+
+.footer-privacy-body ul {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.footer-privacy-body li {
+    margin-bottom: var(--spacing-sm);
+}
+
+.footer-privacy-body a {
+    color: var(--color-accent);
+}
+
+.footer-privacy-body strong {
+    color: var(--color-text);
+    font-weight: 600;
+}
+
 /* Mobile: Adjust padding for compact navigation */
 @media (max-width: 600px) {
     footer {

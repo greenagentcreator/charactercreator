@@ -30,6 +30,7 @@ import {
     clearActiveUnfinishedDraftReference,
     getUnfinishedDraftById
 } from './utils/unfinished-drafts.js';
+import { completeAppLoading } from './utils/app-loading.js';
 
 let currentStep = 0;
 let stepContainer, progressBarContainer, btnNext, btnBack;
@@ -113,6 +114,7 @@ async function renderCurrentStep(preserveScroll = true) {
             }
         } catch (error) {
             console.error('app.js: Error rendering step:', error);
+            completeAppLoading();
         }
         // Initialize error container for the new step
         clearErrors();
@@ -140,6 +142,10 @@ async function renderCurrentStep(preserveScroll = true) {
             }
         } else if (!scrollToSavedCharacter) {
             scrollToStepTop();
+        }
+
+        if (!isLoadingSharedCharacter) {
+            completeAppLoading();
         }
     }
 }
@@ -813,6 +819,7 @@ function renderLocalCharacterView(characterId) {
     translateAllElements(stepContainer);
     attachCharacterViewListeners(characterId);
     scrollToStepTop();
+    completeAppLoading();
 }
 
 function viewCharacter(characterId) {
@@ -862,6 +869,7 @@ async function renderDatabaseCharacterView(dbId) {
         translateAllElements(stepContainer);
         attachCharacterViewListeners(null, characterData);
         scrollToStepTop();
+        completeAppLoading();
     } catch (error) {
         console.error('Error viewing database character:', error);
         alert(t('character_not_found') || 'Error loading character.');

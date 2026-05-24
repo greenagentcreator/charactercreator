@@ -1,0 +1,200 @@
+/* --- App loading screen & skeleton placeholders --- */
+
+body.app-is-loading {
+    overflow: hidden;
+}
+
+body.app-is-loading #app-container,
+body.app-is-loading #navigation-container {
+    visibility: hidden;
+}
+
+.app-loading-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: var(--spacing-lg);
+    padding-bottom: calc(var(--footer-height) + var(--spacing-lg));
+    background-color: var(--color-bg-primary);
+    overflow: hidden;
+    opacity: 1;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.app-loading-screen--hide {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.app-loading-card {
+    width: 100%;
+    max-width: var(--container-max-width);
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border-light);
+    box-shadow: var(--shadow-lg);
+    border-radius: 4px;
+    padding: var(--container-padding-mobile);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+}
+
+@media (min-width: 768px) {
+    .app-loading-card {
+        padding: var(--container-padding-desktop);
+    }
+}
+
+.skeleton-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--color-border-lighter);
+}
+
+.skeleton-title {
+    flex: 1 1 auto;
+    height: 1.75rem;
+    max-width: 14rem;
+}
+
+.skeleton-controls {
+    display: flex;
+    flex-shrink: 0;
+    gap: var(--spacing-sm);
+    align-items: center;
+}
+
+.skeleton-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius-md);
+}
+
+.skeleton-select {
+    width: 6.5rem;
+    height: 2.75rem;
+    border-radius: var(--radius-md);
+}
+
+.skeleton-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-xl) var(--spacing-lg);
+    border: 1px solid var(--color-border-lighter);
+    border-radius: 12px;
+    background-color: var(--color-bg-summary);
+}
+
+.skeleton-line {
+    height: 0.85rem;
+    border-radius: var(--radius-sm);
+}
+
+.skeleton-line--sm {
+    width: 40%;
+    max-width: 8rem;
+}
+
+.skeleton-line--lg {
+    width: 75%;
+    max-width: 16rem;
+    height: 1.25rem;
+}
+
+.skeleton-line--md {
+    width: 60%;
+    max-width: 12rem;
+}
+
+.skeleton-button {
+    width: 100%;
+    max-width: 16rem;
+    height: 2.75rem;
+    margin-top: var(--spacing-xs);
+    border-radius: var(--radius-md);
+}
+
+.skeleton-section-title {
+    width: 45%;
+    max-width: 10rem;
+    height: 1.1rem;
+}
+
+.skeleton-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+}
+
+@media (min-width: 520px) {
+    .skeleton-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.skeleton-card {
+    height: 7.5rem;
+    border-radius: var(--radius-lg);
+}
+
+.skeleton-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+    background-color: var(--color-bg-secondary);
+    border-top: 1px solid var(--color-border-light);
+    box-shadow: var(--shadow-md);
+}
+
+.skeleton-nav-btn {
+    flex: 1 1 0;
+    max-width: 10rem;
+    height: 2.75rem;
+    border-radius: var(--radius-md);
+}
+
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        var(--color-bg-overlay) 0%,
+        var(--color-border-lighter) 45%,
+        var(--color-bg-overlay) 90%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.35s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+    0% {
+        background-position: 100% 0;
+    }
+    100% {
+        background-position: -100% 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .skeleton {
+        animation: none;
+        background: var(--color-bg-overlay);
+    }
+
+    .app-loading-screen {
+        transition: none;
+    }
+}

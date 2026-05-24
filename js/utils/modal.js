@@ -1,5 +1,7 @@
 // Lightweight accessible modal dialogs
 
+import { escapeHtml, escapeAttr } from './escape-html.js';
+
 let activeModal = null;
 
 function closeActiveModal() {
@@ -51,7 +53,7 @@ export function showModal({ title, bodyHtml, actions = [] }) {
     overlay.innerHTML = `
         <div class="app-modal" role="dialog" aria-modal="true" aria-labelledby="app-modal-title">
             <header class="app-modal-header">
-                <h2 id="app-modal-title" class="app-modal-title">${title}</h2>
+                <h2 id="app-modal-title" class="app-modal-title">${escapeHtml(title)}</h2>
                 <button type="button" class="app-modal-close" aria-label="Close">×</button>
             </header>
             <div class="app-modal-body">${bodyHtml}</div>
@@ -96,14 +98,7 @@ export function closeModal() {
 }
 
 function escapeModalText(text) {
-    if (text == null) {
-        return '';
-    }
-    return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+    return escapeHtml(text);
 }
 
 /**
@@ -113,7 +108,7 @@ function escapeModalText(text) {
 export function showConfirmDialog({ title, message, bodyHtml, confirmLabel, cancelLabel, danger = false }) {
     return new Promise((resolve) => {
         showModal({
-            title: escapeModalText(title),
+            title,
             bodyHtml: bodyHtml ?? `<p>${escapeModalText(message)}</p>`,
             actions: [
                 {
@@ -139,10 +134,10 @@ export function showPromptDialog({ title, label, defaultValue = '', confirmLabel
     return new Promise((resolve) => {
         const inputId = 'app-modal-prompt-input';
         showModal({
-            title: escapeModalText(title),
+            title,
             bodyHtml: `
                 <label class="app-modal-prompt-label" for="${inputId}">${escapeModalText(label)}</label>
-                <input type="text" id="${inputId}" class="app-modal-prompt-input" value="${escapeModalText(defaultValue)}" autocomplete="off">`,
+                <input type="text" id="${inputId}" class="app-modal-prompt-input" value="${escapeAttr(defaultValue)}" autocomplete="off">`,
             actions: [
                 {
                     label: cancelLabel,
@@ -186,7 +181,7 @@ export function showPromptDialog({ title, label, defaultValue = '', confirmLabel
  */
 export function showAlertDialog({ title, message, closeLabel = 'OK' }) {
     showModal({
-        title: escapeModalText(title),
+        title,
         bodyHtml: `<p>${escapeModalText(message)}</p>`,
         actions: [{ label: closeLabel, className: 'action-button' }]
     });

@@ -3,9 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="page_title">Delta Green Agent Character Creator</title>
-    <meta name="description" content="Create detailed agent character sheets for your Delta Green RPG sessions with this easy-to-use online character creator. Supports custom professions, skills, and more. No Log-in, no ads, free of costs.">
+    <title>Delta Green Agent Creator — Free Online Character Sheet</title>
+    <meta name="description" content="Free Delta Green agent character creator in your browser. Build, save, edit, print, and share RPG dossiers. Optional community library. No login, no ads. English, Deutsch, Español, Français, Русский.">
+    <meta name="keywords" content="Delta Green, character creator, character sheet, agent dossier, RPG tool, tabletop, character generator, free">
+    <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="google-site-verification" content="bz_uz4BtBwAXCsKC8RHZXKlqEY0KaTULTd4DrRX0i_w" />
+    <link rel="canonical" href="https://greenagentcreator.github.io/charactercreator/">
+    <link rel="sitemap" type="application/xml" href="sitemap.xml">
+    <link rel="alternate" hreflang="en" href="https://greenagentcreator.github.io/charactercreator/?lang=en">
+    <link rel="alternate" hreflang="de" href="https://greenagentcreator.github.io/charactercreator/?lang=de">
+    <link rel="alternate" hreflang="es" href="https://greenagentcreator.github.io/charactercreator/?lang=es">
+    <link rel="alternate" hreflang="fr" href="https://greenagentcreator.github.io/charactercreator/?lang=fr">
+    <link rel="alternate" hreflang="ru" href="https://greenagentcreator.github.io/charactercreator/?lang=ru">
+    <link rel="alternate" hreflang="x-default" href="https://greenagentcreator.github.io/charactercreator/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Delta Green Agent Creator">
+    <meta property="og:title" content="Delta Green Agent Creator — Free Online Character Sheet">
+    <meta property="og:description" content="Free Delta Green agent character creator in your browser. Build, save, edit, print, and share RPG dossiers. No login, no ads.">
+    <meta property="og:url" content="https://greenagentcreator.github.io/charactercreator/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Delta Green Agent Creator — Free Online Character Sheet">
+    <meta name="twitter:description" content="Free Delta Green agent character creator in your browser. Build, save, edit, print, and share RPG dossiers. No login, no ads.">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Delta Green Agent Creator",
+        "alternateName": "Delta Green Character Creator",
+        "description": "Free browser-based Delta Green agent character sheet creator with save, print, share, and community library.",
+        "url": "https://greenagentcreator.github.io/charactercreator/",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "inLanguage": ["en", "de", "es", "fr", "ru"],
+        "isAccessibleForFree": true
+    }
+    </script>
     <script src="https://cdn.counter.dev/script.js" data-id="ebd38259-4f23-48a0-b169-bfa1c5f86192" data-utcoffset="2"></script>
     
     <!-- Set theme immediately to prevent flash -->
@@ -23,7 +56,34 @@
     <!-- LZ-String for URL compression -->
     <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
 </head>
-<body>
+<body class="app-is-loading">
+    <div id="app-loading-screen" class="app-loading-screen" role="status" aria-live="polite" aria-busy="true" aria-label="Loading application">
+        <div class="app-loading-card">
+            <div class="skeleton-header">
+                <div class="skeleton skeleton-title" aria-hidden="true"></div>
+                <div class="skeleton-controls" aria-hidden="true">
+                    <span class="skeleton skeleton-icon"></span>
+                    <span class="skeleton skeleton-icon"></span>
+                    <span class="skeleton skeleton-select"></span>
+                </div>
+            </div>
+            <div class="skeleton-hero" aria-hidden="true">
+                <div class="skeleton skeleton-line skeleton-line--sm"></div>
+                <div class="skeleton skeleton-line skeleton-line--lg"></div>
+                <div class="skeleton skeleton-line skeleton-line--md"></div>
+                <div class="skeleton skeleton-button"></div>
+            </div>
+            <div class="skeleton skeleton-section-title" aria-hidden="true"></div>
+            <div class="skeleton-cards" aria-hidden="true">
+                <div class="skeleton skeleton-card"></div>
+                <div class="skeleton skeleton-card"></div>
+            </div>
+        </div>
+        <div class="skeleton-nav" aria-hidden="true">
+            <div class="skeleton skeleton-nav-btn"></div>
+            <div class="skeleton skeleton-nav-btn"></div>
+        </div>
+    </div>
     <div id="app-container">
         <header role="banner">
             <h1 data-i18n="app_header">Delta Green Agent Dossier</h1>
@@ -66,6 +126,10 @@
                     <a href="https://www.reddit.com/r/DeltaGreenRPG/comments/1l1wi5p/i_made_a_delta_green_character_creator_and_would/" target="_blank" rel="noopener noreferrer" class="footer-link" data-i18n="footer_feedback_link">Reddit</a>
                 </p>
             </div>
+            <details class="footer-privacy">
+                <summary data-i18n="footer_privacy_title">Privacy &amp; data use</summary>
+                <div class="footer-privacy-body" data-i18n="footer_privacy_body"></div>
+            </details>
             <p data-i18n="footer_text">© DG Character Creator - Based on Delta Green</p>
         </footer>
     </div>
@@ -76,6 +140,9 @@
     </nav>
 
     <script type="module" src="js/bootstrap.js"></script>
+    <noscript>
+        <p>Delta Green Agent Creator — free online character sheet tool for Delta Green RPG. Create, save, print, and share agent dossiers in English, Deutsch, Español, Français, and Русский. Enable JavaScript to use the creator.</p>
+    </noscript>
 </body>
 </html>
 

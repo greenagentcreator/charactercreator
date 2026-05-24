@@ -1,17 +1,6 @@
 // Shared info-icon tooltips (skills, stats, etc.)
 
-function escapeAttr(text) {
-    return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/"/g, '&quot;')
-        .replace(/</g, '&lt;');
-}
-
-function escapeHtml(text) {
-    return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;');
-}
+import { escapeHtml, escapeAttr } from './escape-html.js';
 
 /**
  * @param {string} description - Tooltip body text

@@ -20,6 +20,7 @@
 @import url('layout/_footer.css');
 
 /* --- Components --- */
+@import url('components/_loading-skeleton.css');
 @import url('components/_progress-bar.css');
 @import url('components/_info-box.css');
 @import url('components/_forms.css');

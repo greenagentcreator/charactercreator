@@ -5,17 +5,7 @@ import { saveCharacter } from './storage.js';
 import { PROFESSIONS } from '../config/professions.js';
 import { STAT_KEYS } from '../config/constants.js';
 import { t } from '../i18n/i18n.js';
-
-export function escapeHtml(text) {
-    if (text == null) {
-        return '';
-    }
-    return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-}
+export { escapeHtml, escapeAttr } from './escape-html.js';
 
 export function normalizeSheetCharacterFields(char) {
     if (!char.personalInfo || typeof char.personalInfo !== 'object') {
