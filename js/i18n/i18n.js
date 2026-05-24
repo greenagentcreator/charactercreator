@@ -2,7 +2,6 @@
 
 import { i18nData, languageLabels } from './translations.js';
 import { syncRussianFontsWithLanguage } from '../utils/locale-fonts.js';
-import { updateSeoMeta } from '../utils/seo.js';
 
 const translations = {};
 let currentLanguage = 'en';
@@ -108,7 +107,10 @@ export function setLanguage(lang) {
     }
     
     translateAllElements(); 
-    updateSeoMeta(lang);
+
+    import('../utils/seo.js').then(({ updateSeoMeta }) => {
+        updateSeoMeta(lang);
+    }).catch(() => {});
 
     // Don't re-render wizard/home while restoring, loading a share, or viewing a sheet
     if (window.app && typeof window.app.renderCurrentStep === 'function') {

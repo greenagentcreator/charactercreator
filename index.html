@@ -50,8 +50,24 @@
             document.documentElement.setAttribute('data-theme', initialTheme);
         })();
     </script>
+    <script>
+        window.__APP_BUILD__ = '25b8814';
+        (function () {
+            var BUILD = '25b8814';
+            var key = 'dg_app_build';
+            try {
+                var previous = localStorage.getItem(key);
+                if (previous && previous !== BUILD && !/[?&]v=/.test(location.search)) {
+                    localStorage.setItem(key, BUILD);
+                    location.replace(location.pathname + '?v=' + encodeURIComponent(BUILD) + location.hash);
+                    return;
+                }
+                localStorage.setItem(key, BUILD);
+            } catch (e) { /* private browsing */ }
+        })();
+    </script>
     
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css?v=25b8814">
     
     <!-- LZ-String for URL compression -->
     <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
@@ -139,7 +155,7 @@
         <button id="btn-next" data-i18n="btn_next_text" class="nav-button">Next</button>
     </nav>
 
-    <script type="module" src="js/bootstrap.js"></script>
+    <script type="module" src="js/bootstrap.js?v=25b8814"></script>
     <noscript>
         <p>Delta Green Agent Creator — free online character sheet tool for Delta Green RPG. Create, save, print, and share agent dossiers in English, Deutsch, Español, Français, and Русский. Enable JavaScript to use the creator.</p>
     </noscript>

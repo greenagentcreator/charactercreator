@@ -1,12 +1,12 @@
 // Main entry point for Delta Green Character Creator
 
 import { initI18n, initLanguageSwitcher, setLanguage, getCurrentLanguage } from './i18n/i18n.js';
-import { initializeApp, processSharedCharacterLink } from './app.js';
 import { getCharacterFromUrl } from './utils/sharing.js';
 import { initFirebase } from './utils/database.js';
 import { initNews, refreshNewsButton } from './utils/news.js';
 import { initSeoMeta } from './utils/seo.js';
 import { failAppLoading } from './utils/app-loading.js';
+import { versionedImport } from './utils/build-query.js';
 
 // Theme management
 function initTheme() {
@@ -107,6 +107,8 @@ async function initializeApplication() {
         
         const sharedCharacterData = getCharacterFromUrl();
         console.log('main.js: Shared character check:', !!sharedCharacterData);
+
+        const { initializeApp, processSharedCharacterLink } = await versionedImport('./app.js');
         
         await initializeApp();
         console.log('main.js: App initialized');
