@@ -1,16 +1,16 @@
 // Step 0: Introduction
 
-import { resetCharacter } from '../model/character.js';
-import { getAllCharacters, deleteCharacter, updateCharacterName, importCharacter } from '../utils/storage.js';
-import { getUnfinishedDrafts } from '../utils/unfinished-drafts.js';
-import { t, translateAllElements, getCurrentLanguage } from '../i18n/i18n.js';
-import { languageLabels, SUPPORTED_LIBRARY_LANGUAGES } from '../i18n/translations.js';
-import { validateImportedCharacter } from '../utils/validation.js';
-import { getPublicCharacters, importCharacterFromDatabase, reportCharacter, getPublicCharacterById } from '../utils/database.js';
-import { shouldShowBanner, dismissBanner } from '../utils/banner.js';
-import { resolveProfessionMetadata, getStandardProfessionFilters } from '../utils/profession-filter.js';
-import { showModal, closeModal, showConfirmDialog, showPromptDialog, showAlertDialog } from '../utils/modal.js';
-import { escapeHtml, escapeAttr } from '../utils/escape-html.js';
+import { resetCharacter } from '../model/character.js?v=99fd89c';
+import { getAllCharacters, deleteCharacter, updateCharacterName, importCharacter } from '../utils/storage.js?v=99fd89c';
+import { getUnfinishedDrafts } from '../utils/unfinished-drafts.js?v=99fd89c';
+import { t, translateAllElements, getCurrentLanguage } from '../i18n/i18n.js?v=99fd89c';
+import { languageLabels, SUPPORTED_LIBRARY_LANGUAGES } from '../i18n/translations.js?v=99fd89c';
+import { validateImportedCharacter } from '../utils/validation.js?v=99fd89c';
+import { getPublicCharacters, importCharacterFromDatabase, reportCharacter, getPublicCharacterById } from '../utils/database.js?v=99fd89c';
+import { shouldShowBanner, dismissBanner } from '../utils/banner.js?v=99fd89c';
+import { resolveProfessionMetadata, getStandardProfessionFilters } from '../utils/profession-filter.js?v=99fd89c';
+import { showModal, closeModal, showConfirmDialog, showPromptDialog, showAlertDialog } from '../utils/modal.js?v=99fd89c';
+import { escapeHtml, escapeAttr } from '../utils/escape-html.js?v=99fd89c';
 
 const DEFAULT_PROFESSION_FILTER = 'all';
 const DEFAULT_LANGUAGE_FILTER = 'all';

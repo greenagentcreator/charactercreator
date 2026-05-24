@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 /**
- * Stamps a git-based build id into index.html and version.json for cache busting.
- * Run before deploying: node scripts/stamp-version.mjs
+ * Stamps a git-based build id into index.html, version.json, and all JS import paths.
+ *
+ *   node scripts/stamp-version.mjs          # stamp with current git HEAD
+ *   node scripts/stamp-version.mjs --dev    # reset to dev (no query on JS imports)
  */
 
 import fs from 'node:fs';
@@ -13,8 +15,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 const indexPath = path.join(root, 'index.html');
 const versionPath = path.join(root, 'version.json');
+const jsRoot = path.join(root, 'js');
+
+const useDev = process.argv.includes('--dev');
 
 function getBuildId() {
+    if (useDev) {
+        return 'dev';
+    }
     try {
         return execSync('git rev-parse --short HEAD', { cwd: root, encoding: 'utf8' }).trim();
     } catch {
@@ -22,21 +30,70 @@ function getBuildId() {
     }
 }
 
+function stampImportPaths(content, buildId) {
+    const suffix = buildId === 'dev' ? '' : `?v=${buildId}`;
+
+    return content
+        .replace(
+            /from\s+(['"])(\.\.?\/[^'"]+?\.js)(?:\?v=[^'"]+)?\1/g,
+            (_match, quote, modulePath) => `from ${quote}${modulePath}${suffix}${quote}`
+        )
+        .replace(
+            /import\s*\(\s*(['"])(\.\.?\/[^'"]+?\.js)(?:\?v=[^'"]+)?\1\s*\)/g,
+            (_match, quote, modulePath) => `import(${quote}${modulePath}${suffix}${quote})`
+        );
+}
+
+function walkJsFiles(dir, files = []) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const fullPath = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+            walkJsFiles(fullPath, files);
+        } else if (entry.isFile() && entry.name.endsWith('.js')) {
+            files.push(fullPath);
+        }
+    }
+    return files;
+}
+
+function stampIndexHtml(indexHtml, buildId) {
+    return indexHtml
+        .replace(/css\/styles\.css\?v=[^"']+/, `css/styles.css?v=${buildId}`)
+        .replace(/js\/bootstrap\.js\?v=[^"']+/, `js/bootstrap.js?v=${buildId}`)
+        .replace(/"\.\/js\/app\.js\?v=[^"]+"/, `"./js/app.js?v=${buildId}"`)
+        .replace(/"\.\/js\/main\.js\?v=[^"]+"/, `"./js/main.js?v=${buildId}"`)
+        .replace(/window\.__APP_BUILD__ = '[^']+'/, `window.__APP_BUILD__ = '${buildId}'`)
+        .replace(/var BUILD = '[^']+'/, `var BUILD = '${buildId}'`);
+}
+
 const buildId = getBuildId();
 let indexHtml = fs.readFileSync(indexPath, 'utf8');
 
-indexHtml = indexHtml
-    .replace(/css\/styles\.css\?v=[^"']+/, `css/styles.css?v=${buildId}`)
-    .replace(/js\/bootstrap\.js\?v=[^"']+/, `js/bootstrap.js?v=${buildId}`)
-    .replace(/"\.\/js\/app\.js\?v=[^"]+"/, `"./js/app.js?v=${buildId}"`)
-    .replace(/window\.__APP_BUILD__ = '[^']+'/, `window.__APP_BUILD__ = '${buildId}'`)
-    .replace(/var BUILD = '[^']+'/, `var BUILD = '${buildId}'`);
+if (!indexHtml.includes('"main":')) {
+    indexHtml = indexHtml.replace(
+        /"app": "\.\/js\/app\.js\?v=[^"]+"/,
+        `"app": "./js/app.js?v=${buildId}",\n            "main": "./js/main.js?v=${buildId}"`
+    );
+}
 
+indexHtml = stampIndexHtml(indexHtml, buildId);
 fs.writeFileSync(indexPath, indexHtml);
+
+const jsFiles = walkJsFiles(jsRoot);
+let updatedJsFiles = 0;
+
+for (const filePath of jsFiles) {
+    const original = fs.readFileSync(filePath, 'utf8');
+    const stamped = stampImportPaths(original, buildId);
+    if (stamped !== original) {
+        fs.writeFileSync(filePath, stamped);
+        updatedJsFiles += 1;
+    }
+}
 
 fs.writeFileSync(
     versionPath,
     `${JSON.stringify({ version: buildId, builtAt: new Date().toISOString() }, null, 2)}\n`
 );
 
-console.log(`Stamped build version: ${buildId}`);
+console.log(`Stamped build version: ${buildId} (${updatedJsFiles} JS files updated)`);

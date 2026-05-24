@@ -2,16 +2,16 @@
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js';
 import { getFirestore, collection, addDoc, getDocs, getDoc, query, where, orderBy, limit, startAfter, doc, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
-import { firebaseConfig, COLLECTIONS, MODERATION_STATUS } from '../config/database.js';
-import { getProfessionFilterKey } from './profession-filter.js';
-import { SUPPORTED_LIBRARY_LANGUAGES } from '../i18n/translations.js';
+import { firebaseConfig, COLLECTIONS, MODERATION_STATUS } from '../config/database.js?v=99fd89c';
+import { getProfessionFilterKey } from './profession-filter.js?v=99fd89c';
+import { SUPPORTED_LIBRARY_LANGUAGES } from '../i18n/translations.js?v=99fd89c';
 import {
     sanitizeCharacterContent,
     validateCharacterContent,
     validateCharacterSchema
-} from './content-moderation.js';
-import { checkRateLimit, recordUpload } from './rate-limiter.js';
-import { checkForDuplicate, recordCharacterFingerprint } from './duplicate-detector.js';
+} from './content-moderation.js?v=99fd89c';
+import { checkRateLimit, recordUpload } from './rate-limiter.js?v=99fd89c';
+import { checkForDuplicate, recordCharacterFingerprint } from './duplicate-detector.js?v=99fd89c';
 
 // Initialize Firebase
 let app = null;
@@ -441,7 +441,7 @@ export async function reportCharacter(characterId, reason) {
  * @returns {Promise<string>} Local storage character ID
  */
 export async function importCharacterFromDatabase(characterDoc) {
-    const { importCharacter } = await import('./storage.js');
+    const { importCharacter } = await import('./storage.js?v=99fd89c');
     
     const characterToImport = {
         name: characterDoc.name,

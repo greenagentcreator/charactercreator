@@ -1,12 +1,12 @@
 // Main entry point for Delta Green Character Creator
 
-import { initI18n, initLanguageSwitcher, setLanguage, getCurrentLanguage } from './i18n/i18n.js';
+import { initI18n, initLanguageSwitcher, setLanguage, getCurrentLanguage } from './i18n/i18n.js?v=99fd89c';
 import { initializeApp, processSharedCharacterLink } from 'app';
-import { getCharacterFromUrl } from './utils/sharing.js';
-import { initFirebase } from './utils/database.js';
-import { initNews, refreshNewsButton } from './utils/news.js';
-import { initSeoMeta } from './utils/seo.js';
-import { failAppLoading } from './utils/app-loading.js';
+import { getCharacterFromUrl } from './utils/sharing.js?v=99fd89c';
+import { initFirebase } from './utils/database.js?v=99fd89c';
+import { initNews, refreshNewsButton } from './utils/news.js?v=99fd89c';
+import { initSeoMeta } from './utils/seo.js?v=99fd89c';
+import { failAppLoading } from './utils/app-loading.js?v=99fd89c';
 
 // Theme management
 function initTheme() {
