@@ -1,0 +1,400 @@
+/* --- Agent sheet toolbar (sticky top bar) --- */
+.step-sheet {
+    padding-bottom: var(--spacing-lg);
+    overflow: visible;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.sheet-sticky-top {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 25;
+    margin: 0 0 var(--spacing-lg);
+    padding: var(--spacing-sm) 0 var(--spacing-md);
+    background-color: var(--color-bg-secondary, #fff);
+    border-bottom: 1px solid var(--color-border-light);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.sheet-sticky-spacer {
+    display: none;
+    height: 0;
+}
+
+@supports not (overflow: clip) {
+    html,
+    body,
+    #app-container {
+        overflow-x: hidden;
+    }
+
+    .step-sheet .sheet-sticky-top {
+        position: fixed;
+        left: 0;
+        right: 0;
+        width: 100%;
+        margin: 0;
+        padding-left: var(--container-padding-mobile, 1rem);
+        padding-right: var(--container-padding-mobile, 1rem);
+        box-sizing: border-box;
+    }
+
+    .step-sheet .sheet-sticky-spacer {
+        display: block;
+        height: var(--sheet-sticky-height, 8rem);
+    }
+}
+
+[data-theme="dark"] .sheet-sticky-top {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+.sheet-sticky-spacer {
+    display: none;
+    height: 0;
+}
+
+.sheet-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.sheet-toolbar-back {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    padding: 0;
+    border: 1px solid var(--color-border-light);
+    border-radius: 6px;
+    background-color: var(--color-bg-secondary, #fff);
+    color: var(--color-text);
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.sheet-toolbar-back:hover {
+    border-color: var(--color-button, #2d5016);
+    color: var(--color-button, #2d5016);
+}
+
+.sheet-toolbar-back:focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+.sheet-header h2 {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+    font-size: var(--font-size-xl);
+    color: var(--color-text-heading);
+    line-height: 1.2;
+}
+
+.sheet-toolbar {
+    position: static;
+    margin: 0;
+    padding: 0;
+    background: none;
+}
+
+.sheet-toolbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs);
+    border: 1px solid var(--color-border-light);
+    border-radius: 10px;
+    background-color: var(--color-bg-summary);
+}
+
+.sheet-toolbar-actions {
+    display: flex;
+    flex: 1 1 auto;
+    gap: var(--spacing-xs);
+    min-width: 0;
+}
+
+.sheet-toolbar-primary {
+    display: flex;
+    flex: 1 1 auto;
+    gap: var(--spacing-xs);
+    min-width: 0;
+}
+
+.sheet-toolbar-btn {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 44px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--color-border-light);
+    border-radius: 6px;
+    background-color: var(--color-bg-secondary, #fff);
+    color: var(--color-text);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: normal;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.sheet-toolbar-btn:hover {
+    border-color: var(--color-button, #2d5016);
+    color: var(--color-button, #2d5016);
+}
+
+.sheet-toolbar-btn-accent {
+    background-color: var(--color-button, #2d5016);
+    border-color: var(--color-button, #2d5016);
+    color: var(--color-button-text, #fff);
+}
+
+.sheet-toolbar-btn-accent:hover {
+    background-color: var(--color-button-hover, #1a3009);
+    border-color: var(--color-button-hover, #1a3009);
+    color: var(--color-button-text, #fff);
+}
+
+.sheet-toolbar-btn-primary {
+    background-color: var(--color-button, #2d5016);
+    border-color: var(--color-button, #2d5016);
+    color: var(--color-button-text, #fff);
+}
+
+.sheet-toolbar-btn-primary:hover {
+    background-color: var(--color-button-hover, #1a3009);
+    border-color: var(--color-button-hover, #1a3009);
+    color: var(--color-button-text, #fff);
+}
+
+.sheet-toolbar-btn-danger {
+    background-color: var(--color-bg-secondary, #fff);
+    border-color: var(--color-alert-classified, #cc0000);
+    color: var(--color-alert-classified, #cc0000);
+}
+
+.sheet-toolbar-btn-danger:hover {
+    background-color: var(--color-alert-classified, #cc0000);
+    border-color: var(--color-alert-classified, #cc0000);
+    color: #fff;
+}
+
+.sheet-toolbar-btn-saved {
+    background-color: var(--color-success, #27ae60);
+    border-color: var(--color-success, #27ae60);
+    color: #fff;
+}
+
+.sheet-toolbar-overflow {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.sheet-toolbar-more {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 var(--spacing-sm);
+    border: 1px solid var(--color-border-light);
+    border-radius: 6px;
+    background-color: var(--color-bg-secondary, #fff);
+    color: var(--color-text);
+    font-size: var(--font-size-lg);
+    line-height: 1;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.sheet-toolbar-more:hover {
+    border-color: var(--color-button, #2d5016);
+    color: var(--color-button, #2d5016);
+}
+
+.sheet-toolbar-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + var(--spacing-xs));
+    bottom: auto;
+    min-width: 12rem;
+    padding: var(--spacing-xs);
+    border: 1px solid var(--color-border-light);
+    border-radius: 8px;
+    background-color: var(--color-bg-secondary, #fff);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sheet-toolbar-menu[hidden] {
+    display: none !important;
+}
+
+.sheet-toolbar-menu-item {
+    width: 100%;
+    text-align: left;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--color-text);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: normal;
+    min-height: 44px;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.sheet-toolbar-menu-item:hover {
+    background-color: var(--color-bg-summary);
+}
+
+.sheet-toolbar-menu-item-danger {
+    color: var(--color-error, #e74c3c);
+}
+
+.sheet-toolbar-menu-item-danger:hover {
+    background-color: rgba(231, 76, 60, 0.1);
+}
+
+.sheet-save-status {
+    margin: var(--spacing-xs) 0 0;
+    padding: 0 var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-light);
+    min-height: 1.25rem;
+}
+
+.sheet-save-status[data-status="idle"] {
+    color: var(--color-text-light);
+}
+
+.sheet-save-status[data-status="dirty"] {
+    color: var(--color-warning, #d68910);
+}
+
+.sheet-save-status[data-status="saving"] {
+    color: var(--color-text-light);
+}
+
+.sheet-save-status[data-status="saved"] {
+    color: var(--color-success, #27ae60);
+}
+
+.sheet-save-status[data-status="error"] {
+    color: var(--color-error, #e74c3c);
+}
+
+@media (min-width: 769px) {
+    .sheet-sticky-top {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .sheet-toolbar-inner {
+        max-width: 36rem;
+    }
+}
+
+/* Character sheet — compact mobile toolbar */
+@media (max-width: 768px) {
+    .step-sheet .sheet-sticky-top {
+        margin-left: calc(-1 * var(--spacing-md));
+        margin-right: calc(-1 * var(--spacing-md));
+        padding: var(--spacing-xs) var(--spacing-md) var(--spacing-sm);
+        margin-bottom: var(--spacing-md);
+    }
+
+    .sheet-header {
+        margin-bottom: var(--spacing-xs);
+    }
+
+    .sheet-header h2 {
+        font-size: var(--font-size-lg);
+        line-height: 1.2;
+        word-break: break-word;
+        margin-top: 0;
+    }
+
+    .sheet-toolbar-back {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        min-height: 44px;
+        font-size: 1.1rem;
+    }
+
+    .sheet-toolbar-inner {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px;
+    }
+
+    .sheet-toolbar-actions {
+        display: flex;
+        flex: 1 1 auto;
+        gap: 6px;
+        min-width: 0;
+    }
+
+    .sheet-toolbar-btn {
+        flex: 1 1 0;
+        min-width: 0;
+        min-height: 40px;
+        padding: 8px 6px;
+        font-size: var(--font-size-sm);
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: center;
+    }
+
+    .sheet-toolbar-btn-primary {
+        flex: 1.2 1 0;
+    }
+
+    .sheet-toolbar-overflow {
+        flex: 0 0 auto;
+    }
+
+    .sheet-toolbar-more {
+        min-width: 40px;
+        min-height: 40px;
+        width: 40px;
+        padding: 0;
+    }
+
+    .sheet-toolbar-menu {
+        left: auto;
+        right: 0;
+        min-width: min(16rem, calc(100vw - 2rem));
+        max-width: calc(100vw - 2rem);
+    }
+
+    .sheet-save-status {
+        margin-top: 4px;
+        min-height: 1rem;
+        font-size: 0.78em;
+        line-height: 1.2;
+    }
+}

@@ -1,8 +1,58 @@
 /* --- Print Styles --- */
+.sheet-print-root {
+    display: none;
+}
+
 @media print {
+    html {
+        width: 100% !important;
+        overflow: visible !important;
+    }
+
+    body {
+        display: block !important;
+        justify-content: unset !important;
+        align-items: unset !important;
+        width: 100% !important;
+        max-width: none !important;
+        overflow: visible !important;
+    }
+
+    body.sheet-print-active #app-container,
+    body.sheet-print-active #navigation-container {
+        display: none !important;
+    }
+
+    .sheet-print-root {
+        display: block !important;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    #step5-summary-print {
+        display: block !important;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 auto !important;
+        box-sizing: border-box !important;
+    }
+
+    #step-character-view {
+        display: none !important;
+    }
+
     @page {
         size: A4;
         margin: 0.2cm 0.5cm;
+    }
+
+    html,
+    body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
     
     body {
@@ -17,11 +67,13 @@
     #navigation-container {
         display: none !important;
     }
-    
+
+    /* Wizard / non-sheet print: app container uses full page width */
     #app-container {
         box-shadow: none !important;
         border: none !important;
-        max-width: 100% !important;
+        max-width: none !important;
+        width: 100% !important;
         padding: 0 !important;
         margin: 0 !important;
     }
@@ -33,6 +85,10 @@
     #theme-switcher,
     #progress-bar-container,
     .summary-actions,
+    .summary-wizard-footer,
+    .sheet-sticky-top,
+    .sheet-toolbar,
+    .sheet-header,
     .character-view-header {
         display: none !important;
     }
@@ -42,7 +98,8 @@
     body::after,
     #app-container::before,
     #app-container::after,
-    #step5-summary::before {
+    #step5-summary::before,
+    #step5-summary-print::before {
         display: none !important;
     }
     
@@ -78,23 +135,33 @@
         page-break-inside: avoid !important;
     }
     
-    #step5-summary h3.summary-block-title {
+    #step5-summary h3.summary-block-title,
+    #step5-summary-print h3.summary-block-title {
         background-color: #2d5016 !important;
         color: #fff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
         margin: -8px -10px 6px -10px !important;
         font-size: 0.95em !important;
         padding: 4px 10px !important;
         border-bottom: 2px solid #fff !important;
     }
     
-    /* Official document styling for print */
-    #app-container {
-        border: none !important;
-    }
-    
-    /* Hide the main title in print */
-    #step5-summary h2 {
+    /* Hide wizard summary title only; keep sheet agent title */
+    #step5-summary h2[data-i18n="summary_title"],
+    #step5-summary-print h2[data-i18n="summary_title"] {
         display: none !important;
+    }
+
+    #step5-summary h2.sheet-print-agent-title,
+    #step5-summary-print h2.sheet-print-agent-title {
+        display: block !important;
+        margin: 0 0 8px !important;
+        padding-bottom: 4px !important;
+        border-bottom: 2px solid #000 !important;
+        font-size: 1.2em !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
     
     .summary-table {
@@ -112,6 +179,9 @@
     .summary-table th {
         font-size: 8pt !important;
         padding: 3px 5px !important;
+        background-color: #e8e8e8 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
     
     .summary-grid-stats-psych {
@@ -121,17 +191,22 @@
     }
     
     .summary-personal-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         gap: 3px 10px !important;
         font-size: 9pt !important;
         margin-bottom: 6px !important;
     }
     
     .summary-personal-grid div {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        align-items: baseline !important;
         padding: 1px 0 !important;
     }
     
     .summary-personal-grid strong {
         min-width: 80px !important;
+        white-space: nowrap !important;
         font-size: 8pt !important;
     }
     
@@ -153,13 +228,116 @@
         line-height: 1em !important;
         min-width: 30px !important;
     }
+
+    /* Restore desktop table layout for stats/derived (mobile card layout must not apply) */
+    .summary-stats-table,
+    .summary-derived-table {
+        display: table !important;
+        border-collapse: collapse !important;
+        border-spacing: 0 !important;
+        min-width: 0 !important;
+        width: 100% !important;
+        border: 1px solid #000 !important;
+        background: #fff !important;
+        margin-bottom: 6px !important;
+    }
+
+    .summary-stats-table thead,
+    .summary-derived-table thead {
+        position: static !important;
+        width: auto !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        clip: auto !important;
+        white-space: normal !important;
+        display: table-header-group !important;
+    }
+
+    .summary-stats-table tbody,
+    .summary-derived-table tbody {
+        display: table-row-group !important;
+        flex-direction: unset !important;
+        gap: 0 !important;
+    }
+
+    .summary-stats-table tbody tr,
+    .summary-derived-table tbody tr {
+        display: table-row !important;
+        grid-template-columns: none !important;
+        gap: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+    }
+
+    .summary-stats-table tbody td,
+    .summary-derived-table tbody td,
+    .summary-table td {
+        display: table-cell !important;
+        align-items: unset !important;
+        flex-direction: unset !important;
+        gap: unset !important;
+        border: 1px solid #000 !important;
+        padding: 3px 5px !important;
+        min-width: 0 !important;
+        text-align: inherit !important;
+    }
+
+    .summary-stats-table tbody td:first-child,
+    .summary-derived-table tbody td:first-child {
+        grid-column: unset !important;
+        font-weight: bold !important;
+        border-bottom: 1px solid #000 !important;
+        padding: 3px 5px !important;
+    }
+
+    .summary-stats-table tbody td:nth-child(4) {
+        grid-column: unset !important;
+        flex-direction: unset !important;
+        align-items: unset !important;
+    }
+
+    .summary-table td.value-cell {
+        text-align: center !important;
+        justify-content: unset !important;
+    }
+
+    .summary-table td .sheet-roll-target {
+        width: auto !important;
+        flex: none !important;
+        min-width: 0 !important;
+    }
+
+    .summary-stats-table tbody td[data-col-label]::before,
+    .summary-derived-table tbody td[data-col-label]::before {
+        content: none !important;
+    }
+
+    .summary-derived-table .sheet-roll-target,
+    .summary-stats-table .sheet-roll-target {
+        display: inline !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        font: inherit !important;
+        color: inherit !important;
+    }
     
-    #step5-summary h4.summary-subsection-title {
+    #step5-summary h4.summary-subsection-title,
+    #step5-summary-print h4.summary-subsection-title {
         font-size: 0.9em !important;
         margin-top: 6px !important;
         margin-bottom: 3px !important;
         padding-bottom: 3px !important;
         page-break-after: avoid !important;
+        border-bottom: 1px solid #000 !important;
+        color: #000 !important;
+        font-weight: bold;
     }
     
     ul.summary-list {
@@ -172,9 +350,43 @@
         margin-bottom: 0 !important;
     }
     
-    /* Skills im Druck - kompakt */
-    .summary-skills-multicolumn .skills-columns-container {
-        grid-template-columns: repeat(3, 1fr) !important;
+    /* Skills im Druck - immer 3 Spalten */
+    .summary-skills-multicolumn .skills-columns-container--print {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: flex-start !important;
+        gap: 0 10px !important;
+        width: 100% !important;
+    }
+
+    .summary-skills-multicolumn .skills-columns-container--print > ul.skills-flat-list {
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+        width: auto !important;
+        display: block !important;
+        margin: 0 !important;
+    }
+
+    /* Fallback: einspaltiges Mobile-HTML ohne Druck-Swap */
+    .summary-skills-multicolumn .skills-columns-container:not(.skills-columns-container--print) > ul.skills-flat-list:only-child {
+        -webkit-columns: 3 !important;
+        columns: 3 !important;
+        -webkit-column-gap: 12px !important;
+        column-gap: 12px !important;
+        width: 100% !important;
+        display: block !important;
+    }
+
+    .summary-skills-multicolumn .skills-columns-container:not(.skills-columns-container--print) > ul.skills-flat-list:only-child > li {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+        -webkit-column-break-inside: avoid !important;
+    }
+
+    .summary-skills-multicolumn .skills-columns-container:not(.skills-columns-container--print):not(:has(> ul:only-child)) {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
         gap: 0 10px !important;
     }
     
@@ -191,19 +403,45 @@
         margin-bottom: 1px !important;
         line-height: 1.4 !important;
     }
+
+    .summary-skills-multicolumn .sheet-skill-row {
+        grid-template-columns: minmax(0, 1fr) 2rem 0.85rem !important;
+        column-gap: 4px !important;
+    }
     
-    /* Show checkboxes in print */
+    .summary-skills-multicolumn .sheet-edit-input-skill {
+        max-width: 2rem !important;
+        padding: 1px 2px !important;
+        font-size: 7.5pt !important;
+    }
+    
+    /* Show checkboxes in print — match custom sheet style */
     .summary-skills-multicolumn .skill-checkbox {
         display: inline-block !important;
+        position: relative;
         width: 10px !important;
         height: 10px !important;
         margin-right: 4px !important;
         vertical-align: middle !important;
         border: 1px solid #000 !important;
+        border-radius: 1px !important;
         background-color: #fff !important;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12) !important;
         -webkit-appearance: none !important;
         -moz-appearance: none !important;
         appearance: none !important;
+    }
+
+    .summary-skills-multicolumn .skill-checkbox:checked::after {
+        content: '' !important;
+        position: absolute !important;
+        left: 2px !important;
+        top: 0 !important;
+        width: 3px !important;
+        height: 6px !important;
+        border: solid #000 !important;
+        border-width: 0 1.5px 1.5px 0 !important;
+        transform: rotate(45deg) !important;
     }
     
     .summary-skills-multicolumn .base-value {
@@ -220,12 +458,14 @@
     }
     
     /* Compact spacing */
-    #step5-summary {
+    #step5-summary,
+    #step5-summary-print {
         padding: 0 !important;
         margin: 0 !important;
     }
     
-    #step5-summary > * {
+    #step5-summary > *,
+    #step5-summary-print > * {
         margin-top: 0 !important;
     }
     

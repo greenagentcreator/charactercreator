@@ -38,6 +38,7 @@ export function resetCharacter() {
         stats: { STR: 0, CON: 0, DEX: 0, INT: 0, POW: 0, CHA: 0 },
         distinguishingFeatures: {},
         derivedAttributes: { HP: 0, WP: 0, SAN: 0, BP: 0 },
+        derivedCurrent: {},
         bonds: [],
         motivations: ["", "", "", "", ""],
         personalInfo: {},
@@ -46,6 +47,9 @@ export function resetCharacter() {
         basePOW: null,
         adaptations: [],
         disorder: null,
+        skillFailMarks: [],
+        items: [],
+        notes: '',
         id: null,
         createdDate: null
     };
@@ -129,6 +133,7 @@ export function calculateDerivedAttributes() {
 
     if (str < 1 || con < 1 || pow < 1) {
         character.derivedAttributes = { HP: 0, WP: 0, SAN: 0, BP: 0 };
+        syncDerivedCurrentDefaults(character);
         return;
     }
 
@@ -157,6 +162,30 @@ export function calculateDerivedAttributes() {
         SAN: SAN,
         BP: BP
     };
+
+    syncDerivedCurrentDefaults(character);
+}
+
+const DERIVED_CURRENT_KEYS = ['HP', 'WP', 'SAN', 'BP'];
+
+/** Fill missing derived "current" values with maximums (new chars / legacy saves). */
+export function syncDerivedCurrentDefaults(char = character) {
+    if (!char.derivedCurrent || typeof char.derivedCurrent !== 'object') {
+        char.derivedCurrent = {};
+    }
+    const derived = char.derivedAttributes;
+    if (!derived) {
+        return;
+    }
+
+    DERIVED_CURRENT_KEYS.forEach((key) => {
+        if (char.derivedCurrent[key] == null) {
+            const max = derived[key];
+            if (max != null) {
+                char.derivedCurrent[key] = max;
+            }
+        }
+    });
 }
 
 // Ensure traumatic-background fields exist (older saves may omit them)
@@ -176,11 +205,15 @@ export function normalizeTraumaticBackgroundFields(char = character) {
     if (char.disorder === undefined) {
         char.disorder = null;
     }
+    if (!char.derivedCurrent || typeof char.derivedCurrent !== 'object') {
+        char.derivedCurrent = {};
+    }
 }
 
 // Get the current character object
 export function getCharacter() {
     normalizeTraumaticBackgroundFields(character);
+    syncDerivedCurrentDefaults(character);
     return character;
 }
 

@@ -209,11 +209,113 @@ ul.summary-list li:last-child {
 .summary-skills-multicolumn ul.skills-flat-list li {
     padding: 2px 0; 
     font-size: 0.9em; 
-    word-break: break-word;
 }
 
-/* Hide checkboxes on screen, show only in print */
-.summary-skills-multicolumn .skill-checkbox {
+.summary-skills-multicolumn .sheet-skill-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 3.25rem 1.1rem;
+    column-gap: 6px;
+    align-items: center;
+}
+
+.summary-skills-multicolumn .sheet-skill-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+/* Custom skill checkboxes — consistent across platforms */
+.summary-skills-multicolumn .skill-checkbox.skill-fail-marker {
+    flex-shrink: 0;
+    display: block;
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 2px;
+    background-color: var(--color-bg-secondary);
+    box-shadow: inset 0 1px 2px var(--color-bg-overlay);
+    cursor: pointer;
+    vertical-align: middle;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    position: relative;
+    transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+.summary-skills-multicolumn .skill-checkbox.skill-fail-marker:checked {
+    background-color: var(--color-alert-classified);
+    border-color: var(--color-alert-classified);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.summary-skills-multicolumn .skill-checkbox.skill-fail-marker:checked::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 4px;
+    height: 8px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+[data-theme="dark"] .summary-skills-multicolumn .skill-checkbox.skill-fail-marker {
+    background-color: var(--color-bg-info);
+    border-color: var(--color-border-light);
+}
+
+[data-theme="dark"] .summary-skills-multicolumn .skill-checkbox.skill-fail-marker:checked {
+    background-color: var(--color-alert-classified);
+    border-color: var(--color-alert-classified);
+}
+
+.summary-skills-multicolumn .sheet-skill-name {
+    min-width: 0;
+    padding-right: 2px;
+    line-height: 1.35;
+}
+
+.summary-skills-multicolumn .sheet-skill-name .base-value {
+    margin-left: 0;
+    white-space: nowrap;
+}
+
+.summary-skills-multicolumn .sheet-skill-value {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-weight: bold;
+}
+
+.summary-skills-multicolumn .sheet-skill-unit {
+    color: var(--color-text-light);
+}
+
+.summary-skills-multicolumn .sheet-edit-input-skill {
+    width: 100%;
+    max-width: 3.25rem;
+    margin: 0;
+    padding: 4px 6px;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-weight: bold;
+    -moz-appearance: textfield;
+}
+
+.summary-skills-multicolumn .sheet-edit-input-skill::-webkit-outer-spin-button,
+.summary-skills-multicolumn .sheet-edit-input-skill::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Hide print checkboxes on screen; fail markers stay visible on editable sheets */
+.summary-skills-multicolumn .skill-checkbox:not(.skill-fail-marker) {
     display: none;
 }
 
@@ -221,6 +323,14 @@ ul.summary-list li:last-child {
     font-size: var(--font-size-sm);
     color: var(--color-text-light);
     margin-left: 4px;
+}
+
+.summary-wizard-footer {
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-md);
+    border: 1px dashed var(--color-border-light);
+    border-radius: 8px;
+    background-color: var(--color-bg-summary);
 }
 
 .summary-actions {
@@ -231,8 +341,8 @@ ul.summary-list li:last-child {
 
 .summary-actions .action-button {
     font-size: var(--font-size-sm);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    min-height: auto;
+    padding: var(--spacing-sm) var(--spacing-md);
+    min-height: 44px;
     line-height: 1.3;
     letter-spacing: 0.5px;
     margin-right: 0;
@@ -273,11 +383,527 @@ ul.summary-list li:last-child {
     line-height: 1.5em;
 }
 
+/* Sheet edit mode — matches dossier + form styling */
+.sheet-summary-editable .summary-block {
+    box-shadow: 0 1px 3px var(--color-bg-overlay), inset 0 0 0 1px rgba(45, 80, 22, 0.06);
+}
+
+[data-theme="dark"] .sheet-summary-editable .summary-block {
+    box-shadow: 0 1px 3px var(--color-bg-overlay), inset 0 0 0 1px rgba(74, 170, 74, 0.08);
+}
+
+.sheet-summary-editable .sheet-edit-input,
+.sheet-summary-editable .sheet-edit-textarea {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: var(--spacing-sm);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-secondary);
+    font-family: var(--font-body);
+    font-size: var(--font-size-base);
+    color: var(--color-text);
+    line-height: 1.4;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+    box-shadow: inset 0 1px 2px var(--color-bg-overlay);
+}
+
+.sheet-summary-editable .sheet-edit-input::placeholder,
+.sheet-summary-editable .sheet-edit-textarea::placeholder {
+    color: var(--color-text-light);
+    opacity: 0.85;
+}
+
+.sheet-summary-editable .sheet-edit-input:hover,
+.sheet-summary-editable .sheet-edit-textarea:hover {
+    border-color: var(--color-border);
+}
+
+.sheet-summary-editable .sheet-edit-input:focus,
+.sheet-summary-editable .sheet-edit-textarea:focus {
+    border-color: var(--color-accent);
+    outline: none;
+    background-color: var(--color-bg-secondary);
+    box-shadow: 0 0 0 3px var(--color-accent-muted), inset 0 1px 2px var(--color-bg-overlay);
+}
+
+.sheet-summary-editable .sheet-edit-input:focus-visible,
+.sheet-summary-editable .sheet-edit-textarea:focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+.sheet-field > span:first-child,
+.sheet-bond-field-label {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-sm);
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-text-heading);
+}
+
+.sheet-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sheet-summary-editable .summary-personal-grid-editable {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+}
+
+@media (min-width: 600px) {
+    .sheet-summary-editable .summary-personal-grid-editable {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.sheet-summary-editable .summary-personal-grid-editable .sheet-field:not(.sheet-field-readonly) {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border-lighter);
+    border-radius: var(--radius-lg);
+}
+
+.sheet-field-readonly {
+    justify-content: flex-end;
+    padding: 2px 0;
+}
+
+.sheet-field-readonly > span:first-child {
+    color: var(--color-text-light);
+}
+
+.sheet-field-readonly .value-field {
+    font-size: var(--font-size-lg);
+    border-bottom: 1px solid var(--color-button-disabled);
+    padding-bottom: 3px;
+}
+
+.sheet-field-split {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.sheet-field-split .sheet-edit-input {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.sheet-field-block {
+    width: 100%;
+}
+
+.sheet-summary-editable .summary-table .sheet-edit-input {
+    font-size: var(--font-size-sm);
+}
+
+.sheet-summary-editable .summary-table td.value-cell .sheet-edit-input,
+.sheet-summary-editable .summary-table td.value-cell .sheet-edit-input-stat {
+    width: 3.5rem;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 6px 4px;
+    text-align: center;
+    font-weight: bold;
+    font-family: var(--font-mono);
+}
+
+.sheet-summary-editable .summary-table tbody td:not(.value-cell) .sheet-edit-input {
+    text-align: left;
+    font-weight: normal;
+    font-family: var(--font-body);
+}
+
+.sheet-summary-editable .summary-derived-table td.value-cell .sheet-edit-input {
+    background-color: var(--color-bg-info);
+}
+
+.sheet-summary-editable .sheet-edit-textarea-notes {
+    width: 100%;
+    min-height: 12rem;
+    max-width: none;
+    margin-top: var(--spacing-sm);
+}
+
+.sheet-notes-readonly {
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border-lighter);
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    font-size: var(--font-size-lg);
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.summary-block-notes {
+    margin-bottom: var(--spacing-xl);
+}
+
+.summary-block-items {
+    margin-bottom: var(--spacing-xl);
+}
+
+.summary-list-items {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.summary-list-items li {
+    padding: 3px 0;
+    border-bottom: 1px dotted var(--color-border-lighter);
+}
+
+.summary-list-items li:last-child {
+    border-bottom: none;
+}
+
+.sheet-item-row {
+    padding: var(--spacing-xs) 0;
+}
+
+.sheet-summary-editable .sheet-edit-input-item {
+    width: 100%;
+    max-width: none;
+}
+
+.sheet-summary-editable .sheet-edit-textarea {
+    min-height: 5rem;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.sheet-bond-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    align-items: flex-end;
+    padding: var(--spacing-sm) 0;
+}
+
+.sheet-bond-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.sheet-bond-field-desc {
+    flex: 1 1 12rem;
+}
+
+.sheet-bond-field-score {
+    flex: 0 0 auto;
+}
+
+.sheet-summary-editable .sheet-bond-row .sheet-edit-input-bond-desc {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+}
+
+.sheet-summary-editable .sheet-edit-input-bond-score {
+    width: 3.5rem;
+    max-width: 3.5rem;
+    flex: 0 0 3.5rem;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-weight: bold;
+}
+
+.sheet-summary-editable .summary-list-bonds .sheet-bond-row {
+    margin-bottom: 0;
+    border-bottom: 1px dashed var(--color-border-lighter);
+}
+
+.sheet-summary-editable .summary-list-bonds .sheet-bond-row:last-child {
+    border-bottom: none;
+}
+
+.sheet-summary-editable .summary-list-motivations .sheet-motivation-row {
+    margin-bottom: 0;
+    padding: var(--spacing-xs) 0;
+    border-bottom: 1px dashed var(--color-border-lighter);
+}
+
+.sheet-summary-editable .summary-list-motivations .sheet-motivation-row:last-child {
+    border-bottom: none;
+}
+
+.sheet-summary-editable .summary-list-motivations li {
+    margin-bottom: 0;
+    padding: var(--spacing-xs) 0;
+    border-bottom: 1px dashed var(--color-border-lighter);
+}
+
+.sheet-summary-editable .summary-list-motivations .sheet-edit-textarea-motivation {
+    min-height: 2.75rem;
+    resize: none;
+    overflow: hidden;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    line-height: 1.45;
+}
+
+.summary-list-motivations li {
+    overflow-wrap: anywhere;
+}
+
+.sheet-summary-editable .summary-list-motivations li:last-child {
+    border-bottom: none;
+}
+
 /* Compact subsection titles */
 #step5-summary h4.summary-subsection-title {
     font-size: 1.05em;
     margin-top: var(--spacing-md);
     margin-bottom: 6px;
     padding-bottom: 4px;
+}
+
+.summary-share-library-option {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
+    cursor: pointer;
+    line-height: 1.5;
+}
+
+.summary-share-library-hint {
+    margin: 0 0 var(--spacing-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-light);
+}
+
+/* Summary / character sheet — mobile layout */
+@media (max-width: 768px) {
+    #step5-summary::before {
+        font-size: 0.45em;
+        letter-spacing: 1px;
+    }
+
+    #step5-summary h3.summary-block-title {
+        margin-left: calc(-1 * var(--spacing-md));
+        margin-right: calc(-1 * var(--spacing-md));
+        padding-left: var(--spacing-md);
+        padding-right: var(--spacing-md);
+        font-size: 1em;
+        letter-spacing: 1px;
+    }
+
+    .summary-block {
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .summary-personal-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+        font-size: var(--font-size-base);
+    }
+
+    .summary-personal-grid div {
+        flex-wrap: wrap;
+        gap: 2px var(--spacing-xs);
+    }
+
+    .summary-personal-grid strong {
+        min-width: auto;
+        white-space: normal;
+        flex: 0 0 auto;
+    }
+
+    .summary-block-statistical-data {
+        overflow-x: visible;
+    }
+
+    .summary-stats-table,
+    .summary-derived-table {
+        min-width: 0;
+        width: 100%;
+        border: none;
+        background: transparent;
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .summary-stats-table thead,
+    .summary-derived-table thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .summary-stats-table tbody,
+    .summary-derived-table tbody {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+
+    .summary-stats-table tbody tr,
+    .summary-derived-table tbody tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px var(--spacing-sm);
+        padding: var(--spacing-sm);
+        border: 1px solid var(--color-border-light);
+        border-radius: 6px;
+        background-color: var(--color-bg-secondary);
+    }
+
+    .summary-stats-table tbody td,
+    .summary-derived-table tbody td {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        border: none;
+        padding: 2px 0;
+        min-width: 0;
+        text-align: left;
+    }
+
+    .summary-stats-table tbody td:first-child,
+    .summary-derived-table tbody td:first-child {
+        grid-column: 1 / -1;
+        font-weight: bold;
+        padding-bottom: 4px;
+        border-bottom: 1px dashed var(--color-border-lighter);
+    }
+
+    .summary-stats-table tbody td:nth-child(4) {
+        grid-column: 1 / -1;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+    }
+
+    .summary-stats-table tbody td[data-col-label]::before,
+    .summary-derived-table tbody td[data-col-label]::before {
+        content: attr(data-col-label);
+        flex: 0 0 auto;
+        font-family: var(--font-heading);
+        font-size: 0.72em;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: var(--color-text-light);
+    }
+
+    .summary-stats-table tbody td:nth-child(4)::before {
+        align-self: flex-start;
+    }
+
+    .summary-table td .sheet-roll-target {
+        width: auto;
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .summary-table td.value-cell {
+        justify-content: flex-start;
+    }
+
+    .sheet-summary-editable .summary-table td.value-cell .sheet-edit-input,
+    .sheet-summary-editable .summary-table td.value-cell .sheet-edit-input-stat {
+        width: 3.25rem;
+        max-width: 100%;
+        margin: 0;
+        padding: 4px 2px;
+    }
+
+    .sheet-summary-editable .summary-table tbody td:not(.value-cell) .sheet-edit-input {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .summary-derived-table td.placeholder-cell {
+        min-width: 0;
+        width: 3.25rem;
+        text-align: center;
+    }
+
+    .summary-skills-multicolumn .sheet-skill-row {
+        grid-template-columns: minmax(0, 1fr) 2.75rem 1rem;
+        column-gap: 4px;
+    }
+
+    .summary-skills-multicolumn .sheet-edit-input-skill {
+        max-width: 2.75rem;
+        padding: 4px 2px;
+    }
+
+    .sheet-bond-row {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: flex-end;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-sm) 0;
+    }
+
+    .sheet-bond-field-desc {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    .sheet-bond-field-score {
+        flex: 0 0 4.25rem;
+        width: 4.25rem;
+    }
+
+    .sheet-bond-field-label {
+        font-size: 0.72em;
+        letter-spacing: 0.3px;
+        line-height: 1.2;
+    }
+
+    .sheet-summary-editable .sheet-edit-input-bond-score {
+        width: 100%;
+        max-width: none;
+        flex: none;
+        min-height: 44px;
+        padding: 6px 4px;
+    }
+
+    .sheet-summary-editable .sheet-edit-input-bond-desc {
+        min-height: 44px;
+    }
+
+    .sheet-summary-editable .sheet-edit-textarea-notes {
+        min-height: 8rem;
+    }
+
+    .sheet-summary-editable .sheet-edit-textarea-motivation,
+    .sheet-summary-editable .sheet-edit-input-item,
+    .sheet-summary-editable .sheet-edit-textarea-notes,
+    .sheet-summary-editable .sheet-edit-input-bond-desc {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    ul.summary-list {
+        font-size: var(--font-size-base);
+    }
+}
+
+@media (max-width: 400px) {
+    #step5-summary h4.summary-subsection-title {
+        font-size: 0.95em;
+    }
 }
 

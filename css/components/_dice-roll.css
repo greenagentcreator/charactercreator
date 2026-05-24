@@ -1,0 +1,645 @@
+/* Slot-machine roll bubble + sheet roll targets */
+
+.sheet-roll-target {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+    box-sizing: border-box;
+    max-width: 100%;
+    margin: 0;
+    padding: 3px 6px;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: 1.35;
+    text-align: left;
+    color: inherit;
+    background-color: transparent;
+    border: 1px dashed var(--color-border-lighter);
+    border-radius: 3px;
+    cursor: pointer;
+    box-shadow: none;
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast),
+        border-color var(--transition-fast);
+    touch-action: manipulation;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.sheet-roll-target:hover {
+    color: var(--color-text);
+    background-color: var(--color-bg-info);
+    border-color: var(--color-border-light);
+    border-style: solid;
+}
+
+.sheet-roll-target:active {
+    background-color: var(--color-bg-overlay);
+}
+
+.sheet-roll-target:focus-visible {
+    outline: 2px solid var(--color-accent-muted);
+    outline-offset: 1px;
+}
+
+.summary-table td .sheet-roll-target {
+    width: 100%;
+}
+
+.sheet-summary-editable .sheet-skill-label .sheet-roll-target {
+    flex: 1;
+    min-width: 0;
+}
+
+.sheet-roll-target--rolling {
+    pointer-events: none;
+    opacity: 0.85;
+    transform: none;
+}
+
+/* Roll result stamp on sheet target */
+.sheet-roll-stamp-host {
+    position: relative;
+    overflow: visible;
+}
+
+.sheet-roll-stamp {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 6;
+    padding: 2px 8px;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-bg-secondary);
+    font-family: var(--font-heading);
+    font-size: 0.72em;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translate(-50%, -50%) rotate(-14deg);
+    animation: sheet-roll-stamp-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    box-shadow: 0 2px 4px var(--color-bg-overlay);
+}
+
+.sheet-roll-stamp--success {
+    color: var(--color-alert-success);
+    border-color: var(--color-alert-success);
+}
+
+.sheet-roll-stamp--failure {
+    color: var(--color-alert-classified);
+    border-color: var(--color-alert-classified);
+}
+
+.sheet-roll-stamp--critical-success {
+    color: var(--color-alert-success);
+    border-color: var(--color-alert-success);
+    font-size: 0.62em;
+    letter-spacing: 1.5px;
+}
+
+.sheet-roll-stamp--critical-failure {
+    color: var(--color-alert-classified);
+    border-color: var(--color-alert-classified);
+    font-size: 0.62em;
+    letter-spacing: 1.5px;
+}
+
+@keyframes sheet-roll-stamp-in {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(-14deg) scale(1.35);
+    }
+    100% {
+        opacity: 0.88;
+        transform: translate(-50%, -50%) rotate(-14deg) scale(1);
+    }
+}
+
+.sheet-summary-editable .sheet-skill-label.sheet-roll-stamp-host .sheet-roll-stamp {
+    left: 58%;
+}
+
+.summary-table td.sheet-roll-stamp-host .sheet-roll-stamp {
+    font-size: 0.65em;
+}
+
+[data-theme="dark"] .sheet-roll-target:hover {
+    background-color: var(--color-bg-info);
+}
+
+.sheet-roll-target .base-value {
+    font-weight: normal;
+    opacity: 0.85;
+}
+
+.sheet-roll-target:hover .base-value {
+    opacity: 0.9;
+}
+
+/* Roll bubble — anchored to document, scrolls with sheet */
+.roll-bubble {
+    position: absolute;
+    z-index: 1200;
+    transform: translate(-50%, -100%);
+    opacity: 0;
+    pointer-events: auto;
+    filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.14));
+    transition: opacity 0.22s ease, filter 0.22s ease;
+    --roll-digit-h: 44px;
+}
+
+.roll-bubble--visible {
+    opacity: 1;
+    animation: roll-bubble-in 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.roll-bubble--leaving {
+    opacity: 0;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+    transition: opacity 0.28s ease, filter 0.28s ease;
+}
+
+@keyframes roll-bubble-in {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, calc(-100% + 8px)) scale(0.94);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -100%) scale(1);
+    }
+}
+
+.roll-bubble-close {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    min-height: 22px;
+    max-width: 22px;
+    max-height: 22px;
+    padding: 0;
+    border: 1px solid var(--color-border-light);
+    border-radius: 50%;
+    background: var(--color-bg-secondary);
+    color: var(--color-text-light);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    flex-shrink: 0;
+    aspect-ratio: 1;
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+.roll-bubble-close:hover {
+    color: var(--color-text);
+    background: var(--color-bg-info);
+    border-color: var(--color-border);
+}
+
+.roll-bubble-close:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 1px;
+}
+
+.roll-bubble-tail {
+    position: absolute;
+    left: 50%;
+    bottom: -7px;
+    width: 12px;
+    height: 12px;
+    transform: translateX(-50%) rotate(45deg);
+    background: var(--color-bg-secondary);
+    border-right: 1px solid var(--color-border-light);
+    border-bottom: 1px solid var(--color-border-light);
+    box-shadow: 1px 1px 2px var(--color-bg-overlay);
+    transition:
+        background-color 0.45s ease,
+        border-color 0.45s ease,
+        box-shadow 0.45s ease;
+}
+
+.roll-bubble--success .roll-bubble-tail {
+    border-color: var(--color-alert-success);
+}
+
+.roll-bubble--failure .roll-bubble-tail {
+    border-color: var(--color-alert-classified);
+}
+
+/* Field counter panel — neutral while rolling, colored after reveal */
+.roll-slot-machine {
+    position: relative;
+    overflow: hidden;
+    padding: 9px 28px 11px 11px;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-bg-secondary);
+    background-image:
+        repeating-linear-gradient(
+            -42deg,
+            transparent,
+            transparent 10px,
+            rgba(0, 0, 0, 0.028) 10px,
+            rgba(0, 0, 0, 0.028) 11px
+        );
+    border: 1px solid var(--color-border-light);
+    border-left: 4px solid var(--color-border);
+    box-shadow:
+        var(--shadow-sm),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+    transition:
+        background-color 0.45s ease,
+        border-color 0.45s ease,
+        box-shadow 0.45s ease;
+}
+
+[data-theme="dark"] .roll-slot-machine {
+    background-image:
+        repeating-linear-gradient(
+            -42deg,
+            transparent,
+            transparent 10px,
+            rgba(255, 255, 255, 0.025) 10px,
+            rgba(255, 255, 255, 0.025) 11px
+        );
+    box-shadow:
+        var(--shadow-sm),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.roll-slot-cabinet-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 7px;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed var(--color-border-lighter);
+}
+
+.roll-slot-cabinet-top::before {
+    content: "// D100 //";
+    font-family: var(--font-heading);
+    font-size: 0.58em;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    opacity: 0.9;
+}
+
+.roll-slot-cabinet-top::after {
+    content: "REC";
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding-left: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.55em;
+    letter-spacing: 1px;
+    color: var(--color-text-light);
+    opacity: 0.45;
+    background:
+        radial-gradient(circle, var(--color-border) 0 38%, transparent 40%) left center / 7px 7px no-repeat;
+}
+
+.roll-slot-machine--active .roll-slot-cabinet-top::after,
+.roll-slot-machine--ones-locked .roll-slot-cabinet-top::after {
+    color: var(--color-text-muted);
+    opacity: 1;
+    background:
+        radial-gradient(circle, var(--color-text-light) 0 38%, transparent 40%) left center / 7px 7px no-repeat;
+    animation: roll-rec-pulse 0.85s ease-in-out infinite;
+}
+
+.roll-slot-machine--complete .roll-slot-cabinet-top::after {
+    opacity: 0;
+    animation: none;
+}
+
+@keyframes roll-rec-pulse {
+    0%, 100% { opacity: 0.55; }
+    50% { opacity: 1; }
+}
+
+.roll-slot-reels {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.roll-bubble--success .roll-slot-machine {
+    border-color: var(--color-alert-success);
+    border-left-color: var(--color-alert-success);
+}
+
+.roll-bubble--failure .roll-slot-machine {
+    border-color: var(--color-alert-classified);
+    border-left-color: var(--color-alert-classified);
+}
+
+.roll-bubble-outcome-hint {
+    margin: 8px 0 0;
+    padding-top: 7px;
+    border-top: 1px dashed var(--color-border-lighter);
+    font-family: var(--font-heading);
+    font-size: 0.62em;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--color-text-muted);
+    line-height: 1.35;
+}
+
+.roll-bubble--critical-failure .roll-bubble-outcome-hint {
+    color: var(--color-alert-classified);
+}
+
+.roll-bubble--critical-success .roll-bubble-outcome-hint {
+    color: var(--color-alert-success);
+}
+
+.roll-bubble--snake-eyes.roll-bubble--critical-failure .roll-reel-digit {
+    letter-spacing: 0.12em;
+}
+
+.roll-slot-machine--active {
+    animation: roll-cabinet-idle 0.5s ease-out;
+}
+
+.roll-slot-machine--ones-locked {
+    animation: roll-cabinet-nudge 0.5s ease-out;
+}
+
+.roll-slot-machine--complete {
+    animation: roll-cabinet-complete 0.55s ease-out;
+}
+
+@keyframes roll-cabinet-idle {
+    0% { transform: scale(0.97); }
+    100% { transform: scale(1); }
+}
+
+@keyframes roll-cabinet-nudge {
+    0%, 100% { transform: translateX(0); }
+    30% { transform: translateX(-1px); }
+    60% { transform: translateX(1px); }
+}
+
+@keyframes roll-cabinet-complete {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.015); }
+    100% { transform: scale(1); }
+}
+
+/* Bracketed counter reels */
+.roll-reel-frame {
+    position: relative;
+    padding: 3px 5px;
+    border-radius: var(--radius-sm);
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border-light);
+    box-shadow: inset 0 1px 3px var(--color-bg-overlay);
+}
+
+.roll-reel-frame::before,
+.roll-reel-frame::after {
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    width: 2px;
+    background: var(--color-border-light);
+    opacity: 0.75;
+    content: "";
+    pointer-events: none;
+}
+
+.roll-reel-frame::before {
+    left: 0;
+    border-radius: 1px 0 0 1px;
+}
+
+.roll-reel-frame::after {
+    right: 0;
+    border-radius: 0 1px 1px 0;
+}
+
+.roll-reel-window {
+    width: 2.45rem;
+    height: var(--roll-digit-h);
+    overflow: hidden;
+    border-radius: 1px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border-lighter);
+    position: relative;
+}
+
+.roll-reel-window::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    background: linear-gradient(
+        180deg,
+        var(--color-bg-overlay) 0%,
+        transparent 22%,
+        transparent 78%,
+        var(--color-bg-overlay) 100%
+    );
+}
+
+.roll-reel-window::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    top: 50%;
+    height: 1px;
+    margin-top: -0.5px;
+    pointer-events: none;
+    z-index: 3;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--color-border-light) 20%,
+        var(--color-border-light) 80%,
+        transparent
+    );
+    opacity: 0.55;
+}
+
+.roll-reel-strip {
+    will-change: transform, filter;
+}
+
+.roll-reel--spinning .roll-reel-window {
+    border-color: var(--color-border);
+    box-shadow:
+        inset 0 0 8px rgba(0, 0, 0, 0.06),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .roll-reel--spinning .roll-reel-window {
+    box-shadow:
+        inset 0 0 10px rgba(0, 0, 0, 0.35),
+        0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.roll-reel--spinning .roll-reel-window::after {
+    animation: roll-scanline 0.7s linear infinite;
+}
+
+@keyframes roll-scanline {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.7; }
+}
+
+.roll-reel--locked .roll-reel-digit:last-child {
+    animation: roll-digit-lock 0.55s ease-out;
+}
+
+@keyframes roll-digit-lock {
+    0% {
+        filter: brightness(1.12);
+    }
+    100% {
+        filter: brightness(1);
+    }
+}
+
+.roll-reel-digit {
+    height: var(--roll-digit-h);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 1.65rem;
+    font-weight: bold;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text);
+    letter-spacing: 0.08em;
+    transition: color 0.45s ease, filter 0.45s ease;
+}
+
+.roll-bubble--success .roll-slot-cabinet-top::before {
+    color: var(--color-alert-success);
+}
+
+.roll-bubble--failure .roll-slot-cabinet-top::before {
+    color: var(--color-alert-classified);
+}
+
+.roll-bubble--success .roll-reel-frame::before,
+.roll-bubble--success .roll-reel-frame::after {
+    background: var(--color-alert-success);
+    opacity: 0.45;
+}
+
+.roll-bubble--failure .roll-reel-frame::before,
+.roll-bubble--failure .roll-reel-frame::after {
+    background: var(--color-alert-classified);
+    opacity: 0.45;
+}
+
+.roll-bubble--success .roll-reel-window::after {
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--color-alert-success) 20%,
+        var(--color-alert-success) 80%,
+        transparent
+    );
+    opacity: 0.35;
+}
+
+.roll-bubble--failure .roll-reel-window::after {
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--color-alert-classified) 20%,
+        var(--color-alert-classified) 80%,
+        transparent
+    );
+    opacity: 0.35;
+}
+
+.roll-bubble--success .roll-reel-digit {
+    color: var(--color-alert-success);
+}
+
+.roll-bubble--failure .roll-reel-digit {
+    color: var(--color-alert-classified);
+}
+
+@media (max-width: 768px) {
+    .roll-bubble {
+        max-width: calc(100vw - 24px);
+    }
+
+    .roll-slot-machine {
+        padding-right: 24px;
+    }
+
+    .roll-reel-window {
+        width: 2.1rem;
+    }
+
+    .roll-reel-digit {
+        font-size: 1.45rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .roll-bubble--visible {
+        animation: none;
+    }
+
+    .roll-slot-machine--active,
+    .roll-slot-machine--ones-locked,
+    .roll-slot-machine--complete {
+        animation: none;
+    }
+
+    .roll-slot-machine--active .roll-slot-cabinet-top::after,
+    .roll-slot-machine--ones-locked .roll-slot-cabinet-top::after {
+        animation: none;
+        opacity: 0.7;
+    }
+
+    .roll-reel--spinning .roll-reel-window::after {
+        animation: none;
+    }
+
+    .roll-reel--locked .roll-reel-digit:last-child {
+        animation: none;
+    }
+
+    .sheet-roll-stamp {
+        animation: none;
+        opacity: 0.88;
+    }
+}
+
+@media print {
+    .roll-bubble {
+        display: none !important;
+    }
+}
