@@ -2,3 +2,4 @@
 scripts/migrate-character-language/node_modules/
 scripts/migrate-character-language/service-account.json
 scripts/migrate-character-language/*-firebase-adminsdk-*.json
+index2.html
