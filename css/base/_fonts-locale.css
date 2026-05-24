@@ -1,0 +1,20 @@
+/* Locale-specific typography — Cyrillic-friendly stacks when UI language is Russian */
+
+html[lang="ru"] {
+    --font-body: 'PT Serif', Georgia, 'Times New Roman', serif;
+    --font-heading: 'PT Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+html[lang="ru"] body {
+    line-height: 1.65;
+    letter-spacing: 0.01em;
+}
+
+html[lang="ru"] header h1,
+html[lang="ru"] .home-hero-title,
+html[lang="ru"] .home-section-title,
+html[lang="ru"] .app-modal-title,
+html[lang="ru"] .sheet-header h2 {
+    letter-spacing: 0.02em;
+    text-transform: none;
+}

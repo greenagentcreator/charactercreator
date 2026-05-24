@@ -1,6 +1,7 @@
 // i18n (Internationalization) system for Delta Green Character Creator
 
 import { i18nData, languageLabels } from './translations.js';
+import { syncRussianFontsWithLanguage } from '../utils/locale-fonts.js';
 
 const translations = {};
 let currentLanguage = 'en';
@@ -98,21 +99,32 @@ export function setLanguage(lang) {
     }
     currentLanguage = lang;
     document.documentElement.lang = lang;
+    syncRussianFontsWithLanguage(lang);
     localStorage.setItem('preferredLanguage', lang);
+
+    if (window.app?.syncLibraryLanguageFilterWithUi) {
+        window.app.syncLibraryLanguageFilterWithUi(lang);
+    }
     
     translateAllElements(); 
 
-    // Don't re-render if we're loading a shared character
+    // Don't re-render wizard/home while restoring, loading a share, or viewing a sheet
     if (window.app && typeof window.app.renderCurrentStep === 'function') {
         const isLoadingShared = window.app.isLoadingSharedCharacter && window.app.isLoadingSharedCharacter();
-        if (!isLoadingShared) {
-            window.app.renderCurrentStep(); 
+        const isRestoring = window.app.isRestoringNavigation && window.app.isRestoringNavigation();
+        const isSheetView = window.app.isInSheetView && window.app.isInSheetView();
+        if (!isLoadingShared && !isRestoring && !isSheetView) {
+            window.app.renderCurrentStep(true);
         }
     }
     const languageSelect = document.getElementById('language-select');
     if (languageSelect && languageSelect.value !== lang) {
         languageSelect.value = lang;
     }
+
+    import('../utils/news.js').then(({ refreshNewsButton }) => {
+        refreshNewsButton?.();
+    }).catch(() => {});
 }
 
 export function initLanguageSwitcher() {
