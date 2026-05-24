@@ -2,10 +2,10 @@
 
 import { t, translateAllElements } from './i18n/i18n.js';
 import { getCurrentLanguage } from './i18n/i18n.js';
-import { resetCharacter, getCharacter } from './model/character.js';
-import { initErrorContainer, clearErrors } from './utils/validation.js';
-import { initKeyboardNavigation, focusFirstInput } from './utils/keyboard.js';
-import { renderIntro, attachIntroListeners } from './steps/step0-intro.js';
+import { resetCharacter, getCharacter, setCharacter } from './model/character.js';
+import { initErrorContainer, clearErrors, validateImportedCharacter } from './utils/validation.js';
+import { initKeyboardNavigation } from './utils/keyboard.js';
+import { renderIntro, attachIntroListeners, syncLibraryLanguageFilterWithUi } from './steps/step0-intro.js';
 import { renderStep1_ProfessionSkills, validateStep1, saveStep1, attachStep1Listeners } from './steps/step1-profession.js';
 import { renderStep2_Statistics, validateStep2, saveStep2, attachStep2Listeners } from './steps/step2-statistics.js';
 import { renderStep3_DerivedAttributes, validateStep3, saveStep3, attachStep3Listeners } from './steps/step3-derived.js';
@@ -13,17 +13,33 @@ import { renderStep4_BondsMotivations, validateStep4, saveStep4, attachStep4List
 import { renderStep4_TraumaticBackground, validateStep4_3, saveStep4_3, attachStep4_3Listeners } from './steps/step4-traumatic-background.js';
 import { renderStep5_PersonalInfo, validateStep5_PersonalInfo, saveStep5_PersonalInfo, attachStep5_PersonalInfoListeners } from './steps/step5-personal-info.js';
 import { renderStep5_Summary, validateStep5, saveStep5, attachStep5Listeners } from './steps/step5-summary.js';
-import { saveCharacter, isStorageFull, getStorageLimit, importCharacter, getAllCharacters } from './utils/storage.js';
+import { saveCharacter, isStorageFull, getStorageLimit, importCharacter } from './utils/storage.js';
 import { PROFESSIONS } from './config/professions.js';
-import { renderCharacterView, attachCharacterViewListeners } from './steps/step-character-view.js';
+import { renderCharacterView, attachCharacterViewListeners, prepareSheetSummaryForPrint, triggerSheetPrint } from './steps/step-character-view.js';
+import { confirmLeaveSheetIfDirty, isLeavingSheetView, resetSheetEditState } from './utils/sheet-autosave.js';
+import { captureSheetBaseline } from './utils/sheet-baseline.js';
 import { getCharacterFromUrl } from './utils/sharing.js';
+import { normalizeSheetCharacterFields } from './utils/sheet-edit.js';
 import { uploadCharacter } from './utils/database.js';
+import { initAppHistory, syncAppHistory, appStateFromUrl, isNavigatingFromHistory } from './utils/app-history.js';
+import { loadAppNavigationState } from './utils/app-session.js';
+import {
+    saveUnfinishedDraft,
+    resolveUnfinishedDraftForResume,
+    removeUnfinishedDraft,
+    clearActiveUnfinishedDraftReference,
+    getUnfinishedDraftById
+} from './utils/unfinished-drafts.js';
 
 let currentStep = 0;
 let stepContainer, progressBarContainer, btnNext, btnBack;
-let currentViewMode = 'creation'; // 'creation', 'view', 'list'
+let currentViewMode = 'creation'; // 'creation', 'sheet', 'list'
 let viewingCharacterId = null;
+let viewingDatabaseId = null;
+let activeDraftId = null;
 let isLoadingSharedCharacter = false; // Flag to prevent intro from rendering when loading shared character
+let isRestoringNavigation = false;
+let scrollToCharacterIdOnHome = null;
 
 // Export function to set the flag (used by main.js)
 export function setLoadingSharedCharacter(value) {
@@ -42,14 +58,25 @@ const steps = [
     { render: renderStep5_Summary, validate: validateStep5, save: saveStep5, nameKey: "step_name_5", attachListeners: attachStep5Listeners }
 ];
 
-async function renderCurrentStep(skipFocus = false) {
+/**
+ * @param {boolean} preserveScroll - When true (default), keep window scroll position after in-step UI refresh
+ */
+async function renderCurrentStep(preserveScroll = true) {
     console.log('app.js: renderCurrentStep() called, currentStep:', currentStep, 'isLoadingSharedCharacter:', isLoadingSharedCharacter);
-    
-    // Don't render if we're currently loading a shared character
-    if (isLoadingSharedCharacter) {
-        console.log('app.js: Skipping render - loading shared character');
+
+    if (isLoadingSharedCharacter || isRestoringNavigation) {
+        console.log('app.js: Skipping render - loading shared character or restoring navigation');
         return;
     }
+
+    if (currentViewMode === 'sheet') {
+        if (stepContainer) {
+            translateAllElements(stepContainer);
+        }
+        return;
+    }
+
+    const scrollYToRestore = preserveScroll ? window.scrollY : null;
     
     if (steps[currentStep] && typeof steps[currentStep].render === 'function') {
         const stepData = steps[currentStep];
@@ -95,22 +122,24 @@ async function renderCurrentStep(skipFocus = false) {
             stepData.attachListeners();
         }
         
-        // Auto-save character when entering Summary step (step 7, index 7)
-        if (currentStep === 7) {
-            autoSaveCharacter();
-            autoUploadCharacter();
-        }
-        
         updateProgressBar(); 
         updateNavigationButtons();
-        // Focus first input after a short delay to ensure DOM is ready
-        // Skip focus if requested (e.g., when updating UI without changing steps)
-        if (!skipFocus) {
-            requestAnimationFrame(() => {
-                setTimeout(() => {
-                    focusFirstInput();
-                }, 150);
-            });
+
+        let scrollToSavedCharacter = false;
+        if (currentStep === 0 && scrollToCharacterIdOnHome) {
+            scrollToSavedCharacter = true;
+            scrollToCharacterOnHome(scrollToCharacterIdOnHome);
+            scrollToCharacterIdOnHome = null;
+        }
+
+        if (preserveScroll && !scrollToSavedCharacter) {
+            if (scrollYToRestore !== null) {
+                requestAnimationFrame(() => {
+                    window.scrollTo({ top: scrollYToRestore, behavior: 'instant' });
+                });
+            }
+        } else if (!scrollToSavedCharacter) {
+            scrollToStepTop();
         }
     }
 }
@@ -188,24 +217,22 @@ function updateProgressBar() {
             stepIndicator.addEventListener('click', () => {
                 if (actualIndex < currentStep) {
                     // Validate current step before allowing navigation
-                    if (validateStep(currentStep, false)) {
+                    if (validateStep(currentStep, true)) {
                         saveStepData(currentStep);
                         currentStep = actualIndex;
-                        renderCurrentStep();
-                        // Scroll to top smoothly
-                        scrollToStepTop();
+                        renderCurrentStep(false);
+                        pushAppHistory();
                     }
                 }
             });
             stepIndicator.addEventListener('keydown', (e) => {
                 if ((e.key === 'Enter' || e.key === ' ') && actualIndex < currentStep) {
                     e.preventDefault();
-                    if (validateStep(currentStep, false)) {
+                    if (validateStep(currentStep, true)) {
                         saveStepData(currentStep);
                         currentStep = actualIndex;
-                        renderCurrentStep();
-                        // Scroll to top smoothly
-                        scrollToStepTop();
+                        renderCurrentStep(false);
+                        pushAppHistory();
                     }
                 }
             });
@@ -247,11 +274,41 @@ function saveStepData(stepIndex) {
     if (steps[stepIndex] && typeof steps[stepIndex].save === 'function') {
         steps[stepIndex].save();
     }
+    persistCreationDraftIfCreating();
+}
+
+function persistCreationDraftIfCreating() {
+    if (currentViewMode !== 'creation' || currentStep <= 0) {
+        return;
+    }
+    activeDraftId = saveUnfinishedDraft(currentStep, getCharacter(), activeDraftId);
+}
+
+function clearActiveCreationDraft() {
+    if (activeDraftId) {
+        removeUnfinishedDraft(activeDraftId);
+    }
+    activeDraftId = null;
+    clearActiveUnfinishedDraftReference();
+}
+
+function applyUnfinishedDraftToSession(draft) {
+    if (!draft) {
+        return false;
+    }
+    activeDraftId = draft.id;
+    setCharacter(JSON.parse(JSON.stringify(draft.character)));
+    return true;
 }
 
 function handleNextStep() {
     if (!validateStep(currentStep, true)) return;
     const character = getCharacter();
+
+    if (currentStep === 0) {
+        activeDraftId = null;
+        clearActiveUnfinishedDraftReference();
+    }
     
     // Prüfe, ob wir im 'bonds' oder 'skills' Stage einer Custom Profession sind
     // In diesem Fall wird die Bestätigung in saveStep1 gemacht und die Ansicht aktualisiert
@@ -271,9 +328,8 @@ function handleNextStep() {
             stepContainer.setAttribute('aria-busy', 'true');
         }
         currentStep++;
-        renderCurrentStep();
-        // Scroll to top smoothly
-        scrollToStepTop();
+        renderCurrentStep(false);
+        pushAppHistory();
     }
 }
 
@@ -300,15 +356,23 @@ function autoSaveCharacter() {
     }
     
     try {
+        const dataCopy = JSON.parse(JSON.stringify(character));
+        if (!dataCopy.sheetBaseline) {
+            dataCopy.sheetBaseline = captureSheetBaseline(dataCopy);
+        }
+
         const characterData = {
             id: character.id || null,
             name: characterName,
             profession: professionName,
-            data: JSON.parse(JSON.stringify(character)) // Deep copy
+            data: dataCopy
         };
         
         const savedId = saveCharacter(characterData);
         character.id = savedId;
+        if (!character.sheetBaseline) {
+            character.sheetBaseline = dataCopy.sheetBaseline;
+        }
     } catch (error) {
         console.error('Error auto-saving character:', error);
     }
@@ -326,13 +390,28 @@ function hasShortBondDescriptions(character) {
     });
 }
 
+const SHARE_TO_LIBRARY_PREF_KEY = 'shareToLibraryPreference';
+
+function getShareToLibraryPreference() {
+    return localStorage.getItem(SHARE_TO_LIBRARY_PREF_KEY) !== 'false';
+}
+
+export function isShareToLibraryEnabled() {
+    const checkbox = document.getElementById('share-to-library');
+    if (checkbox) {
+        return checkbox.checked;
+    }
+    return getShareToLibraryPreference();
+}
+
 async function autoUploadCharacter() {
+    if (!isShareToLibraryEnabled()) {
+        return;
+    }
+
     const character = getCharacter();
-    
-    // Only upload if character is complete (has been saved)
+
     if (!character.id) {
-        // Wait a bit for autoSaveCharacter to complete
-        setTimeout(() => autoUploadCharacter(), 100);
         return;
     }
     
@@ -356,6 +435,7 @@ async function autoUploadCharacter() {
         id: character.id,
         name: characterName,
         profession: professionName,
+        language: getCurrentLanguage(),
         data: JSON.parse(JSON.stringify(character)), // Deep copy
         createdDate: new Date().toISOString()
     };
@@ -376,27 +456,159 @@ function handlePreviousStep() {
             stepContainer.setAttribute('aria-busy', 'true');
         }
         currentStep--;
-        renderCurrentStep();
-        // Scroll to top smoothly
-        scrollToStepTop();
+        renderCurrentStep(false);
+        pushAppHistory();
     }
 }
 
-/**
- * Scroll to the top of the step content smoothly
- */
-function scrollToStepTop() {
-    // Use requestAnimationFrame to ensure DOM is updated
-    requestAnimationFrame(() => {
-        const mainContent = document.getElementById('main-content');
-        if (mainContent) {
-            mainContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else {
-            // Fallback to window scroll
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+function getAppNavigationState() {
+    if (currentViewMode === 'sheet') {
+        if (viewingDatabaseId) {
+            return { mode: 'view-db', dbId: viewingDatabaseId };
         }
-        
-        // Remove busy state after transition
+        return { mode: 'view-local', characterId: viewingCharacterId };
+    }
+    if (currentStep === 0) {
+        return { mode: 'home', step: 0 };
+    }
+    return { mode: 'create', step: currentStep, draftId: activeDraftId || undefined };
+}
+
+function pushAppHistory(replace = false) {
+    syncAppHistory(getAppNavigationState(), { replace });
+    persistCreationDraftIfCreating();
+}
+
+function showCreationChrome() {
+    if (btnNext) btnNext.style.display = 'inline-block';
+    if (btnBack) btnBack.style.display = 'inline-block';
+}
+
+function hideCreationChrome() {
+    const navigationContainer = document.getElementById('navigation-container');
+    if (navigationContainer) {
+        navigationContainer.style.display = 'none';
+    }
+    if (btnNext) btnNext.style.display = 'none';
+    if (btnBack) btnBack.style.display = 'none';
+    if (progressBarContainer) progressBarContainer.style.display = 'none';
+}
+
+async function applyNavigationFromHistory(state) {
+    const navState = state?.mode ? state : { mode: 'home', step: 0 };
+
+    if (isLeavingSheetView(navState, viewingCharacterId)) {
+        const canLeave = await confirmLeaveSheetIfDirty();
+        if (!canLeave) {
+            pushAppHistory(true);
+            return;
+        }
+        resetSheetEditState();
+    }
+
+    switch (navState.mode) {
+        case 'home':
+            viewingCharacterId = null;
+            viewingDatabaseId = null;
+            currentViewMode = 'list';
+            currentStep = 0;
+            isLoadingSharedCharacter = false;
+            activeDraftId = null;
+            clearActiveUnfinishedDraftReference();
+            showCreationChrome();
+            resetCharacter();
+            await renderCurrentStep(false);
+            break;
+        case 'create': {
+            viewingCharacterId = null;
+            viewingDatabaseId = null;
+            currentViewMode = 'creation';
+            const requestedStep = Math.min(Math.max(0, navState.step ?? 0), steps.length - 1);
+            const draft = resolveUnfinishedDraftForResume(navState.draftId);
+
+            if (requestedStep > 0 && !draft) {
+                await applyNavigationFromHistory({ mode: 'home', step: 0 });
+                break;
+            }
+
+            if (draft) {
+                applyUnfinishedDraftToSession(draft);
+            } else {
+                resetCharacter();
+            }
+
+            currentStep = requestedStep > 0 ? requestedStep : 1;
+            showCreationChrome();
+            await renderCurrentStep(false);
+            persistCreationDraftIfCreating();
+            break;
+        }
+        case 'view-local':
+            if (navState.characterId) {
+                renderLocalCharacterView(navState.characterId);
+            } else {
+                await applyNavigationFromHistory({ mode: 'home', step: 0 });
+            }
+            break;
+        case 'view-db':
+            if (navState.dbId) {
+                await renderDatabaseCharacterView(navState.dbId);
+            } else {
+                await applyNavigationFromHistory({ mode: 'home', step: 0 });
+            }
+            break;
+        default:
+            await applyNavigationFromHistory({ mode: 'home', step: 0 });
+    }
+}
+
+function scrollToCharacterOnHome(characterId) {
+    if (!characterId) return;
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            const card = document.querySelector(
+                `#home-section-mine .character-card[data-character-id="${characterId}"]`
+            );
+            if (card) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            document.getElementById('home-section-mine')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+}
+
+function scheduleScrollToCharacterOnHome(characterId) {
+    scrollToCharacterIdOnHome = characterId || null;
+}
+
+function saveAgentAndOpenSheet() {
+    if (!validateStep(currentStep, true)) return;
+
+    saveStepData(currentStep);
+    autoSaveCharacter();
+    clearActiveCreationDraft();
+
+    const savedId = getCharacter().id;
+    if (!savedId) return;
+
+    autoUploadCharacter();
+    openCharacterSheet(savedId);
+}
+
+function openCharacterSheet(characterId) {
+    renderLocalCharacterView(characterId);
+    if (!isNavigatingFromHistory()) {
+        pushAppHistory();
+    }
+}
+
+/** Scroll to the top of the step content smoothly */
+function scrollToStepTop() {
+    requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
         setTimeout(() => {
             if (stepContainer) {
                 stepContainer.removeAttribute('aria-busy');
@@ -406,6 +618,11 @@ function scrollToStepTop() {
 }
 
 export function updateNavigationButtons() {
+    if (currentViewMode === 'sheet') {
+        hideCreationChrome();
+        return;
+    }
+
     // Hide navigation on intro step (step 0)
     const navigationContainer = document.getElementById('navigation-container');
     if (navigationContainer) {
@@ -417,20 +634,20 @@ export function updateNavigationButtons() {
     }
     
     btnBack.disabled = currentStep === 0;
-    const character = getCharacter();
+    if (btnBack) {
+        btnBack.setAttribute('aria-label', t('aria_prev_step'));
+    }
 
     if (currentStep === steps.length - 1) {
-        // Summary step - show "Back to Home" button instead of "Next"
         btnNext.style.display = 'inline-block';
-        btnNext.textContent = t('btn_back_to_home');
+        btnNext.textContent = t('btn_save_and_edit');
         btnNext.disabled = false;
-        // Remove existing event listeners and add new one for "Back to Home"
+        btnNext.removeAttribute('aria-disabled');
+        btnNext.setAttribute('aria-label', t('aria_save_and_edit'));
         const newBtnNext = btnNext.cloneNode(true);
         btnNext.parentNode.replaceChild(newBtnNext, btnNext);
         btnNext = newBtnNext;
-        btnNext.addEventListener('click', () => {
-            returnToList();
-        });
+        btnNext.addEventListener('click', saveAgentAndOpenSheet);
     } else {
         btnNext.style.display = 'inline-block';
         btnNext.textContent = t('btn_next_text');
@@ -440,15 +657,9 @@ export function updateNavigationButtons() {
         btnNext.parentNode.replaceChild(newBtnNext, btnNext);
         btnNext = newBtnNext;
         btnNext.addEventListener('click', handleNextStep);
-        
-        let isStepValid = validateStep(currentStep, false);
-
-        if (currentStep === 1 && character.isCustomProfession) {
-            // Im 'bonds' und 'skills' Stage ist der Button aktiv und übernimmt die Bestätigung
-            btnNext.disabled = !isStepValid;
-        } else {
-            btnNext.disabled = !isStepValid;
-        }
+        btnNext.disabled = false;
+        btnNext.removeAttribute('aria-disabled');
+        btnNext.setAttribute('aria-label', t('aria_next_step'));
     }
 }
 
@@ -456,194 +667,307 @@ export function getCurrentCharacterData() {
     return getCharacter();
 }
 
-export function initializeApp() {
+async function restoreAppNavigationOnLoad() {
+    isRestoringNavigation = true;
+    try {
+        const urlState = appStateFromUrl();
+        const sessionState = loadAppNavigationState();
+        let urlNavState = urlState || sessionState;
+
+        if (urlNavState && sessionState) {
+            urlNavState = {
+                ...sessionState,
+                ...urlState,
+                draftId: urlState?.draftId || sessionState.draftId
+            };
+        }
+
+        if (urlNavState) {
+            syncAppHistory(urlNavState, { replace: true });
+
+            if (urlNavState.mode === 'home') {
+                resetCharacter();
+                activeDraftId = null;
+            } else if (urlNavState.mode === 'create') {
+                const draft = resolveUnfinishedDraftForResume(urlNavState.draftId);
+                if (draft) {
+                    applyUnfinishedDraftToSession(draft);
+                } else if ((urlNavState.step ?? 0) > 0) {
+                    syncAppHistory({ mode: 'home', step: 0 }, { replace: true });
+                    resetCharacter();
+                    activeDraftId = null;
+                    await renderCurrentStep(false);
+                    return;
+                } else {
+                    resetCharacter();
+                }
+            }
+
+            await applyNavigationFromHistory(urlNavState);
+            return;
+        }
+
+        resetCharacter();
+        activeDraftId = null;
+        syncAppHistory({ mode: 'home', step: 0 }, { replace: true });
+        await renderCurrentStep(false);
+    } finally {
+        isRestoringNavigation = false;
+    }
+}
+
+function bindCreationDraftPersistence() {
+    window.addEventListener('beforeunload', () => {
+        persistCreationDraftIfCreating();
+    });
+}
+
+export async function initializeApp() {
     console.log('app.js: initializeApp() called');
-    
+
     stepContainer = document.getElementById('step-content-container');
     progressBarContainer = document.getElementById('progress-bar-container');
     btnNext = document.getElementById('btn-next');
     btnBack = document.getElementById('btn-back');
-    
+
     console.log('app.js: DOM elements found:', {
         stepContainer: !!stepContainer,
         progressBarContainer: !!progressBarContainer,
         btnNext: !!btnNext,
         btnBack: !!btnBack
     });
-    
-    resetCharacter();
-    console.log('app.js: Character reset');
-    
+
     btnNext.addEventListener('click', handleNextStep);
     btnBack.addEventListener('click', handlePreviousStep);
-    
-    // Initialize keyboard navigation
+
     initKeyboardNavigation();
-    
-    // Check if there's a shared character in URL - if so, set flag and don't render intro yet
+    initAppHistory(applyNavigationFromHistory);
+    bindCreationDraftPersistence();
+
     const sharedCharacterData = getCharacterFromUrl();
     if (sharedCharacterData) {
         console.log('app.js: Shared character detected, skipping intro render');
-        isLoadingSharedCharacter = true; // Set flag immediately to prevent intro from rendering
+        isLoadingSharedCharacter = true;
+        resetCharacter();
     } else {
-        console.log('app.js: No shared character, calling renderCurrentStep()');
-        renderCurrentStep();
+        await restoreAppNavigationOnLoad();
+    }
+}
+
+async function continueUnfinishedDraft(draftId) {
+    const draft = getUnfinishedDraftById(draftId);
+    if (!draft) {
+        return;
+    }
+
+    applyUnfinishedDraftToSession(draft);
+    viewingCharacterId = null;
+    viewingDatabaseId = null;
+    currentViewMode = 'creation';
+    currentStep = Math.min(Math.max(1, draft.step), steps.length - 1);
+    isLoadingSharedCharacter = false;
+
+    showCreationChrome();
+    await renderCurrentStep(false);
+    pushAppHistory();
+}
+
+async function discardUnfinishedDraft(draftId) {
+    const draft = getUnfinishedDraftById(draftId);
+    if (!draft) {
+        return;
+    }
+
+    const { showConfirmDialog } = await import('./utils/modal.js');
+    const confirmed = await showConfirmDialog({
+        title: t('discard_unfinished_title'),
+        message: t('confirm_discard_unfinished', { name: draft.name }),
+        confirmLabel: t('btn_discard_unfinished'),
+        cancelLabel: t('modal_cancel'),
+        danger: true
+    });
+
+    if (!confirmed) {
+        return;
+    }
+
+    removeUnfinishedDraft(draftId);
+    if (activeDraftId === draftId) {
+        activeDraftId = null;
+    }
+
+    if (currentStep === 0 && currentViewMode !== 'sheet') {
+        await renderCurrentStep(true);
     }
 }
 
 // View character function
-function viewCharacter(characterId) {
+function renderLocalCharacterView(characterId) {
     viewingCharacterId = characterId;
-    currentViewMode = 'view';
-    
-    // Hide navigation
-    if (btnNext) btnNext.style.display = 'none';
-    if (btnBack) btnBack.style.display = 'none';
-    if (progressBarContainer) progressBarContainer.style.display = 'none';
-    
-    // Render character view
+    viewingDatabaseId = null;
+    currentViewMode = 'sheet';
+
+    hideCreationChrome();
+
     stepContainer.innerHTML = renderCharacterView(characterId);
     translateAllElements(stepContainer);
     attachCharacterViewListeners(characterId);
-    
-    // Attach summary listeners (for print/export buttons in summary)
-    attachStep5Listeners();
+    scrollToStepTop();
+}
+
+function viewCharacter(characterId) {
+    renderLocalCharacterView(characterId);
+    if (!isNavigatingFromHistory()) {
+        pushAppHistory();
+    }
+}
+
+function viewCharacterAndPrint(characterId) {
+    viewCharacter(characterId);
+    requestAnimationFrame(() => {
+        window.setTimeout(() => {
+            triggerSheetPrint();
+        }, 400);
+    });
 }
 
 // View character from database
-async function viewDatabaseCharacter(dbId) {
-    viewingCharacterId = null; // Not a local character
-    currentViewMode = 'view';
-    
-    // Hide navigation
-    if (btnNext) btnNext.style.display = 'none';
-    if (btnBack) btnBack.style.display = 'none';
-    if (progressBarContainer) progressBarContainer.style.display = 'none';
-    
+async function renderDatabaseCharacterView(dbId) {
+    viewingCharacterId = null;
+    viewingDatabaseId = dbId;
+    currentViewMode = 'sheet';
+
+    hideCreationChrome();
+
     try {
-        // Get character from database
-        const { getPublicCharacters } = await import('./utils/database.js');
-        // Load enough characters to find the one we need
-        let allChars = [];
-        let lastDoc = null;
-        let hasMore = true;
-        while (hasMore && !allChars.find(c => c.id === dbId)) {
-            const result = await getPublicCharacters(100, lastDoc);
-            allChars = allChars.concat(result.characters);
-            lastDoc = result.lastDoc;
-            hasMore = result.hasMore;
-            if (allChars.length > 500) break; // Safety limit
-        }
-        const characterDoc = allChars.find(c => c.id === dbId);
-        
+        const { getPublicCharacterById } = await import('./utils/database.js');
+        const characterDoc = await getPublicCharacterById(dbId);
+
         if (!characterDoc) {
             alert(t('character_not_found') || 'Character not found.');
+            await applyNavigationFromHistory({ mode: 'home', step: 0 });
             return;
         }
-        
-        // Prepare character data in the same format as localStorage
+
         const characterData = {
-            id: null, // No local ID for database characters
+            id: null,
             dbId: characterDoc.id,
             name: characterDoc.name,
             profession: characterDoc.profession,
             data: characterDoc.data,
             createdDate: characterDoc.createdDate || characterDoc.uploadedAt
         };
-        
-        // Render character view with database character data
+
         stepContainer.innerHTML = renderCharacterView(null, characterData);
         translateAllElements(stepContainer);
-        
-        // Attach listeners (without delete button for database characters)
         attachCharacterViewListeners(null, characterData);
-        
-        // Attach summary listeners (for print/export buttons in summary)
-        attachStep5Listeners();
+        scrollToStepTop();
     } catch (error) {
         console.error('Error viewing database character:', error);
         alert(t('character_not_found') || 'Error loading character.');
+        await applyNavigationFromHistory({ mode: 'home', step: 0 });
+    }
+}
+
+async function viewDatabaseCharacter(dbId) {
+    await renderDatabaseCharacterView(dbId);
+    if (!isNavigatingFromHistory()) {
+        pushAppHistory();
     }
 }
 
 // Return to list function
-function returnToList() {
+async function returnToList() {
+    if (currentViewMode === 'sheet' && viewingCharacterId) {
+        const canLeave = await confirmLeaveSheetIfDirty();
+        if (!canLeave) {
+            return;
+        }
+    }
+
+    resetSheetEditState();
     viewingCharacterId = null;
+    viewingDatabaseId = null;
     currentViewMode = 'list';
     currentStep = 0;
-    isLoadingSharedCharacter = false; // Reset flag when returning to list
-    
-    // Show navigation
-    if (btnNext) btnNext.style.display = 'inline-block';
-    if (btnBack) btnBack.style.display = 'inline-block';
-    if (progressBarContainer) progressBarContainer.style.display = 'block';
-    
-    // Reset character and render intro
+    isLoadingSharedCharacter = false;
+
+    showCreationChrome();
+
     resetCharacter();
-    renderCurrentStep();
+    renderCurrentStep(false);
+    if (!isNavigatingFromHistory()) {
+        pushAppHistory();
+    }
 }
 
-// Handle shared character from URL
-function handleSharedCharacter(characterData) {
+function resolveProfessionNameForImport(characterData) {
+    if (characterData.professionKey === 'custom_profession') {
+        return characterData.customProfessionName || 'Custom Profession';
+    }
+    if (characterData.professionKey && PROFESSIONS[characterData.professionKey]) {
+        return PROFESSIONS[characterData.professionKey].nameKey;
+    }
+    return 'Unknown';
+}
+
+async function failSharedCharacterImport(message) {
+    isLoadingSharedCharacter = false;
+    alert(message || t('import_error') || 'Error importing shared character');
+    await restoreAppNavigationOnLoad();
+}
+
+// Handle shared character from URL — always import into local storage
+export async function processSharedCharacterLink(characterData) {
+    if (!characterData) {
+        return;
+    }
+
+    isLoadingSharedCharacter = true;
+
+    const validation = validateImportedCharacter(characterData);
+    if (!validation.valid) {
+        await failSharedCharacterImport(
+            `${t('import_error') || 'Error importing character'}: ${validation.error}`
+        );
+        return;
+    }
+
+    if (isStorageFull()) {
+        await failSharedCharacterImport(t('storage_limit_reached', { limit: getStorageLimit() }));
+        return;
+    }
+
     try {
-        // Set flag to prevent intro from rendering
-        isLoadingSharedCharacter = true;
-        
-        // Import character with imported flag
-        const characterName = characterData.personalInfo?.name || 'Unnamed Agent';
-        let professionName = 'Unknown';
-        if (characterData.professionKey) {
-            if (characterData.professionKey === 'custom_profession') {
-                professionName = characterData.customProfessionName || 'Custom Profession';
-            } else if (PROFESSIONS[characterData.professionKey]) {
-                professionName = PROFESSIONS[characterData.professionKey].nameKey;
-            }
-        }
-        
-        // Check if character already exists (by comparing name and profession)
-        const allCharacters = getAllCharacters();
-        
-        // Check if this character already exists (simple check by name and profession)
-        let existingCharacter = allCharacters.find(char => {
-            return char.name === characterName && char.profession === professionName;
+        const importPayload = JSON.parse(JSON.stringify(characterData));
+        normalizeSheetCharacterFields(importPayload);
+
+        const characterName = importPayload.personalInfo?.name || 'Unnamed Agent';
+        const characterId = importCharacter({
+            name: characterName,
+            profession: resolveProfessionNameForImport(importPayload),
+            data: importPayload
         });
-        
-        let characterId;
-        if (existingCharacter) {
-            // Character already exists, use existing ID
-            characterId = existingCharacter.id;
-            // Ensure it's marked as imported
-            if (!existingCharacter.imported) {
-                // Update the character to mark as imported
-                existingCharacter.imported = true;
-                existingCharacter.importedDate = new Date().toISOString();
-                saveCharacter(existingCharacter);
-            }
-        } else {
-            // Import new character
-            const characterToImport = {
-                name: characterName,
-                profession: professionName,
-                data: characterData
-            };
-            characterId = importCharacter(characterToImport);
+
+        if (!characterId) {
+            await failSharedCharacterImport();
+            return;
         }
-        
-        // Clear URL hash
-        window.history.replaceState(null, '', window.location.pathname);
-        
-        // View the imported character
-        viewCharacter(characterId);
-        
-        // Reset flag after a short delay to allow view to render
+
+        syncAppHistory({ mode: 'view-local', characterId }, { replace: true });
+        renderLocalCharacterView(characterId);
+
         setTimeout(() => {
             isLoadingSharedCharacter = false;
-        }, 500);
+        }, 300);
     } catch (error) {
         console.error('Error handling shared character:', error);
-        isLoadingSharedCharacter = false;
-        alert(t('import_error') || 'Error importing shared character');
+        await failSharedCharacterImport();
     }
+}
+
+function handleSharedCharacter(characterData) {
+    processSharedCharacterLink(characterData);
 }
 
 // Make app available globally for i18n system
@@ -651,10 +975,21 @@ window.app = {
     renderCurrentStep,
     getCurrentCharacterData,
     viewCharacter,
+    viewCharacterAndPrint,
     viewDatabaseCharacter,
     returnToList,
     handleSharedCharacter,
+    processSharedCharacterLink,
     isLoadingSharedCharacter: () => isLoadingSharedCharacter,
-    handleNextStep
+    isRestoringNavigation: () => isRestoringNavigation,
+    isInSheetView: () => currentViewMode === 'sheet',
+    handleNextStep,
+    continueUnfinishedDraft,
+    discardUnfinishedDraft,
+    scheduleScrollToCharacterOnHome,
+    uploadToLibraryIfEnabled: () => autoUploadCharacter(),
+    prepareSheetForPrint: prepareSheetSummaryForPrint,
+    triggerSheetPrint,
+    syncLibraryLanguageFilterWithUi
 };
 

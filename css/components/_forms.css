@@ -80,7 +80,37 @@ input[type="checkbox"]:focus-visible {
 .inline-label {
     font-weight: normal;
     margin-right: var(--spacing-md);
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    min-height: 44px;
+    padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-xs) 0;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.inline-label input[type="checkbox"],
+.inline-label input[type="radio"] {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    margin: 0;
+    flex-shrink: 0;
+    cursor: pointer;
+    accent-color: var(--color-accent);
+}
+
+label.disabled-choice {
+    min-height: 44px;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+label.disabled-choice input[type="checkbox"],
+label.disabled-choice input[type="radio"] {
+    cursor: not-allowed;
 }
 
 /* Field validation states */
@@ -109,4 +139,3 @@ select.field-valid:focus {
     content: "✓";
     font-weight: bold;
 }
-

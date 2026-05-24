@@ -62,6 +62,7 @@ const DEFAULT_FIELD_LIMITS = {
     text: 2000,
     bondDescription: 280,
     motivation: 180,
+    item: 120,
     adaptation: 220,
     disorder: 220,
     customProfessionName: 80,
@@ -71,7 +72,8 @@ const DEFAULT_FIELD_LIMITS = {
 const MAX_ARRAY_LENGTHS = {
     bonds: 6,
     motivations: 5,
-    adaptations: 5
+    adaptations: 5,
+    items: 50
 };
 
 const ALLOWED_ROOT_FIELDS = new Set([
@@ -97,9 +99,11 @@ const ALLOWED_ROOT_FIELDS = new Set([
     'stats',
     'distinguishingFeatures',
     'derivedAttributes',
+    'derivedCurrent',
     'adaptations',
     'disorder',
     'traumaticBackground',
+    'items',
     'notes',
     'id',
     'createdDate',
@@ -215,6 +219,11 @@ export function sanitizeCharacterContent(characterData = {}) {
         'adaptation',
         MAX_ARRAY_LENGTHS.adaptations
     );
+    sanitized.items = sanitizeArrayItems(
+        characterData.items || [],
+        'item',
+        MAX_ARRAY_LENGTHS.items
+    );
 
     if (characterData.disorder) {
         sanitized.disorder = sanitizeText(characterData.disorder, DEFAULT_FIELD_LIMITS.disorder);
@@ -277,6 +286,14 @@ export function validateCharacterSchema(characterData = {}) {
             issues.push('adaptations must be an array.');
         } else if (characterData.adaptations.length > MAX_ARRAY_LENGTHS.adaptations) {
             issues.push(`adaptations cannot exceed ${MAX_ARRAY_LENGTHS.adaptations} entries.`);
+        }
+    }
+
+    if ('items' in characterData) {
+        if (!Array.isArray(characterData.items)) {
+            issues.push('items must be an array.');
+        } else if (characterData.items.length > MAX_ARRAY_LENGTHS.items) {
+            issues.push(`items cannot exceed ${MAX_ARRAY_LENGTHS.items} entries.`);
         }
     }
 
@@ -373,7 +390,15 @@ export function validateCharacterContent(characterData) {
     if (characterData.notes && containsProhibitedContent(characterData.notes)) {
         issues.push('Prohibited content found in notes');
     }
-    
+
+    if (characterData.items && Array.isArray(characterData.items)) {
+        characterData.items.forEach((item, index) => {
+            if (item && containsProhibitedContent(item)) {
+                issues.push(`Prohibited content found in item ${index + 1}`);
+            }
+        });
+    }
+
     return {
         valid: issues.length === 0,
         issues: issues

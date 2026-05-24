@@ -40,12 +40,6 @@
     box-shadow: none;
 }
 
-.nav-button:disabled::after {
-    content: " (UNAVAILABLE)";
-    font-size: 0.7em;
-    opacity: 0.8;
-}
-
 .nav-button:focus-visible,
 .action-button:focus-visible {
     outline: 3px solid var(--color-accent);
@@ -64,3 +58,74 @@
     color: var(--color-button-text);
 }
 
+/* Compact +/- and stepper controls – always touch-friendly */
+.action-button-small,
+.stat-adjust-button,
+.skill-increase-button,
+.skill-decrease-button,
+.custom-skill-point-btn,
+.remove-custom-skill-instance-btn,
+.promo-banner-close,
+.character-report-btn-icon {
+    min-height: 44px;
+    min-width: 44px;
+    box-sizing: border-box;
+    touch-action: manipulation;
+}
+
+.action-button-small {
+    font-family: var(--font-body);
+    background-color: var(--color-bg-info);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: var(--font-size-xl);
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.action-button-small:hover:not(:disabled) {
+    background-color: var(--color-accent-muted);
+    color: var(--color-text-on-accent);
+    border-color: var(--color-accent);
+}
+
+.action-button-small:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.action-button-small:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+/* Horizontal stepper: label + [-] value [+] */
+.touch-stepper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-md) 0;
+}
+
+.touch-stepper > label {
+    flex: 1 1 100%;
+    margin-bottom: 0;
+}
+
+.touch-stepper .touch-stepper-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.touch-stepper .touch-stepper-value {
+    font-weight: bold;
+    font-size: var(--font-size-xl);
+    min-width: 2ch;
+    text-align: center;
+}

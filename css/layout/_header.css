@@ -1,13 +1,13 @@
-/* --- Header & Controls --- */
+/* --- Header & Controls (always single row) --- */
 header {
     border-bottom: 1px solid var(--color-border-light);
     padding-bottom: var(--spacing-sm);
     margin-bottom: var(--spacing-xl);
     display: flex;
+    flex-wrap: nowrap;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-md);
     position: relative;
 }
 
@@ -25,22 +25,30 @@ header::before {
 }
 
 header h1 {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-family: var(--font-heading);
     color: var(--color-text-heading-dark);
-    margin: 0;
     font-size: var(--font-size-xxxl);
     text-transform: uppercase;
     letter-spacing: 1px;
+    line-height: 1.2;
     position: relative;
     z-index: 1;
 }
 
 #header-controls {
     display: flex;
-    gap: var(--spacing-md);
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    gap: var(--spacing-sm);
     align-items: center;
     position: relative;
-    z-index: 1;
+    z-index: 2;
 }
 
 /* Theme Switcher */
@@ -58,8 +66,8 @@ header h1 {
     border-radius: 3px;
     font-size: 1.2em;
     line-height: 1;
-    min-width: 36px;
-    min-height: 36px;
+    min-width: 44px;
+    min-height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -88,10 +96,12 @@ header h1 {
 
 #language-switcher select {
     width: auto;
-    min-width: 9.5rem;
+    max-width: 10rem;
+    min-width: 0;
     margin-bottom: 0;
     min-height: 44px;
     padding: var(--spacing-xs) var(--spacing-xxl) var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-sm);
     font-weight: bold;
     letter-spacing: 0.25px;
     background-color: var(--color-bg-secondary);
@@ -107,41 +117,41 @@ header h1 {
     outline-offset: 2px;
 }
 
-/* Mobile header adjustments */
+/* Narrow screens: smaller title, controls stay on the right */
 @media (max-width: 600px) {
     header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding-bottom: var(--spacing-md);
+        gap: var(--spacing-sm);
     }
-    
+
     header h1 {
-        width: 100%;
-        margin-bottom: var(--spacing-sm);
         font-size: var(--font-size-xxl);
+        letter-spacing: 0.5px;
     }
-    
-    #header-controls {
-        width: 100%;
-        justify-content: space-between;
-        margin-top: var(--spacing-xs);
-    }
-    
-    #theme-toggle,
+
     #language-switcher select {
-        min-height: 44px;
+        max-width: 8.5rem;
+        padding-right: var(--spacing-xl);
     }
 }
 
 @media (max-width: 400px) {
     header h1 {
-        font-size: var(--font-size-xl);
-        line-height: 1.2;
+        font-size: var(--font-size-lg);
     }
-    
+
     #header-controls {
-        flex-wrap: wrap;
         gap: var(--spacing-xs);
+    }
+
+    #language-switcher select {
+        max-width: 7.25rem;
+        font-size: var(--font-size-xs);
+    }
+
+    #theme-toggle {
+        min-width: 40px;
+        min-height: 40px;
+        padding: var(--spacing-xs);
     }
 }
 

@@ -6,7 +6,7 @@ import { PROFESSIONS } from '../config/professions.js';
 import { ALL_SKILLS } from '../config/skills.js';
 import { t } from '../i18n/i18n.js';
 import { updateNavigationButtons } from '../app.js';
-import { showInlineError } from '../utils/validation.js';
+import { showInlineError, showFieldError } from '../utils/validation.js';
 import { findSkillInstance, modifySkillValue, calculateDerivedAttributes, normalizeTraumaticBackgroundFields, syncStatsFromAssignments } from '../model/character.js';
 
 // Remove all traumatic background effects
@@ -167,12 +167,11 @@ export function renderStep4_TraumaticBackground() {
                        ${character.traumaticBackground === 'hard_experience' ? 'checked' : ''}>
                 <label for="traumatic-background-hard-experience" data-i18n="traumatic_background_hard_experience"></label>
                 <p class="traumatic-background-description" data-i18n="traumatic_background_hard_experience_desc"></p>
-                <div id="hard-experience-skills-container" class="traumatic-background-subsection" 
+                <div id="hard-experience-skills-container" class="traumatic-background-subsection"
                      style="display: ${character.traumaticBackground === 'hard_experience' ? 'block' : 'none'}; margin-top: 10px;">
-                    <p data-i18n="hard_experience_skill_selection_label"></p>
-                    <div class="hard-experience-bond-removal">
-                        <label for="hard-experience-bond-remove" data-i18n="hard_experience_bond_removal_label"></label>
-                        <select id="hard-experience-bond-remove" class="hard-experience-bond-dropdown">
+                    <div class="hard-experience-bond-removal validation-choice-group" data-validation-target="hard-experience-bond">
+                        <h4 data-validation-section="hard-experience-bond" data-i18n="hard_experience_bond_removal_label"></h4>
+                        <select id="hard-experience-bond-remove" class="hard-experience-bond-dropdown" aria-label="${t('hard_experience_bond_removal_label')}">
                             <option value="">${t('select_one_option')}</option>`;
     
     // Add bond removal dropdown options
@@ -226,7 +225,9 @@ export function renderStep4_TraumaticBackground() {
         html += `<option value="${originalIndex}" ${isSelected}>${bondDesc}</option>`;
     });
     
-    html += `</select></div>`;
+    html += `</select></div>
+                    <div id="hard-experience-skills-fields" data-validation-target="hard-experience-skills" class="validation-choice-group">
+                    <h4 data-validation-section="hard-experience-skills" data-i18n="hard_experience_skill_selection_label"></h4>`;
     
     // Add 4 skill selection dropdowns for Hard Experience
     const selectedSkills = character.traumaticBackgroundEffects?.hardExperienceSkills || ['', '', '', ''];
@@ -252,7 +253,7 @@ export function renderStep4_TraumaticBackground() {
         html += `</select></div>`;
     }
     
-    html += `</div>
+    html += `</div></div>
             </div>
             <div class="traumatic-background-option">
                 <input type="radio" id="traumatic-background-things-man" name="traumatic-background" value="things_man_was_not_meant_to_know"
@@ -449,12 +450,27 @@ export function validateStep4_3(showAlerts = true) {
     const uniqueSkills = new Set(filledSkills);
 
     if (filledSkills.length !== 4 || uniqueSkills.size !== 4) {
-        if (showAlerts) showInlineError(t('hard_experience_error_select_skills'));
+        if (showAlerts) {
+            const firstEmptyIndex = skills.findIndex(sk => !sk || sk === 'unnatural');
+            const skillSelect = document.getElementById(`hard-experience-skill-${firstEmptyIndex >= 0 ? firstEmptyIndex : 0}`);
+            if (skillSelect) {
+                showFieldError(skillSelect, t('hard_experience_error_select_skills'), 'hard-experience-skills');
+            } else {
+                showInlineError(t('hard_experience_error_select_skills'), 'error', 'hard-experience-skills');
+            }
+        }
         return false;
     }
 
     if (effects.removedBondIndex === undefined || effects.removedBondIndex === null) {
-        if (showAlerts) showInlineError(t('hard_experience_error_select_bond'));
+        if (showAlerts) {
+            const bondSelect = document.getElementById('hard-experience-bond-remove');
+            if (bondSelect) {
+                showFieldError(bondSelect, t('hard_experience_error_select_bond'), 'hard-experience-bond');
+            } else {
+                showInlineError(t('hard_experience_error_select_bond'), 'error', 'hard-experience-bond');
+            }
+        }
         return false;
     }
 

@@ -6,6 +6,18 @@ import { STAT_ARRAYS, STAT_KEYS } from '../config/constants.js';
 import { t, translateAllElements } from '../i18n/i18n.js';
 import { updateNavigationButtons } from '../app.js';
 import { showInlineError, showFieldError } from '../utils/validation.js';
+import { attachTooltipListeners, renderInfoIcon } from '../utils/tooltips.js';
+
+function renderStatInfoIcon(statKey) {
+    const keyLower = statKey.toLowerCase();
+    return renderInfoIcon(t(`stat_${keyLower}_desc`), t(`stat_${keyLower}_name`));
+}
+
+function renderStatLabelWithInfo(statKey, inputId = null) {
+    const keyLower = statKey.toLowerCase();
+    const forAttr = inputId ? ` for="${inputId}"` : '';
+    return `<span class="stat-label-with-info"><label${forAttr}>${t(`stat_${keyLower}_name`)}</label>${renderStatInfoIcon(statKey)}</span>`;
+}
 
 export function renderStep2_Statistics() {
     const character = getCharacter();
@@ -21,8 +33,8 @@ export function renderStep2_Statistics() {
     });
     html += `</ul></div>
 
-        <h3 data-i18n="step2_select_method_label"></h3>
-        <div id="stat-method-selection" style="margin-bottom: 20px;">
+        <h3 data-validation-section="stat-method" data-i18n="step2_select_method_label"></h3>
+        <div id="stat-method-selection" data-validation-target="stat-method" class="validation-choice-group" style="margin-bottom: 20px;">
             <label class="inline-label">
                 <input type="radio" name="stat-method" value="array" ${character.statGenerationMethod === 'array' ? 'checked' : ''}>
                 <span data-i18n="stat_method_array"></span>
@@ -42,8 +54,8 @@ export function renderStep2_Statistics() {
         </div>
 
         <div id="stat-array-choice-container" style="display: ${character.statGenerationMethod === 'array' ? 'block' : 'none'};">
-            <h4 data-i18n="step2_select_array_sublabel"></h4>
-            <div id="stat-array-selection">`;
+            <h4 data-validation-section="stat-array" data-i18n="step2_select_array_sublabel"></h4>
+            <div id="stat-array-selection" data-validation-target="stat-array" class="validation-choice-group">`;
     STAT_ARRAYS.forEach((arr, index) => {
         const isChecked = character.statArrayChoice === index && character.statGenerationMethod === 'array';
         const replacementsJsonString = JSON.stringify({values: arr.join(', ')});
@@ -57,7 +69,8 @@ export function renderStep2_Statistics() {
     html += `   </div>
         </div>
 
-        <div id="stat-roll-container" style="display: ${character.statGenerationMethod === 'roll' ? 'block' : 'none'};">
+        <div id="stat-roll-container" data-validation-target="stat-roll" class="validation-choice-group" style="display: ${character.statGenerationMethod === 'roll' ? 'block' : 'none'};">
+            <h4 data-validation-section="stat-roll" data-i18n="stat_method_roll" class="validation-section-heading"></h4>
             <button id="btn-roll-stats" class="action-button" data-i18n="btn_roll_stats_text" aria-label="${t('aria_roll_stats')}"></button>
             <div id="rolled-stats-display" style="margin-top: 10px; font-weight: bold; font-size: 1.1em;">`;
     if (character.statGenerationMethod === 'roll' && character.rolledStatValues.length === 6) {
@@ -68,7 +81,8 @@ export function renderStep2_Statistics() {
     html += `   </div>
         </div>
 
-        <div id="stat-pointbuy-container" style="display: ${character.statGenerationMethod === 'pointbuy' ? 'block' : 'none'};">
+        <div id="stat-pointbuy-container" data-validation-target="stat-pointbuy" class="validation-choice-group" style="display: ${character.statGenerationMethod === 'pointbuy' ? 'block' : 'none'};">
+            <h4 data-validation-section="stat-pointbuy" data-i18n="stat_method_pointbuy" class="validation-section-heading"></h4>
             <div class="info-box">
                 <p data-i18n="pointbuy_info_text" data-i18n-replacements='{"totalPoints": "${TOTAL_POINT_BUY_POINTS}"}'></p>
             </div>
@@ -79,7 +93,7 @@ export function renderStep2_Statistics() {
     STAT_KEYS.forEach(key => {
         const currentValue = character.stats[key] || 3;
         html += `<div class="pointbuy-stat-row" style="display:flex; align-items:center; margin-bottom:10px; padding-bottom:10px; border-bottom: 1px dotted #eee;">
-                    <label for="pointbuy-${key}" style="width:180px; margin-bottom:0; font-weight:bold;">${t('stat_' + key.toLowerCase() + '_name')}:</label>
+                    ${renderStatLabelWithInfo(key, `pointbuy-${key}`)}
                     <button class="stat-adjust-button" data-stat-key="${key}" data-action="decrease" data-type="pointbuy" ${currentValue <= 3 ? 'disabled' : ''}>-</button>
                     <span class="stat-value-display" id="pointbuy-${key}">${currentValue}</span>
                     <button class="stat-adjust-button" data-stat-key="${key}" data-action="increase" data-type="pointbuy" ${currentValue >= 18 ? 'disabled' : ''}>+</button>
@@ -89,7 +103,8 @@ export function renderStep2_Statistics() {
     html += `       </div>
         </div>
 
-        <div id="stat-manual-entry-container" style="display: ${character.statGenerationMethod === 'manual' ? 'block' : 'none'};">
+        <div id="stat-manual-entry-container" data-validation-target="stat-manual" class="validation-choice-group" style="display: ${character.statGenerationMethod === 'manual' ? 'block' : 'none'};">
+            <h4 data-validation-section="stat-manual" data-i18n="stat_method_manual" class="validation-section-heading"></h4>
             <div class="info-box">
                 <p data-i18n="manual_entry_info_text"></p>
             </div>
@@ -97,7 +112,7 @@ export function renderStep2_Statistics() {
     STAT_KEYS.forEach(key => {
         const currentValue = character.stats[key] || 10;
         html += `<div class="manual-entry-stat-row" style="display:flex; align-items:center; margin-bottom:10px; padding-bottom:10px; border-bottom: 1px dotted #eee;">
-                    <label for="manual-${key}" style="width:180px; margin-bottom:0; font-weight:bold;">${t('stat_' + key.toLowerCase() + '_name')}:</label>
+                    ${renderStatLabelWithInfo(key, `manual-${key}`)}
                     <button class="stat-adjust-button" data-stat-key="${key}" data-action="decrease" data-type="manual" ${currentValue <= 3 ? 'disabled' : ''}>-</button>
                     <span class="stat-value-display" id="manual-${key}">${currentValue}</span>
                     <button class="stat-adjust-button" data-stat-key="${key}" data-action="increase" data-type="manual" ${currentValue >= 18 ? 'disabled' : ''}>+</button>
@@ -107,14 +122,15 @@ export function renderStep2_Statistics() {
     html += `       </div>
         </div>
 
-        <h3 id="step2-subheader-assign-features" 
+        <h3 id="step2-subheader-assign-features"
+            data-validation-section="stat-assign"
             data-i18n="${(character.statGenerationMethod === 'pointbuy' || character.statGenerationMethod === 'manual') ? 'step2_define_features_label' : 'step2_assign_stats_label'}" 
             style="margin-top: 25px; border-top: 1px solid #ddd; padding-top: 20px;">
         </h3>
         <div class="info-box" style="margin-top: 10px;">
             <p data-i18n="step2_info_distinguishing_feature"></p>
         </div>
-        <div id="stat-assignment-or-features-container">
+        <div id="stat-assignment-or-features-container" data-validation-target="stat-assign" class="validation-choice-group">
         </div>
     </div>`;
     return html;
@@ -223,7 +239,7 @@ export function updateDistinguishingFeaturesUI() {
         const statValue = character.stats[key] || 0;
         if (statValue !== 0 && (statValue < 9 || statValue > 12)) {
             let featureHtml = `<div class="distinguishing-feature-input-container manual-feature-row">
-                                <label for="feature-${key}" class="distinguishing-feature-label" style="width:150px;">${t('stat_' + key.toLowerCase() + '_name')} - ${t('distinguishing_feature_label')}</label>
+                                <span class="stat-label-with-info distinguishing-feature-label"><label for="feature-${key}">${t(`stat_${key.toLowerCase()}_name`)}</label>${renderStatInfoIcon(key)} <span class="stat-feature-suffix">– ${t('distinguishing_feature_label')}</span></span>
                                 <input type="text" id="feature-${key}" class="distinguishing-feature-input" data-stat-key="${key}" 
                                        placeholder="${t('distinguishing_feature_placeholder')}" 
                                        value="${character.distinguishingFeatures[key] || ''}" style="flex-grow:1;">
@@ -232,6 +248,7 @@ export function updateDistinguishingFeaturesUI() {
         }
     });
     translateAllElements(container);
+    attachTooltipListeners();
 }
 export function calculateTotalPointsSpentInPointBuy() {
     const character = getCharacter();
@@ -437,7 +454,7 @@ export function updatePointBuyDistinguishingFeaturesUI() {
         const statValue = character.stats[key] || 0;
         if (statValue !== 0 && (statValue < 9 || statValue > 12)) {
             let featureHtml = `<div class="distinguishing-feature-input-container pointbuy-feature-row">
-                                <label for="feature-${key}" class="distinguishing-feature-label" style="width:150px;">${t('stat_' + key.toLowerCase() + '_name')} - ${t('distinguishing_feature_label')}</label>
+                                <span class="stat-label-with-info distinguishing-feature-label"><label for="feature-${key}">${t(`stat_${key.toLowerCase()}_name`)}</label>${renderStatInfoIcon(key)} <span class="stat-feature-suffix">– ${t('distinguishing_feature_label')}</span></span>
                                 <input type="text" id="feature-${key}" class="distinguishing-feature-input" data-stat-key="${key}" 
                                        placeholder="${t('distinguishing_feature_placeholder')}" 
                                        value="${character.distinguishingFeatures[key] || ''}" style="flex-grow:1;">
@@ -446,6 +463,7 @@ export function updatePointBuyDistinguishingFeaturesUI() {
         }
     });
     translateAllElements(container);
+    attachTooltipListeners();
 }
 // Dann in attachStep2Listeners:
 export function attachStep2Listeners() {
@@ -511,6 +529,7 @@ export function attachStep2Listeners() {
         if (assignmentOrFeaturesContainer) assignmentOrFeaturesContainer.innerHTML = `<p>${t('step2_select_method_prompt')}</p>`;
     }
     updateNavigationButtons();
+    attachTooltipListeners();
 }
 export function pointBuyButtonDelegationHandler(event) {
     if (event.target.classList.contains('stat-adjust-button') && event.target.dataset.type === 'pointbuy') {
@@ -657,7 +676,7 @@ export function updateStatAssignmentUI() {
         const sortedWorkingArray = [...workingArray].sort((a, b) => b - a);
 
         let rowHtml = `<div class="stat-allocation-row">
-            <label for="stat-select-${currentStatKey}">${t('stat_' + currentStatKey.toLowerCase() + '_name')}</label>
+            ${renderStatLabelWithInfo(currentStatKey, `stat-select-${currentStatKey}`)}
             <select id="stat-select-${currentStatKey}" class="stat-value-select" data-stat-key="${currentStatKey}">
                 <option value="">-- ${t('select_one_option')} --</option>`;
 
@@ -674,7 +693,7 @@ export function updateStatAssignmentUI() {
 
         if (showFeatureInput) {
              rowHtml += `<div class="distinguishing-feature-input-container">
-                            <label for="feature-${currentStatKey}" class="distinguishing-feature-label">${t('distinguishing_feature_label')}</label>
+                            <span class="stat-label-with-info distinguishing-feature-label"><label for="feature-${currentStatKey}">${t(`stat_${currentStatKey.toLowerCase()}_name`)}</label>${renderStatInfoIcon(currentStatKey)} <span class="stat-feature-suffix">– ${t('distinguishing_feature_label')}</span></span>
                             <input type="text" id="feature-${currentStatKey}" class="distinguishing-feature-input" data-stat-key="${currentStatKey}"
                                    placeholder="${t('distinguishing_feature_placeholder')}"
                                    value="${character.distinguishingFeatures[currentStatKey] || ''}">
@@ -685,6 +704,7 @@ export function updateStatAssignmentUI() {
     });
     console.log("updateStatAssignmentUI - Finished building rows. Final container innerHTML length:", container.innerHTML.length);
     translateAllElements(container);
+    attachTooltipListeners();
     updateNavigationButtons(); // Wichtig
 }
 function rollDie(sides = 6) {
@@ -718,14 +738,7 @@ export function generateRolledStatsArray() {
 export function validateStep2(showAlerts = true) {
     const character = getCharacter();
     if (!character.statGenerationMethod) {
-        if (showAlerts) {
-            const methodRadios = document.querySelectorAll('input[name="stat-generation-method"]');
-            if (methodRadios.length > 0) {
-                showInlineError(t('alert_select_stat_method'));
-            } else {
-                showInlineError(t('alert_select_stat_method'));
-            }
-        }
+        if (showAlerts) showInlineError(t('alert_select_stat_method'), 'error', 'stat-method');
         return false;
     }
 
@@ -733,13 +746,13 @@ export function validateStep2(showAlerts = true) {
 
     if (character.statGenerationMethod === 'array') {
         if (character.statArrayChoice === null) {
-            if (showAlerts) showInlineError(t('alert_select_stat_array'));
+            if (showAlerts) showInlineError(t('alert_select_stat_array'), 'error', 'stat-array');
             return false;
         }
         sourceArrayForValidation = STAT_ARRAYS[character.statArrayChoice];
     } else if (character.statGenerationMethod === 'roll') {
         if (character.rolledStatValues.length !== 6) {
-            if (showAlerts) showInlineError(t('click_to_roll_stats_label'));
+            if (showAlerts) showInlineError(t('click_to_roll_stats_label'), 'error', 'stat-roll');
             return false;
         }
         sourceArrayForValidation = character.rolledStatValues;
@@ -747,7 +760,7 @@ export function validateStep2(showAlerts = true) {
         const TOTAL_POINT_BUY_POINTS = 72;
         const pointsSpent = calculateTotalPointsSpentInPointBuy();
         if (pointsSpent !== TOTAL_POINT_BUY_POINTS) {
-            if (showAlerts) showInlineError(t('pointbuy_error_total_points', { spent: pointsSpent, total: TOTAL_POINT_BUY_POINTS }));
+            if (showAlerts) showInlineError(t('pointbuy_error_total_points', { spent: pointsSpent, total: TOTAL_POINT_BUY_POINTS }), 'error', 'stat-pointbuy');
             return false;
         }
         let invalidStatFound = false;
@@ -756,7 +769,7 @@ export function validateStep2(showAlerts = true) {
             if (val < 3 || val > 18) { invalidStatFound = true; }
         });
         if (invalidStatFound) {
-            if (showAlerts) showInlineError(t('pointbuy_error_stat_range'));
+            if (showAlerts) showInlineError(t('pointbuy_error_stat_range'), 'error', 'stat-pointbuy');
             return false;
         }
         return true;
@@ -767,18 +780,18 @@ export function validateStep2(showAlerts = true) {
             if (val < 3 || val > 18) { invalidStatFoundManual = true; }
         });
         if (invalidStatFoundManual) {
-            if (showAlerts) showInlineError(t('manual_entry_error_stat_range'));
+            if (showAlerts) showInlineError(t('manual_entry_error_stat_range'), 'error', 'stat-manual');
             return false;
         }
         return true;
     } else {
-        if (showAlerts) showInlineError(t('alert_select_stat_method'));
+        if (showAlerts) showInlineError(t('alert_select_stat_method'), 'error', 'stat-method');
         return false;
     }
 
     const assignedStatValues = Object.values(character.statAssignments);
     if (assignedStatValues.some(val => val === null || val === undefined) || assignedStatValues.length < STAT_KEYS.length) {
-        if (showAlerts) showInlineError(t('alert_assign_all_stats'));
+        if (showAlerts) showInlineError(t('alert_assign_all_stats'), 'error', 'stat-assign');
         return false;
     }
 
@@ -790,7 +803,7 @@ export function validateStep2(showAlerts = true) {
     }
     for (let i = 0; i < chosenArraySorted.length; i++) {
         if (chosenArraySorted[i] !== currentAssignmentsSorted[i]) {
-            if (showAlerts) showInlineError(t('alert_unique_stat_values'));
+            if (showAlerts) showInlineError(t('alert_unique_stat_values'), 'error', 'stat-assign');
             return false;
         }
     }
@@ -801,7 +814,7 @@ export function validateStep2(showAlerts = true) {
         return val < 3 || val > 18;
     });
     if (statsInvalid) {
-        if (showAlerts) showInlineError(t('alert_assign_all_stats'));
+        if (showAlerts) showInlineError(t('alert_assign_all_stats'), 'error', 'stat-assign');
         return false;
     }
     return true;

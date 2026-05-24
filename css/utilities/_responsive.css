@@ -77,16 +77,6 @@
 
 /* Very small screens */
 @media (max-width: 400px) {
-    header h1 {
-        font-size: var(--font-size-xxl);
-    }
-    
-    #header-controls {
-        width: 100%;
-        justify-content: flex-end;
-        margin-top: var(--spacing-xs);
-    }
-    
     #app-container {
         padding: var(--spacing-sm);
         margin: var(--spacing-xs);
@@ -110,5 +100,69 @@
     .nav-button {
         min-width: 120px;
     }
+}
+
+/*
+ * Touch-target enforcement (loads last – overrides step-specific min-height: auto)
+ * Minimum interactive size: 44×44px (WCAG 2.5.5 / mobile best practice)
+ */
+@media (max-width: 768px) {
+    #profession-details li {
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .summary-actions .action-button,
+    .character-view-actions .action-button,
+    .character-card-actions .character-view-btn,
+    .character-card-actions .character-delete-btn,
+    .character-view-actions-top .action-button,
+    .character-view-actions-bottom .action-button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    .promo-banner-cta {
+        min-height: 44px;
+    }
+}
+
+/* All viewports: never shrink below touch minimum height */
+button,
+[role="button"],
+.nav-button,
+.action-button,
+.action-button-small,
+.stat-adjust-button,
+.skill-increase-button,
+.skill-decrease-button,
+.custom-skill-point-btn,
+.profession-filter-btn,
+.character-rename-btn,
+.character-view-btn,
+.character-open-btn,
+.character-print-btn,
+.character-continue-draft-btn,
+.character-discard-draft-btn,
+.character-delete-btn,
+.character-load-btn,
+.character-report-btn,
+.character-view-db-btn,
+.btn-add-another-specialization,
+.promo-banner-close,
+.promo-banner-cta,
+.remove-custom-skill-instance-btn,
+.character-report-btn-icon {
+    min-height: 44px;
+}
+
+#theme-toggle,
+#language-switcher select {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+.step-indicator {
+    min-height: 44px;
+    padding: var(--spacing-xs) 0;
 }
 

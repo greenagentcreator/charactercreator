@@ -1,5 +1,7 @@
 // Character storage utilities for localStorage
 
+import { captureSheetBaseline } from './sheet-baseline.js';
+
 const STORAGE_KEY = 'delta_green_characters';
 const STORAGE_LIMIT = 20;
 
@@ -151,7 +153,11 @@ export function importCharacter(characterData) {
         
         // Remove id if present to create new entry
         delete importData.id;
-        
+
+        if (importData.data && !importData.data.sheetBaseline) {
+            importData.data.sheetBaseline = captureSheetBaseline(importData.data);
+        }
+
         return saveCharacter(importData);
     } catch (error) {
         console.error('Error importing character:', error);

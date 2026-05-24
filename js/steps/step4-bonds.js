@@ -53,7 +53,7 @@ export function renderStep4_BondsMotivations() {
         </div>
 
         <!-- === BONDS === -->
-        <h3 data-i18n="step4_1_bonds_title"></h3>
+        <h3 data-validation-section="bonds" data-i18n="step4_1_bonds_title"></h3>
         <div class="info-box">
             <p data-i18n="step4_info_bonds1"></p>
             <p data-i18n="step4_info_bonds2"></p>
@@ -65,7 +65,7 @@ export function renderStep4_BondsMotivations() {
 
     if (numberOfBonds > 0) {
         html += `<p data-i18n="num_bonds_for_profession" data-i18n-replacements='{"count":"${numberOfBonds}"}'>${t('num_bonds_for_profession', {count: numberOfBonds})}</p>`;
-        html += `<div id="bonds-input-container">`;
+        html += `<div id="bonds-input-container" data-validation-target="bonds" class="validation-choice-group">`;
         for (let i = 0; i < numberOfBonds; i++) {
             html += `<div class="bond-entry">
                         <label for="bond-desc-${i}" data-i18n="bond_label_number" data-i18n-replacements='{"number":"${i + 1}"}'>${t('bond_label_number', {number: i+1})}</label>
@@ -137,11 +137,11 @@ export function validateStep4(showAlerts = true) {
         for (let i = 0; i < character.bonds.length; i++) {
             if (!character.bonds[i].description || character.bonds[i].description.trim() === "") {
                 if (showAlerts) {
-                    const bondInput = document.getElementById(`bond-${i}-description`);
+                    const bondInput = document.getElementById(`bond-desc-${i}`);
                     if (bondInput) {
-                        showFieldError(bondInput, t('alert_define_bonds'));
+                        showFieldError(bondInput, t('alert_define_bonds'), 'bonds');
                     } else {
-                        showInlineError(t('alert_define_bonds'));
+                        showInlineError(t('alert_define_bonds'), 'error', 'bonds');
                     }
                 }
                 return false;

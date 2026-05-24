@@ -1,9 +1,10 @@
 // Main entry point for Delta Green Character Creator
 
 import { initI18n, initLanguageSwitcher, setLanguage, getCurrentLanguage } from './i18n/i18n.js';
-import { initializeApp } from './app.js';
+import { initializeApp, processSharedCharacterLink } from './app.js';
 import { getCharacterFromUrl } from './utils/sharing.js';
 import { initFirebase } from './utils/database.js';
+import { initNews, refreshNewsButton } from './utils/news.js';
 
 // Theme management
 function initTheme() {
@@ -84,7 +85,7 @@ function updateThemeIcon(theme, iconElement) {
 }
 
 // Initialize the application when DOM is ready
-function initializeApplication() {
+async function initializeApplication() {
     console.log('main.js: initializeApplication() called, document.readyState:', document.readyState);
     
     try {
@@ -95,23 +96,22 @@ function initializeApplication() {
         // Initialize i18n
         initI18n();
         initLanguageSwitcher();
+        initNews();
         console.log('main.js: i18n initialized');
         
         // Initialize Firebase
         initFirebase();
         console.log('main.js: Firebase initialized');
         
-        // Check for shared character in URL BEFORE initializing app
         const sharedCharacterData = getCharacterFromUrl();
-        const hasSharedCharacter = !!sharedCharacterData;
-        console.log('main.js: Shared character check:', hasSharedCharacter);
+        console.log('main.js: Shared character check:', !!sharedCharacterData);
         
-        // Initialize the app (it will check for shared character and set flag internally)
-        initializeApp();
+        await initializeApp();
         console.log('main.js: App initialized');
         
         // Set the language (this will trigger initial translation)
         setLanguage(getCurrentLanguage());
+        refreshNewsButton();
         
         const languageSelect = document.getElementById('language-select');
         if (languageSelect) {
@@ -120,17 +120,8 @@ function initializeApplication() {
             });
         }
         
-        // Handle shared character if present
-        if (hasSharedCharacter && sharedCharacterData) {
-            // Wait for app to be fully initialized, then handle shared character
-            // Use requestAnimationFrame to ensure DOM is ready
-            requestAnimationFrame(() => {
-                setTimeout(() => {
-                    if (window.app && window.app.handleSharedCharacter) {
-                        window.app.handleSharedCharacter(sharedCharacterData);
-                    }
-                }, 50);
-            });
+        if (sharedCharacterData) {
+            processSharedCharacterLink(sharedCharacterData);
         }
     } catch (error) {
         console.error('main.js: Error during initialization:', error);

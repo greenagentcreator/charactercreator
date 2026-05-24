@@ -1,5 +1,13 @@
 // Validation utility functions
 
+const SECTION_ATTENTION_CLASS = 'section-needs-attention';
+const CHOICE_GROUP_ATTENTION_CLASS = 'choice-group-needs-attention';
+const FIELD_ERROR_CLASS = 'field-error';
+
+const highlightedSections = new Set();
+const highlightedChoiceGroups = new Set();
+const highlightedFields = new Set();
+
 /**
  * Validate that a value is within a range
  */
@@ -30,194 +38,357 @@ export function validateUniqueValues(array) {
     return array.length === new Set(array).size;
 }
 
-// Error message system for inline error display
-
-let errorContainer = null;
-const fieldErrors = new Map();
-
 /**
- * Initialize error container for a step
- * Should be called when rendering a new step
+ * Resolve a section heading element by id (data-validation-section) or element reference
+ * @param {string|HTMLElement} sectionRef
+ * @returns {HTMLElement|null}
  */
-export function initErrorContainer(containerId = 'error-container') {
-    const stepContainer = document.getElementById('step-content-container');
-    if (!stepContainer) return;
-    
-    // Remove existing error container if present
-    const existing = stepContainer.querySelector(`#${containerId}`);
-    if (existing) {
-        existing.remove();
+function resolveSectionHeading(sectionRef) {
+    if (!sectionRef) return null;
+
+    if (sectionRef instanceof HTMLElement) {
+        if (sectionRef.matches('h2, h3, h4, label[data-validation-section]')) return sectionRef;
+        const nested = sectionRef.querySelector('[data-validation-section]');
+        if (nested) return nested;
+        return sectionRef;
     }
-    
-    // Create new error container at the top of the step
-    errorContainer = document.createElement('div');
-    errorContainer.id = containerId;
-    errorContainer.className = 'error-container';
-    errorContainer.setAttribute('role', 'alert');
-    errorContainer.setAttribute('aria-live', 'polite');
-    errorContainer.setAttribute('aria-atomic', 'true');
-    
-    // Insert at the beginning of step content
-    const firstChild = stepContainer.firstElementChild;
-    if (firstChild) {
-        stepContainer.insertBefore(errorContainer, firstChild);
-    } else {
-        stepContainer.appendChild(errorContainer);
-    }
-    
-    // Clear field errors
-    fieldErrors.clear();
+
+    const bySection = document.querySelector(`[data-validation-section="${sectionRef}"]`);
+    if (bySection) return bySection;
+
+    return document.getElementById(sectionRef);
 }
 
 /**
- * Show an inline error message at the top of the step
- * @param {string} message - Error message to display
- * @param {string} type - Error type: 'error', 'warning', 'info' (default: 'error')
+ * Find the interactive target container for a section (radios, checkboxes, inputs)
+ * @param {string|HTMLElement} sectionRef
+ * @returns {HTMLElement|null}
  */
-export function showInlineError(message, type = 'error') {
-    if (!errorContainer) {
-        initErrorContainer();
-    }
-    
-    if (!errorContainer) return;
-    
-    // Clear existing errors
-    errorContainer.innerHTML = '';
-    
-    // Create error element
-    const errorElement = document.createElement('div');
-    errorElement.className = `alert alert-${type === 'error' ? 'classified' : type}`;
-    errorElement.setAttribute('role', 'alert');
-    errorElement.textContent = message;
-    
-    errorContainer.appendChild(errorElement);
-    
-    // Scroll to error if needed
-    errorContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    
-    // Announce to screen readers
-    errorContainer.setAttribute('aria-live', 'assertive');
-    setTimeout(() => {
-        if (errorContainer) {
-            errorContainer.setAttribute('aria-live', 'polite');
+function resolveValidationTarget(sectionRef) {
+    const sectionId = typeof sectionRef === 'string'
+        ? sectionRef
+        : sectionRef?.getAttribute?.('data-validation-section')
+            || sectionRef?.closest?.('[data-validation-section]')?.getAttribute('data-validation-section');
+
+    if (!sectionId) return null;
+
+    const byTarget = document.querySelector(`[data-validation-target="${sectionId}"]`);
+    if (byTarget) return byTarget;
+
+    const heading = resolveSectionHeading(sectionId);
+    if (!heading) return null;
+
+    let sibling = heading.nextElementSibling;
+    while (sibling) {
+        if (sibling.matches('[data-validation-target], .validation-choice-group, select, input, textarea, #stat-method-selection, #stat-array-selection, #bonds-input-container, #hard-experience-skills-container, #custom-profession-skill-list, #profession-details-container')) {
+            return sibling;
         }
-    }, 1000);
-}
-
-/**
- * Show an error message associated with a specific form field
- * @param {HTMLElement|string} field - The form field element or its ID
- * @param {string} message - Error message to display
- */
-export function showFieldError(field, message) {
-    const fieldElement = typeof field === 'string' ? document.getElementById(field) : field;
-    if (!fieldElement) return;
-    
-    // Store error for this field
-    fieldErrors.set(fieldElement, message);
-    
-    // Mark field as invalid
-    fieldElement.setAttribute('aria-invalid', 'true');
-    fieldElement.classList.add('field-error');
-    
-    // Remove existing error message for this field
-    const existingError = fieldElement.parentElement?.querySelector(`.field-error-message[data-field-id="${fieldElement.id}"]`);
-    if (existingError) {
-        existingError.remove();
+        if (sibling.querySelector('input, select, textarea, .validation-choice-group')) {
+            return sibling;
+        }
+        if (sibling.matches('h2, h3, h4') && sibling.hasAttribute('data-validation-section')) {
+            break;
+        }
+        sibling = sibling.nextElementSibling;
     }
-    
-    // Create error message element
-    const errorElement = document.createElement('div');
-    errorElement.className = 'field-error-message alert alert-classified';
-    errorElement.setAttribute('role', 'alert');
-    errorElement.setAttribute('data-field-id', fieldElement.id || `field-${Date.now()}`);
-    errorElement.textContent = message;
-    
-    // Insert after the field
-    fieldElement.parentElement?.insertBefore(errorElement, fieldElement.nextSibling);
-    
-    // Scroll to field if needed
-    fieldElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    return heading.parentElement?.querySelector(`[data-validation-target="${sectionId}"]`) || null;
 }
 
 /**
- * Clear all errors (both container and field errors)
+ * Scroll an element so its vertical center aligns with the visible viewport center.
+ * Accounts for the fixed bottom navigation bar.
+ * @param {HTMLElement} element
+ */
+function scrollElementToViewportCenter(element) {
+    if (!element) return;
+
+    const rect = element.getBoundingClientRect();
+    const nav = document.getElementById('navigation-container');
+    const navVisible = nav && nav.style.display !== 'none' && nav.offsetParent !== null;
+    const navHeight = navVisible ? nav.getBoundingClientRect().height : 0;
+    const viewportCenterY = (window.innerHeight - navHeight) / 2;
+    const elementCenterY = rect.top + rect.height / 2;
+    const targetScrollTop = window.scrollY + elementCenterY - viewportCenterY;
+    const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+
+    window.scrollTo({
+        top: Math.min(Math.max(0, targetScrollTop), maxScroll),
+        behavior: 'smooth',
+    });
+}
+
+/**
+ * Announce validation feedback to screen readers (no visible message)
+ * @param {string} message
+ */
+function announceValidation(message) {
+    if (!message) return;
+
+    let announcer = document.getElementById('validation-announcer');
+    if (!announcer) {
+        announcer = document.createElement('div');
+        announcer.id = 'validation-announcer';
+        announcer.className = 'sr-only';
+        announcer.setAttribute('aria-live', 'assertive');
+        announcer.setAttribute('aria-atomic', 'true');
+        document.body.appendChild(announcer);
+    }
+
+    announcer.textContent = '';
+    requestAnimationFrame(() => {
+        announcer.textContent = message;
+    });
+}
+
+/**
+ * Clear all section highlight styling
+ */
+export function clearSectionHighlights() {
+    highlightedSections.forEach((heading) => {
+        heading.classList.remove(SECTION_ATTENTION_CLASS);
+        heading.removeAttribute('aria-invalid');
+    });
+    highlightedSections.clear();
+
+    highlightedChoiceGroups.forEach((group) => {
+        group.classList.remove(CHOICE_GROUP_ATTENTION_CLASS);
+        group.removeAttribute('aria-invalid');
+    });
+    highlightedChoiceGroups.clear();
+}
+
+/**
+ * Clear field highlight state
+ */
+function clearFieldHighlights() {
+    highlightedFields.forEach((field) => {
+        field.removeAttribute('aria-invalid');
+        field.classList.remove(FIELD_ERROR_CLASS);
+    });
+    highlightedFields.clear();
+
+    const stepContainer = document.getElementById('step-content-container');
+    if (stepContainer) {
+        stepContainer.querySelectorAll(`.${FIELD_ERROR_CLASS}`).forEach((field) => {
+            if (!highlightedFields.has(field)) {
+                field.removeAttribute('aria-invalid');
+                field.classList.remove(FIELD_ERROR_CLASS);
+            }
+        });
+    }
+}
+
+/**
+ * Highlight a choice / multi-select group container
+ * @param {HTMLElement} groupElement
+ */
+function highlightChoiceGroup(groupElement) {
+    if (!groupElement) return;
+    groupElement.classList.add(CHOICE_GROUP_ATTENTION_CLASS);
+    groupElement.setAttribute('aria-invalid', 'true');
+    highlightedChoiceGroups.add(groupElement);
+}
+
+/**
+ * Apply field-level highlight and register for cleanup
+ * @param {HTMLElement} fieldElement
+ */
+function highlightField(fieldElement) {
+    if (!fieldElement) return;
+    fieldElement.setAttribute('aria-invalid', 'true');
+    fieldElement.classList.add(FIELD_ERROR_CLASS);
+    highlightedFields.add(fieldElement);
+}
+
+/**
+ * Core validation feedback: red section headline, optional choice group + field, scroll to focus target
+ * @param {Object} options
+ * @param {string} [options.message] - Screen reader message
+ * @param {string|HTMLElement} [options.sectionRef]
+ * @param {HTMLElement|string} [options.field]
+ * @param {HTMLElement} [options.choiceGroup]
+ * @param {HTMLElement} [options.scrollTarget]
+ */
+function reportValidationIssue({ message = '', sectionRef = null, field = null, choiceGroup = null, scrollTarget = null }) {
+    clearErrors();
+
+    const fieldElement = field
+        ? (typeof field === 'string' ? document.getElementById(field) : field)
+        : null;
+
+    const resolvedSection = sectionRef
+        || (fieldElement?.closest('[data-validation-section]')?.getAttribute('data-validation-section'))
+        || null;
+
+    const heading = resolveSectionHeading(resolvedSection);
+    if (heading) {
+        heading.classList.add(SECTION_ATTENTION_CLASS);
+        heading.setAttribute('aria-invalid', 'true');
+        highlightedSections.add(heading);
+    }
+
+    const choiceGroupElement = choiceGroup
+        || fieldElement?.closest('.validation-choice-group, [data-validation-choice-group]')
+        || resolveValidationTarget(resolvedSection);
+
+    // Highlight choice group even when it shares the same node as the section marker
+    if (choiceGroupElement) {
+        highlightChoiceGroup(choiceGroupElement);
+    }
+
+    if (fieldElement) {
+        highlightField(fieldElement);
+    }
+
+    if (message) {
+        announceValidation(message);
+    }
+
+    const scrollElement = scrollTarget
+        || fieldElement
+        || choiceGroupElement
+        || resolveValidationTarget(resolvedSection)
+        || heading;
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            if (scrollElement) {
+                scrollElementToViewportCenter(scrollElement);
+            }
+            if (fieldElement && typeof fieldElement.focus === 'function') {
+                try {
+                    fieldElement.focus({ preventScroll: true });
+                } catch {
+                    fieldElement.focus();
+                }
+            }
+        });
+    });
+}
+
+/**
+ * Prepare validation state when rendering a new step
+ */
+export function initErrorContainer() {
+    clearErrors();
+}
+
+/**
+ * Draw attention to a section (no visible error banner)
+ * @param {string} a11yMessage
+ * @param {string} [_type]
+ * @param {string|HTMLElement} [sectionRef]
+ * @param {HTMLElement} [choiceGroup]
+ */
+export function showInlineError(a11yMessage, _type = 'error', sectionRef = null, choiceGroup = null) {
+    reportValidationIssue({
+        message: a11yMessage,
+        sectionRef,
+        choiceGroup: choiceGroup instanceof HTMLElement ? choiceGroup : null,
+    });
+}
+
+/**
+ * Draw attention to a field and its section (no visible error text)
+ * @param {HTMLElement|string} field
+ * @param {string} a11yMessage
+ * @param {string|HTMLElement} [sectionRef]
+ */
+export function showFieldError(field, a11yMessage, sectionRef = null) {
+    reportValidationIssue({
+        message: a11yMessage,
+        sectionRef,
+        field,
+    });
+}
+
+/**
+ * Clear all validation highlights and field states
  */
 export function clearErrors() {
-    // Clear error container
-    if (errorContainer) {
-        errorContainer.innerHTML = '';
+    clearSectionHighlights();
+    clearFieldHighlights();
+
+    const stepContainer = document.getElementById('step-content-container');
+    if (stepContainer) {
+        const legacyContainer = stepContainer.querySelector('#error-container');
+        if (legacyContainer) legacyContainer.remove();
     }
-    
-    // Clear field errors
-    fieldErrors.forEach((message, field) => {
-        if (field && field.parentElement) {
-            field.removeAttribute('aria-invalid');
-            field.classList.remove('field-error');
-            const errorElement = field.parentElement.querySelector(`.field-error-message[data-field-id="${field.id}"]`);
-            if (errorElement) {
-                errorElement.remove();
-            }
-        }
-    });
-    
-    fieldErrors.clear();
+
+    const announcer = document.getElementById('validation-announcer');
+    if (announcer) announcer.textContent = '';
 }
 
 /**
- * Clear error for a specific field
- * @param {HTMLElement|string} field - The form field element or its ID
+ * Clear error state for a specific field and its section highlight if applicable
+ * @param {HTMLElement|string} field
  */
 export function clearFieldError(field) {
     const fieldElement = typeof field === 'string' ? document.getElementById(field) : field;
     if (!fieldElement) return;
-    
-    fieldErrors.delete(fieldElement);
+
     fieldElement.removeAttribute('aria-invalid');
-    fieldElement.classList.remove('field-error');
-    
-    const errorElement = fieldElement.parentElement?.querySelector(`.field-error-message[data-field-id="${fieldElement.id}"]`);
-    if (errorElement) {
-        errorElement.remove();
+    fieldElement.classList.remove(FIELD_ERROR_CLASS);
+    highlightedFields.delete(fieldElement);
+
+    const sectionId = fieldElement.closest('[data-validation-section]')?.getAttribute('data-validation-section')
+        || fieldElement.closest('[data-validation-target]')?.getAttribute('data-validation-target');
+    if (sectionId) {
+        const heading = document.querySelector(`[data-validation-section="${sectionId}"]`);
+        if (heading && highlightedSections.has(heading)) {
+            heading.classList.remove(SECTION_ATTENTION_CLASS);
+            heading.removeAttribute('aria-invalid');
+            highlightedSections.delete(heading);
+        }
+        const target = document.querySelector(`[data-validation-target="${sectionId}"]`);
+        if (target && highlightedChoiceGroups.has(target)) {
+            target.classList.remove(CHOICE_GROUP_ATTENTION_CLASS);
+            target.removeAttribute('aria-invalid');
+            highlightedChoiceGroups.delete(target);
+        }
+    }
+
+    const choiceGroup = fieldElement.closest('.validation-choice-group, [data-validation-choice-group]');
+    if (choiceGroup && highlightedChoiceGroups.has(choiceGroup)) {
+        const hasInvalidField = choiceGroup.querySelector(`.${FIELD_ERROR_CLASS}, [aria-invalid="true"]`);
+        if (!hasInvalidField) {
+            choiceGroup.classList.remove(CHOICE_GROUP_ATTENTION_CLASS);
+            choiceGroup.removeAttribute('aria-invalid');
+            highlightedChoiceGroups.delete(choiceGroup);
+        }
     }
 }
 
 /**
- * Check if there are any active errors
+ * Check if any validation highlight is active
  * @returns {boolean}
  */
 export function hasErrors() {
-    return fieldErrors.size > 0 || (errorContainer && errorContainer.children.length > 0);
+    return highlightedSections.size > 0 || highlightedChoiceGroups.size > 0 || highlightedFields.size > 0;
 }
 
 /**
  * Setup real-time validation for a form field
- * Clears error when field value changes
- * @param {HTMLElement|string} field - The form field element or its ID
- * @param {Function} validator - Optional validator function that returns true if valid
+ * @param {HTMLElement|string} field
+ * @param {Function} [validator]
  */
 export function setupRealtimeValidation(field, validator = null) {
     const fieldElement = typeof field === 'string' ? document.getElementById(field) : field;
     if (!fieldElement) return;
-    
-    // Clear error on input/change
+
     const clearErrorHandler = () => {
-        if (fieldErrors.has(fieldElement)) {
-            // If validator provided, check if field is now valid
+        if (fieldElement.classList.contains(FIELD_ERROR_CLASS) || fieldElement.getAttribute('aria-invalid') === 'true') {
             if (validator) {
-                const isValid = validator(fieldElement.value);
-                if (isValid) {
+                if (validator(fieldElement.value)) {
                     clearFieldError(fieldElement);
                 }
-            } else {
-                // Just clear if field has value
-                if (fieldElement.value && fieldElement.value.trim() !== '') {
-                    clearFieldError(fieldElement);
-                }
+            } else if (fieldElement.value && fieldElement.value.trim() !== '') {
+                clearFieldError(fieldElement);
             }
         }
     };
-    
+
     fieldElement.addEventListener('input', clearErrorHandler);
     fieldElement.addEventListener('change', clearErrorHandler);
     fieldElement.addEventListener('blur', clearErrorHandler);
@@ -225,39 +396,40 @@ export function setupRealtimeValidation(field, validator = null) {
 
 /**
  * Validate imported character data structure
- * @param {Object} characterData - Character data to validate
- * @returns {Object} { valid: boolean, error: string }
+ * @param {Object} characterData
+ * @returns {{ valid: boolean, error: string|null }}
  */
 export function validateImportedCharacter(characterData) {
     if (!characterData || typeof characterData !== 'object') {
         return { valid: false, error: 'Invalid character data format' };
     }
-    
-    // Check for required fields (at minimum, should have basic structure)
+
     const requiredFields = ['stats', 'skills'];
     for (const field of requiredFields) {
         if (!characterData[field]) {
             return { valid: false, error: `Missing required field: ${field}` };
         }
     }
-    
-    // Validate stats structure
+
     if (!characterData.stats || typeof characterData.stats !== 'object') {
         return { valid: false, error: 'Invalid stats structure' };
     }
-    
+
     const statKeys = ['STR', 'CON', 'DEX', 'INT', 'POW', 'CHA'];
     for (const key of statKeys) {
         if (typeof characterData.stats[key] !== 'number') {
             return { valid: false, error: `Invalid stat value for ${key}` };
         }
     }
-    
-    // Validate skills is an array
+
     if (!Array.isArray(characterData.skills)) {
         return { valid: false, error: 'Skills must be an array' };
     }
-    
+
     return { valid: true, error: null };
 }
 
+// Re-export for modules that used highlightSection directly
+export function highlightSection(sectionRef, a11yMessage = '') {
+    reportValidationIssue({ message: a11yMessage, sectionRef });
+}

@@ -80,6 +80,68 @@
     margin-bottom: 0;
 }
 
+/* --- Section validation highlight (headline only, no banner) --- */
+h2.section-needs-attention,
+h3.section-needs-attention,
+h4.section-needs-attention,
+label.section-needs-attention[data-validation-section] {
+    color: var(--color-alert-classified);
+}
+
+h4.validation-section-heading {
+    margin-top: 0;
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-md);
+    font-weight: bold;
+}
+
+/* Choice / multi-select groups needing attention */
+.validation-choice-group.choice-group-needs-attention,
+[data-validation-target].choice-group-needs-attention {
+    outline: 2px solid var(--color-alert-classified);
+    outline-offset: 4px;
+    border-radius: 4px;
+    padding: var(--spacing-sm);
+    margin: var(--spacing-xs) 0;
+    background-color: var(--color-bg-info);
+}
+
+[data-theme="dark"] .validation-choice-group.choice-group-needs-attention,
+[data-theme="dark"] [data-validation-target].choice-group-needs-attention {
+    background-color: rgba(255, 68, 68, 0.08);
+}
+
+.validation-choice-group.choice-group-needs-attention > p,
+.validation-choice-group.choice-group-needs-attention > label:first-of-type,
+.choice-group-needs-attention > .inline-label,
+.choice-group-needs-attention li label {
+    color: var(--color-alert-classified);
+    font-weight: bold;
+}
+
+.choice-group-needs-attention input[type="checkbox"],
+.choice-group-needs-attention input[type="radio"] {
+    outline: 2px solid var(--color-alert-classified);
+    outline-offset: 2px;
+}
+
+.choice-group-needs-attention ul {
+    margin-top: var(--spacing-xs);
+}
+
+/* Skill row highlight (step 1.3 boost list, no inline input) */
+.skill-list-item.choice-group-needs-attention {
+    outline: 2px solid var(--color-alert-classified);
+    outline-offset: 4px;
+    border-radius: 4px;
+    padding: var(--spacing-xs);
+    margin: var(--spacing-xs) 0;
+}
+
+[data-theme="dark"] .skill-list-item.choice-group-needs-attention {
+    background-color: rgba(255, 68, 68, 0.06);
+}
+
 /* --- Error Message System --- */
 .error-container {
     margin-bottom: var(--spacing-lg);
@@ -92,7 +154,9 @@
     padding: var(--spacing-sm) var(--spacing-md);
 }
 
-.field-error {
+.field-error,
+select.field-error,
+textarea.field-error {
     border-color: var(--color-alert-classified) !important;
     box-shadow: 0 0 0 2px var(--color-accent-muted) !important;
 }

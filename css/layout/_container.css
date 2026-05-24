@@ -10,7 +10,7 @@
     border-radius: 4px;
     position: relative;
     margin-bottom: 0;
-    overflow-x: hidden;
+    overflow-x: clip;
 }
 
 #main-content {
@@ -32,6 +32,17 @@
 @media (max-width: 600px) {
     #app-container {
         padding-bottom: calc(var(--container-padding-mobile) + 60px); /* Space for compact mobile navigation */
+    }
+}
+
+/* Character sheet view: bottom nav is hidden — reclaim space */
+#app-container:has(#step-character-view) {
+    padding-bottom: var(--spacing-lg);
+}
+
+@media (max-width: 600px) {
+    #app-container:has(#step-character-view) {
+        padding-bottom: var(--spacing-md);
     }
 }
 

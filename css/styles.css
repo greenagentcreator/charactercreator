@@ -7,6 +7,7 @@
 
 /* --- Base Styles (must be first) --- */
 @import url('base/_fonts.css');
+@import url('base/_fonts-locale.css');
 @import url('base/_variables.css');
 @import url('base/_themes.css');
 @import url('base/_reset.css');
@@ -30,6 +31,10 @@
 @import url('components/_transitions.css');
 @import url('components/_icons.css');
 @import url('components/_promo-banner.css');
+@import url('components/_modal.css');
+@import url('components/_news.css');
+@import url('components/_sheet-toolbar.css');
+@import url('components/_dice-roll.css');
 
 /* --- Step-Specific Styles --- */
 @import url('steps/_step0-intro.css');
