@@ -1,0 +1,14 @@
+{
+  "name": "migrate-character-language",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "migrate": "node migrate.js",
+    "migrate:dry-run": "node migrate.js --limit 25",
+    "migrate:apply": "node migrate.js --apply"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.2",
+    "franc": "^6.2.0"
+  }
+}
