@@ -103,6 +103,10 @@ const ALLOWED_ROOT_FIELDS = new Set([
     'adaptations',
     'disorder',
     'traumaticBackground',
+    'traumaticBackgroundEffects',
+    'basePOW',
+    'skillFailMarks',
+    'sheetBaseline',
     'items',
     'notes',
     'id',
@@ -294,6 +298,30 @@ export function validateCharacterSchema(characterData = {}) {
             issues.push('items must be an array.');
         } else if (characterData.items.length > MAX_ARRAY_LENGTHS.items) {
             issues.push(`items cannot exceed ${MAX_ARRAY_LENGTHS.items} entries.`);
+        }
+    }
+
+    if ('sheetBaseline' in characterData) {
+        const baseline = characterData.sheetBaseline;
+        if (baseline !== null && (typeof baseline !== 'object' || Array.isArray(baseline))) {
+            issues.push('sheetBaseline must be an object.');
+        }
+    }
+
+    if ('skillFailMarks' in characterData && !Array.isArray(characterData.skillFailMarks)) {
+        issues.push('skillFailMarks must be an array.');
+    }
+
+    if ('traumaticBackgroundEffects' in characterData) {
+        const effects = characterData.traumaticBackgroundEffects;
+        if (effects !== null && (typeof effects !== 'object' || Array.isArray(effects))) {
+            issues.push('traumaticBackgroundEffects must be an object.');
+        }
+    }
+
+    if ('basePOW' in characterData && characterData.basePOW !== null) {
+        if (typeof characterData.basePOW !== 'number' || !Number.isFinite(characterData.basePOW)) {
+            issues.push('basePOW must be a finite number or null.');
         }
     }
 

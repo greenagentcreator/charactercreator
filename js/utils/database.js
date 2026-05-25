@@ -19,8 +19,8 @@ let db = null;
 
 const MAX_CHARACTER_BYTES = 750 * 1024; // keep well below Firestore 1MB limit
 const LIBRARY_LANGUAGE_CODES = new Set(SUPPORTED_LIBRARY_LANGUAGES);
-const FALLBACK_SCAN_BATCH = 100;
-const MAX_FALLBACK_FILL_ITERATIONS = 15;
+const FALLBACK_SCAN_BATCH = 50;
+const MAX_FALLBACK_FILL_ITERATIONS = 5;
 const STAT_PREVIEW_KEYS = ['STR', 'CON', 'DEX', 'INT', 'POW', 'CHA'];
 
 function normalizeLibraryLanguage(value) {
@@ -128,6 +128,13 @@ function estimateByteSize(payload) {
     return encoder.encode(JSON.stringify(payload)).length;
 }
 
+function omitLocalOnlyCharacterFields(characterData = {}) {
+    const payload = JSON.parse(JSON.stringify(characterData));
+    delete payload.sheetBaseline;
+    delete payload.skillFailMarks;
+    return payload;
+}
+
 export function initFirebase() {
     try {
         if (!app) {
@@ -160,7 +167,8 @@ export async function uploadCharacter(characterData) {
     }
 
     const submittedData = characterData?.data || characterData || {};
-    const sanitizedData = sanitizeCharacterContent(submittedData);
+    const payloadForUpload = omitLocalOnlyCharacterFields(submittedData);
+    const sanitizedData = sanitizeCharacterContent(payloadForUpload);
 
     // Check rate limit
     const rateLimitCheck = checkRateLimit();
@@ -298,6 +306,10 @@ export async function getPublicCharacters(
         (languageFilter && languageFilter !== 'all');
 
     if (!usesFilters) {
+        const fallbackResult = await queryPublicCharactersWithoutOrder(maxResults);
+        if (fallbackResult !== null) {
+            return fallbackResult;
+        }
         return buildPublicCharactersResult([], null, false);
     }
 
@@ -387,6 +399,33 @@ async function queryPublicCharacters(maxResults, lastDoc, professionFilter, lang
             console.warn('3. Your domain is added to Firebase Authorized Domains');
         }
 
+        return null;
+    }
+}
+
+async function queryPublicCharactersWithoutOrder(maxResults) {
+    try {
+        const q = query(
+            collection(db, COLLECTIONS.CHARACTERS),
+            where('moderationStatus', '==', MODERATION_STATUS.APPROVED),
+            limit(FALLBACK_SCAN_BATCH)
+        );
+
+        const querySnapshot = await getDocs(q);
+        const characters = [];
+
+        querySnapshot.forEach((docSnap) => {
+            characters.push(toPublicListCharacter(docSnap.id, docSnap.data()));
+        });
+
+        characters.sort((a, b) => String(b.uploadedAt || '').localeCompare(String(a.uploadedAt || '')));
+
+        const trimmedCharacters = characters.slice(0, maxResults);
+        const hasMore = characters.length > maxResults || querySnapshot.size === FALLBACK_SCAN_BATCH;
+
+        return buildPublicCharactersResult(trimmedCharacters, null, hasMore);
+    } catch (error) {
+        console.error('Error fetching public characters without order index:', error);
         return null;
     }
 }

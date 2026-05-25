@@ -20,7 +20,7 @@ const LIBRARY_CACHE_PREFIX = 'dg_library_v2_';
 
 const libraryState = {
     filter: DEFAULT_PROFESSION_FILTER,
-    languageFilter: getCurrentLanguage(),
+    languageFilter: DEFAULT_LANGUAGE_FILTER,
     characters: [],
     lastDoc: null,
     lastDocId: null,
@@ -626,14 +626,13 @@ async function fetchLibraryPage(reset = false) {
     try {
         if (reset) {
             const cached = readLibraryCache();
-            if (cached && (cached.characters.length >= LIBRARY_PAGE_SIZE || !cached.hasMore)) {
+            if (cached && cached.characters.length > 0) {
                 libraryState.characters = cached.characters;
                 libraryState.hasMore = cached.hasMore;
                 libraryState.lastDoc = null;
                 libraryState.lastDocId = cached.lastDocId || null;
                 libraryState.loaded = true;
                 paintLibraryPanel();
-                return;
             }
         }
 
