@@ -1,11 +1,11 @@
 // Collect sheet edits from DOM and persist local characters
 
-import { getCharacter, calculateDerivedAttributes } from '../model/character.js?v=c3eb2a8';
-import { saveCharacter } from './storage.js?v=c3eb2a8';
-import { PROFESSIONS } from '../config/professions.js?v=c3eb2a8';
-import { STAT_KEYS } from '../config/constants.js?v=c3eb2a8';
-import { t } from '../i18n/i18n.js?v=c3eb2a8';
-export { escapeHtml, escapeAttr } from './escape-html.js?v=c3eb2a8';
+import { getCharacter, calculateDerivedAttributes } from '../model/character.js?v=5a1d155';
+import { saveCharacter } from './storage.js?v=5a1d155';
+import { PROFESSIONS } from '../config/professions.js?v=5a1d155';
+import { STAT_KEYS } from '../config/constants.js?v=5a1d155';
+import { t } from '../i18n/i18n.js?v=5a1d155';
+export { escapeHtml, escapeAttr } from './escape-html.js?v=5a1d155';
 
 export function normalizeSheetCharacterFields(char) {
     if (!char.personalInfo || typeof char.personalInfo !== 'object') {

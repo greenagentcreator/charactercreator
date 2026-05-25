@@ -1,12 +1,12 @@
 // Step 2: Statistics
 // This module handles statistic generation methods (array, roll, point buy, manual) and assignment
 
-import { getCharacter, syncStatsFromAssignments } from '../model/character.js?v=c3eb2a8';
-import { STAT_ARRAYS, STAT_KEYS } from '../config/constants.js?v=c3eb2a8';
-import { t, translateAllElements } from '../i18n/i18n.js?v=c3eb2a8';
-import { updateNavigationButtons } from '../app.js?v=c3eb2a8';
-import { showInlineError, showFieldError } from '../utils/validation.js?v=c3eb2a8';
-import { attachTooltipListeners, renderInfoIcon } from '../utils/tooltips.js?v=c3eb2a8';
+import { getCharacter, syncStatsFromAssignments } from '../model/character.js?v=5a1d155';
+import { STAT_ARRAYS, STAT_KEYS } from '../config/constants.js?v=5a1d155';
+import { t, translateAllElements } from '../i18n/i18n.js?v=5a1d155';
+import { updateNavigationButtons } from '../app.js?v=5a1d155';
+import { showInlineError, showFieldError } from '../utils/validation.js?v=5a1d155';
+import { attachTooltipListeners, renderInfoIcon } from '../utils/tooltips.js?v=5a1d155';
 
 function renderStatInfoIcon(statKey) {
     const keyLower = statKey.toLowerCase();

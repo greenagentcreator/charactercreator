@@ -1,16 +1,16 @@
 // Character View - Agent sheet (read-only dossier + toolbar)
 
-import { getCharacterById, saveCharacter } from '../utils/storage.js?v=c3eb2a8';
-import { setCharacter } from '../model/character.js?v=c3eb2a8';
-import { renderStep5_Summary } from './step5-summary.js?v=c3eb2a8';
-import { t, translateAllElements } from '../i18n/i18n.js?v=c3eb2a8';
-import { renderSheetToolbar, attachSheetToolbarListeners } from '../components/sheet-toolbar.js?v=c3eb2a8';
-import { attachSheetEditListeners, collectSheetEditsFromDOM, escapeHtml } from '../utils/sheet-edit.js?v=c3eb2a8';
-import { initSheetAutoSave, resetSheetEditState, notifySheetSaved } from '../utils/sheet-autosave.js?v=c3eb2a8';
-import { attachSheetRollListeners } from '../utils/sheet-rolls.js?v=c3eb2a8';
-import { ensureSheetBaseline } from '../utils/sheet-baseline.js?v=c3eb2a8';
-import { dismissRollResult } from '../components/roll-bubble.js?v=c3eb2a8';
-import { maybeShowSheetOnboarding } from '../utils/sheet-onboarding.js?v=c3eb2a8';
+import { getCharacterById, saveCharacter } from '../utils/storage.js?v=5a1d155';
+import { setCharacter } from '../model/character.js?v=5a1d155';
+import { renderStep5_Summary } from './step5-summary.js?v=5a1d155';
+import { t, translateAllElements } from '../i18n/i18n.js?v=5a1d155';
+import { renderSheetToolbar, attachSheetToolbarListeners } from '../components/sheet-toolbar.js?v=5a1d155';
+import { attachSheetEditListeners, collectSheetEditsFromDOM, escapeHtml } from '../utils/sheet-edit.js?v=5a1d155';
+import { initSheetAutoSave, resetSheetEditState, notifySheetSaved } from '../utils/sheet-autosave.js?v=5a1d155';
+import { attachSheetRollListeners } from '../utils/sheet-rolls.js?v=5a1d155';
+import { ensureSheetBaseline } from '../utils/sheet-baseline.js?v=5a1d155';
+import { dismissRollResult } from '../components/roll-bubble.js?v=5a1d155';
+import { maybeShowSheetOnboarding } from '../utils/sheet-onboarding.js?v=5a1d155';
 
 const SHEET_PRINT_ROOT_ID = 'sheet-print-root';
 
