@@ -1,9 +1,9 @@
 // News button, unread badge, and modal
 
-import { NEWS_ENTRIES } from '../data/news.js?v=e796474';
-import { t, getCurrentLanguage } from '../i18n/i18n.js?v=e796474';
-import { showModal } from './modal.js?v=e796474';
-import { escapeHtml } from './escape-html.js?v=e796474';
+import { NEWS_ENTRIES } from '../data/news.js?v=27a0927';
+import { t, getCurrentLanguage } from '../i18n/i18n.js?v=27a0927';
+import { showModal } from './modal.js?v=27a0927';
+import { escapeHtml } from './escape-html.js?v=27a0927';
 
 const STORAGE_KEY = 'dg_news_last_read_id';
 
