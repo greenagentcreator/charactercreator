@@ -128,7 +128,7 @@ function renderCustomProfession_SkillAllocation() {
              <p>${t('custom_prof_info_max_skill')}</p> <!-- Max 60% Regel -->
         </div>
         <p class="custom-skills-selected-sticky"><span data-i18n="custom_prof_skills_selected_label_prefix"></span>
-           <span id="custom-skills-selected-actual-count">${selectedInstancesCount}</span> / 10
+           <span id="custom-skills-selected-actual-count">${selectedInstancesCount}</span>
         </p>
         <div id="custom-profession-skill-list" data-validation-target="custom-profession-skills" class="validation-choice-group">`;
 
@@ -151,15 +151,14 @@ function renderCustomProfession_SkillAllocation() {
                                 <input type="checkbox" class="custom-prof-skill-select-main"
                                        data-skill-key="${baseKey}"
                                        data-is-typed="${skillDef.type ? 'true' : 'false'}"
-                                       ${isBaseSkillSelectedAtLeastOnce ? 'checked' : ''}
-                                       ${selectedInstancesCount >= 10 && !isBaseSkillSelectedAtLeastOnce ? 'disabled' : ''}>
+                                       ${isBaseSkillSelectedAtLeastOnce ? 'checked' : ''}>
                                 ${t(skillDef.nameKey)}
                             </label>
                             <span class="skill-info-icon" title="${t(skillDef.descKey)}">i
                                 <span class="tooltip">${t(skillDef.descKey)}</span>
                             </span>
                         </div>`;
-        if (skillDef.type && isBaseSkillSelectedAtLeastOnce && selectedInstancesCount < 10) {
+        if (skillDef.type && isBaseSkillSelectedAtLeastOnce) {
             html += `<button class="btn-add-another-specialization action-button" 
                              data-skill-key="${baseKey}"
                              title="${t('add_another_specialization_button_text', {skillName: t(skillDef.nameKey)})}">${t('add_another_specialization_button_text', {skillName: t(skillDef.nameKey)})}</button>`;
@@ -1572,11 +1571,6 @@ export function handleCustomBaseSkillMainCheckboxChange(checkbox) {
     const existingInstances = character.customProfessionSelectedSkills.filter(inst => inst.key === baseKey);
 
     if (isChecked) { // Skill wurde ausgewählt
-        if (character.customProfessionSelectedSkills.length >= 10 && existingInstances.length === 0) {
-            checkbox.checked = false; // Verhindere Auswahl, wenn Max erreicht und dies ein *neuer* Basis-Skill wäre
-            showInlineError(t('alert_max_10_custom_skills'));
-            return;
-        }
         // Wenn angehakt und noch keine Instanz dieses Basis-Skills existiert, füge eine hinzu.
         if (existingInstances.length === 0) {
             character.customProfessionSelectedSkills.push({
@@ -1608,11 +1602,6 @@ export function handleCustomBaseSkillSelectChange(checkbox) {
     const existingInstancesOfThisBaseKey = character.customProfessionSelectedSkills.filter(inst => inst.key === baseKey);
 
     if (isChecked) {
-        if (character.customProfessionSelectedSkills.length >= 10) {
-            checkbox.checked = false; // Verhindern
-            showInlineError(t('alert_max_10_custom_skills'));
-            return;
-        }
         // Wenn angehakt und noch keine Instanz dieses Basis-Skills existiert, füge eine hinzu.
         if (existingInstancesOfThisBaseKey.length === 0) {
             character.customProfessionSelectedSkills.push({
@@ -1636,10 +1625,6 @@ export function handleCustomBaseSkillSelectChange(checkbox) {
 export function handleAddAnotherSpecializationClick(button) {
     const character = getCharacter();
     const baseKey = button.dataset.skillKey;
-    if (character.customProfessionSelectedSkills.length >= 10) {
-        showInlineError(t('alert_max_10_custom_skills'));
-        return;
-    }
     // Füge eine neue, leere Instanz für diesen Basis-Skill hinzu
     const count = character.customProfessionSelectedSkills.filter(i => i.key === baseKey).length;
     character.customProfessionSelectedSkills.push({
@@ -1838,19 +1823,15 @@ export function updateCustomSkillAllocationUI() {
     const countSpan = document.getElementById('custom-skills-selected-actual-count');
     if (countSpan) countSpan.textContent = numSelectedInstances;
 
-    // Deaktiviere Haupt-Checkboxes, wenn 10 Skills gewählt sind und die Box nicht schon gecheckt ist
     document.querySelectorAll('.custom-prof-skill-select-main').forEach(cb => {
         const isBaseRepresented = character.customProfessionSelectedSkills.some(inst => inst.key === cb.dataset.skillKey);
-        cb.disabled = numSelectedInstances >= 10 && !isBaseRepresented;
-        cb.closest('label').classList.toggle('disabled-choice', cb.disabled);
 
         // Add-Specialization Button Logik
         const baseItemDiv = cb.closest('.custom-skill-item-base');
-        const addSpecButton = baseItemDiv.querySelector('.btn-add-another-specialization');
+        const addSpecButton = baseItemDiv?.querySelector('.btn-add-another-specialization');
         if (addSpecButton) {
              const skillDef = ALL_SKILLS[addSpecButton.dataset.skillKey];
              addSpecButton.style.display = (skillDef.type && isBaseRepresented) ? 'inline-block' : 'none';
-             addSpecButton.disabled = numSelectedInstances >= 10; // Auch hier deaktivieren
         }
     });
 
@@ -1928,8 +1909,8 @@ export function validateStep1(showAlerts = true) {
             }
             return true; // Name vorhanden und Bonds sind standardmäßig valide (3)
         } else if (character.customProfessionSetupStage === 'skills') {
-            if (character.customProfessionSelectedSkills.length !== 10) {
-                if (showAlerts) showInlineError(t('alert_max_10_custom_skills'), 'error', 'custom-profession-skills');
+            if (character.customProfessionSelectedSkills.length < 1) {
+                if (showAlerts) showInlineError(t('alert_no_custom_skills_selected'), 'error', 'custom-profession-skills');
                 return false;
             }
             let pointsSpent = 0;
