@@ -1,7 +1,7 @@
 // Baseline snapshot for resetting editable agent sheets
 
-import { getCharacterById, saveCharacter } from './storage.js?v=5a1d155';
-import { calculateDerivedAttributes } from '../model/character.js?v=5a1d155';
+import { getCharacterById, saveCharacter } from './storage.js?v=e796474';
+import { calculateDerivedAttributes } from '../model/character.js?v=e796474';
 
 export function captureSheetBaseline(char) {
     const skills = Array.isArray(char.skills)
