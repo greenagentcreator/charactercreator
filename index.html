@@ -58,23 +58,120 @@
         }
     }
     </script>
+    <!-- APP_VERSION_LOADER_START -->
     <script>
         window.__APP_BUILD__ = 'e796474';
         (function () {
-            var BUILD = 'e796474';
-            var key = 'dg_app_build';
-            try {
-                var previous = localStorage.getItem(key);
-                var urlVersion = new URLSearchParams(location.search).get('v');
-                if (BUILD !== urlVersion || (previous && previous !== BUILD)) {
-                    localStorage.setItem(key, BUILD);
-                    location.replace(location.pathname + '?v=' + encodeURIComponent(BUILD) + location.hash);
-                    return;
+            var FALLBACK_BUILD = 'e796474';
+            var STORAGE_KEY = 'dg_app_build';
+            var versionJsonUrl = 'version.json?_=' + Date.now();
+
+            function readStoredBuild() {
+                try {
+                    return localStorage.getItem(STORAGE_KEY);
+                } catch (e) {
+                    return null;
                 }
-                localStorage.setItem(key, BUILD);
-            } catch (e) { /* private browsing */ }
+            }
+
+            function writeStoredBuild(buildId) {
+                try {
+                    localStorage.setItem(STORAGE_KEY, buildId);
+                } catch (e) { /* private browsing */ }
+            }
+
+            function urlBuildParam() {
+                return new URLSearchParams(location.search).get('v');
+            }
+
+            function redirectToBuild(buildId) {
+                writeStoredBuild(buildId);
+                var next = location.pathname
+                    + '?v=' + encodeURIComponent(buildId)
+                    + location.hash;
+                location.replace(next);
+            }
+
+            function assetUrl(path, buildId) {
+                return buildId === 'dev' ? path : path + '?v=' + encodeURIComponent(buildId);
+            }
+
+            function updateVersionedAssets(buildId) {
+                var importMapScript = document.querySelector('script[type="importmap"]');
+                if (importMapScript) {
+                    importMapScript.textContent = JSON.stringify({
+                        imports: {
+                            app: assetUrl('./js/app.js', buildId),
+                            main: assetUrl('./js/main.js', buildId)
+                        }
+                    });
+                }
+                var cssLink = document.querySelector('link[href*="styles.css"]');
+                if (cssLink) {
+                    cssLink.href = assetUrl('css/styles.css', buildId);
+                }
+            }
+
+            function startApp(buildId) {
+                window.__APP_BUILD__ = buildId;
+                document.documentElement.setAttribute('data-app-build', buildId);
+                updateVersionedAssets(buildId);
+                writeStoredBuild(buildId);
+
+                var bootstrap = document.createElement('script');
+                bootstrap.type = 'module';
+                bootstrap.src = assetUrl('js/bootstrap.js', buildId);
+                document.body.appendChild(bootstrap);
+            }
+
+            function resolveBuildId(payload) {
+                if (payload && typeof payload.version === 'string' && payload.version.trim() !== '') {
+                    return payload.version.trim();
+                }
+                return FALLBACK_BUILD;
+            }
+
+            function needsReload(serverBuild, urlBuild, storedBuild) {
+                if (serverBuild !== urlBuild) {
+                    return true;
+                }
+                return Boolean(storedBuild && storedBuild !== serverBuild);
+            }
+
+            fetch(versionJsonUrl, { cache: 'no-store' })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('version.json unavailable');
+                    }
+                    return response.json();
+                })
+                .then(function (payload) {
+                    var serverBuild = resolveBuildId(payload);
+                    var urlBuild = urlBuildParam();
+                    var storedBuild = readStoredBuild();
+
+                    if (needsReload(serverBuild, urlBuild, storedBuild)) {
+                        redirectToBuild(serverBuild);
+                        return;
+                    }
+
+                    startApp(serverBuild);
+                })
+                .catch(function () {
+                    var urlBuild = urlBuildParam();
+                    var storedBuild = readStoredBuild();
+                    var buildId = urlBuild || storedBuild || FALLBACK_BUILD;
+
+                    if (needsReload(buildId, urlBuild, storedBuild)) {
+                        redirectToBuild(buildId);
+                        return;
+                    }
+
+                    startApp(buildId);
+                });
         })();
     </script>
+    <!-- APP_VERSION_LOADER_END -->
     
     <link rel="stylesheet" href="css/styles.css?v=e796474">
     
@@ -164,7 +261,6 @@
         <button id="btn-next" data-i18n="btn_next_text" class="nav-button">Next</button>
     </nav>
 
-    <script type="module" src="js/bootstrap.js?v=e796474"></script>
     <noscript>
         <p>Delta Green Agent Creator — free online character sheet tool for Delta Green RPG. Create, save, print, and share agent dossiers in English, Deutsch, Español, Français, and Русский. Enable JavaScript to use the creator.</p>
     </noscript>

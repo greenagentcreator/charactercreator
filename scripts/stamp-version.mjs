@@ -59,11 +59,10 @@ function walkJsFiles(dir, files = []) {
 function stampIndexHtml(indexHtml, buildId) {
     return indexHtml
         .replace(/css\/styles\.css\?v=[^"']+/, `css/styles.css?v=${buildId}`)
-        .replace(/js\/bootstrap\.js\?v=[^"']+/, `js/bootstrap.js?v=${buildId}`)
         .replace(/"\.\/js\/app\.js\?v=[^"]+"/, `"./js/app.js?v=${buildId}"`)
         .replace(/"\.\/js\/main\.js\?v=[^"]+"/, `"./js/main.js?v=${buildId}"`)
         .replace(/window\.__APP_BUILD__ = '[^']+'/, `window.__APP_BUILD__ = '${buildId}'`)
-        .replace(/var BUILD = '[^']+'/, `var BUILD = '${buildId}'`);
+        .replace(/var FALLBACK_BUILD = '[^']+'/, `var FALLBACK_BUILD = '${buildId}'`);
 }
 
 const buildId = getBuildId();
