@@ -118,10 +118,18 @@
                 updateVersionedAssets(buildId);
                 writeStoredBuild(buildId);
 
-                var bootstrap = document.createElement('script');
-                bootstrap.type = 'module';
-                bootstrap.src = assetUrl('js/bootstrap.js', buildId);
-                document.body.appendChild(bootstrap);
+                function injectBootstrap() {
+                    var bootstrap = document.createElement('script');
+                    bootstrap.type = 'module';
+                    bootstrap.src = assetUrl('js/bootstrap.js', buildId);
+                    document.body.appendChild(bootstrap);
+                }
+
+                if (document.body) {
+                    injectBootstrap();
+                } else {
+                    document.addEventListener('DOMContentLoaded', injectBootstrap, { once: true });
+                }
             }
 
             function resolveBuildId(payload) {
