@@ -12,7 +12,8 @@ export const firebaseConfig = {
 // Firestore collection names
 export const COLLECTIONS = {
     CHARACTERS: 'characters',
-    REPORTS: 'reports'
+    REPORTS: 'reports',
+    NEWS_LIKES: 'news_likes'
 };
 
 // Character moderation status

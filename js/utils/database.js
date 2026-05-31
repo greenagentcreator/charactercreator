@@ -148,6 +148,11 @@ export function initFirebase() {
     }
 }
 
+export function getDb() {
+    ensureInitialized();
+    return db;
+}
+
 // Check if Firebase is initialized
 function ensureInitialized() {
     if (!db) {

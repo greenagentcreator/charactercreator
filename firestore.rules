@@ -1,0 +1,55 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function safeString(field, max) {
+      return field is string && field.size() > 0 && field.size() <= max;
+    }
+
+    function validCharacterPayload() {
+      return request.resource.data.keys().hasOnly([
+               'name', 'nameLower', 'profession', 'professionFilterKey',
+               'language', 'previewStats', 'bondCount',
+               'data', 'createdDate', 'moderationStatus', 'uploadedAt'
+             ]) &&
+             request.resource.data.data is map &&
+             request.resource.data.data.size() <= 80 &&
+             request.resource.data.moderationStatus == 'approved' &&
+             safeString(request.resource.data.name, 80) &&
+             safeString(request.resource.data.nameLower, 80) &&
+             safeString(request.resource.data.profession, 80) &&
+             safeString(request.resource.data.language, 10) &&
+             safeString(request.resource.data.createdDate, 40) &&
+             safeString(request.resource.data.uploadedAt, 40);
+    }
+
+    function validReportPayload() {
+      return request.resource.data.keys().hasOnly(['characterId', 'reason', 'reportedAt', 'status']) &&
+             safeString(request.resource.data.characterId, 48) &&
+             safeString(request.resource.data.reason, 360) &&
+             safeString(request.resource.data.reportedAt, 40) &&
+             request.resource.data.status == 'pending';
+    }
+
+    match /characters/{characterId} {
+      allow read: if resource.data.moderationStatus == 'approved';
+      allow create: if validCharacterPayload();
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['moderationStatus']) &&
+                     request.resource.data.moderationStatus == 'pending';
+      allow delete: if false;
+    }
+
+    match /reports/{reportId} {
+      allow create: if validReportPayload();
+      allow read, update, delete: if false;
+    }
+
+    match /news_likes/{entryId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['count'])
+        && request.resource.data.count == 1;
+      allow update: if request.resource.data.keys().hasOnly(['count'])
+        && request.resource.data.count == resource.data.count + 1;
+      allow delete: if false;
+    }
+  }
+}

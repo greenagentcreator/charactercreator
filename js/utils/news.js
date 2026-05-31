@@ -1,11 +1,17 @@
 // News button, unread badge, and modal
 
+import { collection, doc, getDocs, increment, setDoc } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
 import { NEWS_ENTRIES } from '../data/news.js?v=addcaa9';
+import { COLLECTIONS } from '../config/database.js?v=addcaa9';
 import { t, getCurrentLanguage } from '../i18n/i18n.js?v=addcaa9';
 import { showModal } from './modal.js?v=addcaa9';
-import { escapeHtml } from './escape-html.js?v=addcaa9';
+import { escapeHtml, escapeAttr } from './escape-html.js?v=addcaa9';
+import { getDb } from './database.js?v=addcaa9';
 
 const STORAGE_KEY = 'dg_news_last_read_id';
+const LIKES_STORAGE_KEY = 'dg_news_liked_ids';
+
+const NEWS_LIKE_ICON = `<svg class="news-like-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
 
 function compareNewsEntries(a, b) {
     const dateCompare = b.date.localeCompare(a.date);
@@ -42,6 +48,51 @@ function markNewsAsRead() {
     }
 }
 
+function getLikedNewsIds() {
+    try {
+        const parsed = JSON.parse(localStorage.getItem(LIKES_STORAGE_KEY) || '[]');
+        return Array.isArray(parsed) ? parsed : [];
+    } catch {
+        return [];
+    }
+}
+
+function saveLikedNewsId(entryId) {
+    const likedIds = getLikedNewsIds();
+    if (likedIds.includes(entryId)) {
+        return;
+    }
+    localStorage.setItem(LIKES_STORAGE_KEY, JSON.stringify([...likedIds, entryId]));
+}
+
+async function fetchNewsLikeCounts() {
+    const db = getDb();
+    if (!db) {
+        return {};
+    }
+
+    const snapshot = await getDocs(collection(db, COLLECTIONS.NEWS_LIKES));
+    const counts = {};
+    snapshot.forEach((docSnap) => {
+        counts[docSnap.id] = docSnap.data().count ?? 0;
+    });
+    return counts;
+}
+
+async function incrementNewsLike(entryId) {
+    const db = getDb();
+    if (!db) {
+        return false;
+    }
+
+    await setDoc(
+        doc(db, COLLECTIONS.NEWS_LIKES, entryId),
+        { count: increment(1) },
+        { merge: true }
+    );
+    return true;
+}
+
 function formatNewsDate(dateStr) {
     const [year, month, day] = dateStr.split('-').map(Number);
     const date = new Date(year, month - 1, day);
@@ -52,7 +103,22 @@ function formatNewsDate(dateStr) {
     });
 }
 
-function buildNewsBodyHtml() {
+function buildLikeButtonHtml(entryId, count, isLiked) {
+    const ariaLabel = isLiked ? t('news_like_aria_liked') : t('news_like_aria');
+
+    return `
+        <button type="button"
+            class="news-like-btn${isLiked ? ' is-liked' : ''}"
+            data-news-id="${escapeAttr(entryId)}"
+            aria-label="${escapeAttr(ariaLabel)}"
+            aria-pressed="${isLiked ? 'true' : 'false'}"
+            ${isLiked ? 'disabled' : ''}>
+            ${NEWS_LIKE_ICON}
+            <span class="news-like-count">${count}</span>
+        </button>`;
+}
+
+function buildNewsBodyHtml(counts = {}, likedIds = []) {
     const entries = getAllNewsEntries();
 
     if (entries.length === 0) {
@@ -63,12 +129,20 @@ function buildNewsBodyHtml() {
         ? `<p class="news-scroll-hint">${escapeHtml(t('news_scroll_hint'))}</p>`
         : '';
 
-    const articles = entries.map((entry) => `
+    const articles = entries.map((entry) => {
+        const count = counts[entry.id] ?? 0;
+        const isLiked = likedIds.includes(entry.id);
+
+        return `
         <article class="news-entry">
             <time class="news-entry-date" datetime="${entry.date}">${escapeHtml(formatNewsDate(entry.date))}</time>
             <h3 class="news-entry-title">${escapeHtml(t(entry.titleKey))}</h3>
             <div class="news-entry-body">${t(entry.bodyKey)}</div>
-        </article>`).join('');
+            <footer class="news-entry-footer">
+                ${buildLikeButtonHtml(entry.id, count, isLiked)}
+            </footer>
+        </article>`;
+    }).join('');
 
     return `
         <div class="news-feed" role="feed" aria-label="${escapeHtml(t('news_feed_aria'))}" tabindex="0">
@@ -77,15 +151,67 @@ function buildNewsBodyHtml() {
         </div>`;
 }
 
-export function showNewsModal() {
+function attachNewsLikeHandlers(counts) {
+    const feed = document.querySelector('.news-feed');
+    if (!feed) {
+        return;
+    }
+
+    feed.addEventListener('click', async (event) => {
+        const button = event.target.closest('.news-like-btn');
+        if (!button || button.classList.contains('is-liked') || button.disabled) {
+            return;
+        }
+
+        const entryId = button.dataset.newsId;
+        if (!entryId || getLikedNewsIds().includes(entryId)) {
+            return;
+        }
+
+        button.disabled = true;
+
+        try {
+            const saved = await incrementNewsLike(entryId);
+            if (!saved) {
+                button.disabled = false;
+                return;
+            }
+
+            saveLikedNewsId(entryId);
+            counts[entryId] = (counts[entryId] ?? 0) + 1;
+
+            const countEl = button.querySelector('.news-like-count');
+            if (countEl) {
+                countEl.textContent = String(counts[entryId]);
+            }
+
+            button.classList.add('is-liked');
+            button.setAttribute('aria-pressed', 'true');
+            button.setAttribute('aria-label', t('news_like_aria_liked'));
+        } catch (error) {
+            console.warn('Could not save news like:', error);
+            button.disabled = false;
+        }
+    });
+}
+
+export async function showNewsModal() {
     markNewsAsRead();
     refreshNewsButton();
 
+    const likedIds = getLikedNewsIds();
+    const counts = await fetchNewsLikeCounts().catch((error) => {
+        console.warn('Could not load news likes:', error);
+        return {};
+    });
+
     showModal({
         title: t('news_modal_title'),
-        bodyHtml: buildNewsBodyHtml(),
+        bodyHtml: buildNewsBodyHtml(counts, likedIds),
         actions: [{ label: t('modal_close'), className: 'action-button' }]
     });
+
+    attachNewsLikeHandlers(counts);
 }
 
 export function refreshNewsButton() {
@@ -111,6 +237,8 @@ export function initNews() {
     }
 
     btn.dataset.bound = 'true';
-    btn.addEventListener('click', showNewsModal);
+    btn.addEventListener('click', () => {
+        showNewsModal();
+    });
     refreshNewsButton();
 }

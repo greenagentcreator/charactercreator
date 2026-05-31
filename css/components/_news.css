@@ -169,6 +169,65 @@
     font-style: italic;
 }
 
+.news-entry-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--spacing-sm);
+}
+
+.news-like-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--color-border-light);
+    border-radius: 999px;
+    background: none;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    line-height: 1;
+    cursor: pointer;
+    transition: color var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.news-like-btn:hover:not(:disabled) {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    background-color: var(--color-bg-overlay);
+}
+
+.news-like-btn:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+.news-like-btn.is-liked {
+    color: var(--color-error, #e74c3c);
+    border-color: color-mix(in srgb, var(--color-error, #e74c3c) 35%, var(--color-border-light));
+    cursor: default;
+}
+
+.news-like-btn.is-liked .news-like-icon {
+    fill: currentColor;
+}
+
+.news-like-btn:disabled:not(.is-liked) {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.news-like-icon {
+    width: 0.95rem;
+    height: 0.95rem;
+    flex-shrink: 0;
+}
+
+.news-like-count {
+    min-width: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+}
+
 @media (max-width: 400px) {
     #news-toggle {
         min-width: 40px;
