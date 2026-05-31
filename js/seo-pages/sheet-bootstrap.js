@@ -1,3 +1,3 @@
-import { initStaticPage } from './init-static-page.js?v=08b391a';
+import { initStaticPage } from './init-static-page.js?v=b5d21d8';
 
 initStaticPage({ pageId: 'sheet', filename: 'character-sheet.html' });

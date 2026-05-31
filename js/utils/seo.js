@@ -1,7 +1,7 @@
 // Document meta tags, Open Graph, and JSON-LD for SEO / discoverability
 
-import { t } from '../i18n/i18n.js?v=08b391a';
-import { getCanonicalSiteUrl, getOgImageUrl } from '../config/site.js?v=08b391a';
+import { t } from '../i18n/i18n.js?v=b5d21d8';
+import { getCanonicalSiteUrl, getOgImageUrl } from '../config/site.js?v=b5d21d8';
 
 const HREFLANGS = ['en', 'de', 'es', 'fr', 'ru'];
 const FAQ_COUNT = 5;
