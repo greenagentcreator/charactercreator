@@ -1,7 +1,7 @@
 // First-visit tip when opening a saved agent sheet (local characters only)
 
-import { t } from '../i18n/i18n.js?v=1cee2e5';
-import { showModal } from './modal.js?v=1cee2e5';
+import { t } from '../i18n/i18n.js?v=08b391a';
+import { showModal } from './modal.js?v=08b391a';
 
 const STORAGE_KEY = 'dg_sheet_onboarding_seen';
 
