@@ -10,8 +10,8 @@ html[lang="ru"] body {
     letter-spacing: 0.01em;
 }
 
-html[lang="ru"] header h1,
-html[lang="ru"] .home-hero-title,
+html[lang="ru"] header .site-brand,
+html[lang="ru"] .seo-landing__title,
 html[lang="ru"] .home-section-title,
 html[lang="ru"] .app-modal-title,
 html[lang="ru"] .sheet-header h2 {

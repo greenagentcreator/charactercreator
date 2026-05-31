@@ -1,7 +1,7 @@
 // i18n (Internationalization) system for Delta Green Character Creator
 
-import { i18nData, languageLabels } from './translations.js?v=27a0927';
-import { syncRussianFontsWithLanguage } from '../utils/locale-fonts.js?v=27a0927';
+import { i18nData, languageLabels } from './translations.js?v=1cee2e5';
+import { syncRussianFontsWithLanguage } from '../utils/locale-fonts.js?v=1cee2e5';
 
 const translations = {};
 let currentLanguage = 'en';
@@ -93,7 +93,8 @@ export function translateAllElements(container = document) {
     });
 }
 
-export function setLanguage(lang) {
+/** Apply UI translations without main-app SEO or wizard refresh (static SEO subpages). */
+export function applyPageTranslations(lang) {
     if (!translations[lang] && lang !== 'en') {
         lang = 'en';
     }
@@ -101,14 +102,22 @@ export function setLanguage(lang) {
     document.documentElement.lang = lang;
     syncRussianFontsWithLanguage(lang);
     localStorage.setItem('preferredLanguage', lang);
+    translateAllElements();
+
+    const languageSelect = document.getElementById('language-select');
+    if (languageSelect && languageSelect.value !== lang) {
+        languageSelect.value = lang;
+    }
+}
+
+export function setLanguage(lang) {
+    applyPageTranslations(lang);
 
     if (window.app?.syncLibraryLanguageFilterWithUi) {
         window.app.syncLibraryLanguageFilterWithUi(lang);
     }
-    
-    translateAllElements(); 
 
-    import('../utils/seo.js?v=27a0927').then(({ updateSeoMeta }) => {
+    import('../utils/seo.js?v=1cee2e5').then(({ updateSeoMeta }) => {
         updateSeoMeta(lang);
     }).catch(() => {});
 
@@ -121,12 +130,7 @@ export function setLanguage(lang) {
             window.app.renderCurrentStep(true);
         }
     }
-    const languageSelect = document.getElementById('language-select');
-    if (languageSelect && languageSelect.value !== lang) {
-        languageSelect.value = lang;
-    }
-
-    import('../utils/news.js?v=27a0927').then(({ refreshNewsButton }) => {
+    import('../utils/news.js?v=1cee2e5').then(({ refreshNewsButton }) => {
         refreshNewsButton?.();
     }).catch(() => {});
 }

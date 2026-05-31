@@ -21,6 +21,8 @@
 
 /* --- Components --- */
 @import url('components/_loading-skeleton.css');
+@import url('components/_seo-landing.css');
+@import url('components/_seo-static-page.css');
 @import url('components/_progress-bar.css');
 @import url('components/_info-box.css');
 @import url('components/_forms.css');

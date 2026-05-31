@@ -4,7 +4,6 @@ body.app-is-loading {
     overflow: hidden;
 }
 
-body.app-is-loading #app-container,
 body.app-is-loading #navigation-container {
     visibility: hidden;
 }

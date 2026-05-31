@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function () {
+            var host = location.hostname;
+            var isLocal = host === 'localhost' || host === '127.0.0.1' || host === '::1';
+            document.documentElement.setAttribute('data-env', isLocal ? 'development' : 'production');
+            var savedTheme = localStorage.getItem('theme');
+            var dark = savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+        })();
+    </script>
+    <title>Delta Green Fillable Online Character Sheet — Free</title>
+    <meta name="description" content="Free Delta Green fillable online character sheet: edit skills, roll dice in the browser, save locally, print, and share. Better than static PDFs for play.">
+    <meta name="keywords" content="Delta Green, online character sheet, fillable character sheet, character sheet PDF alternative, editable RPG sheet, agent dossier">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://greenagentcreator.github.io/charactercreator/character-sheet.html">
+    <link rel="alternate" type="text/plain" title="LLM site summary" href="https://greenagentcreator.github.io/charactercreator/llms.txt">
+    <link rel="alternate" type="text/plain" title="LLM full documentation" href="https://greenagentcreator.github.io/charactercreator/llms-full.txt">
+    <link rel="alternate" hreflang="en" href="https://greenagentcreator.github.io/charactercreator/character-sheet.html?lang=en">
+    <link rel="alternate" hreflang="de" href="https://greenagentcreator.github.io/charactercreator/character-sheet.html?lang=de">
+    <link rel="alternate" hreflang="es" href="https://greenagentcreator.github.io/charactercreator/character-sheet.html?lang=es">
+    <link rel="alternate" hreflang="fr" href="https://greenagentcreator.github.io/charactercreator/character-sheet.html?lang=fr">
+    <link rel="alternate" hreflang="ru" href="https://greenagentcreator.github.io/charactercreator/character-sheet.html?lang=ru">
+    <link rel="alternate" hreflang="x-default" href="https://greenagentcreator.github.io/charactercreator/character-sheet.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Delta Green Character Creator">
+    <meta property="og:title" content="Delta Green Fillable Online Character Sheet — Free">
+    <meta property="og:description" content="Free Delta Green fillable online character sheet: edit skills, roll dice in the browser, save locally, print, and share.">
+    <meta property="og:url" content="https://greenagentcreator.github.io/charactercreator/character-sheet.html">
+    <meta property="og:image" content="https://greenagentcreator.github.io/charactercreator/assets/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://greenagentcreator.github.io/charactercreator/assets/og-image.png">
+    <link rel="stylesheet" href="css/styles.css?v=1cee2e5">
+    <script type="module" src="js/seo-pages/sheet-bootstrap.js?v=1cee2e5"></script>
+</head>
+<body>
+    <div class="seo-static-page">
+        <header class="seo-static-header">
+            <p class="seo-static-brand"><a href="index.html" data-i18n="app_header">Delta Green Character Creator</a></p>
+            <div class="seo-static-header-controls">
+                <button id="theme-toggle" type="button" aria-label="Toggle theme"><span id="theme-icon" aria-hidden="true">🌙</span></button>
+                <select id="language-select" aria-label="Language selection"></select>
+            </div>
+        </header>
+        <nav class="seo-static-nav" aria-label="Site sections">
+            <a href="index.html" data-i18n="seo_pages_nav_home">Creator</a>
+            <a href="guide.html" data-i18n="seo_pages_nav_guide">Creation guide</a>
+            <a href="character-sheet.html" aria-current="page" data-i18n="seo_pages_nav_sheet">Character sheet</a>
+            <a href="ideas.html" data-i18n="seo_pages_nav_ideas">Character ideas</a>
+        </nav>
+        <main class="seo-static-main">
+            <h1 data-i18n="sheet_h1">Delta Green Online &amp; Fillable Character Sheet</h1>
+            <p class="seo-static-lead" data-i18n="sheet_lead">A browser-based fillable character sheet for Delta Green agents—update skills and stats during play, roll from the sheet, and print a clean dossier when you need paper at the table.</p>
+
+            <h2 data-i18n="sheet_section_features_title">What you can do on the sheet</h2>
+            <ul class="seo-static-tips">
+                <li data-i18n="sheet_feature_1">Edit the full agent dossier after creation—skills, stats, bonds, gear, and notes</li>
+                <li data-i18n="sheet_feature_2">Click skills to roll directly in the browser (no separate dice app required)</li>
+                <li data-i18n="sheet_feature_3">Auto-save changes in your browser; export or import JSON backups</li>
+                <li data-i18n="sheet_feature_4">Print-friendly layout for handouts and table play</li>
+                <li data-i18n="sheet_feature_5">Share a link so your Handler or group can import the same agent</li>
+            </ul>
+
+            <h2 data-i18n="sheet_section_pdf_title">Online sheet vs. PDF fillables</h2>
+            <p data-i18n="sheet_pdf_text">PDF fillables are fine for one-shot printing, but they are awkward mid-session. This online sheet stays editable, handles rolls, and pairs with the built-in character creator so you do not re-type data.</p>
+
+            <div class="seo-static-cta-block">
+                <h2 data-i18n="sheet_section_start_title">Create a sheet in minutes</h2>
+                <p data-i18n="sheet_section_start_text">Start with the character creator wizard, then continue in the live sheet view for play.</p>
+                <a class="seo-static-cta" href="index.html" data-i18n="sheet_cta">Create your character sheet</a>
+            </div>
+        </main>
+        <footer class="seo-static-footer">
+            <p>
+                <a href="llms.txt" rel="alternate">LLM documentation</a>
+                · <a href="llms-full.txt" rel="alternate">Full reference</a>
+            </p>
+            <p data-i18n="footer_text">Published by arrangement with the Delta Green Partnership.</p>
+        </footer>
+    </div>
+    <noscript>
+        <p>Enable JavaScript for full translations (English, Deutsch, Español, Français, Русский). <a href="index.html">Open the character creator</a>.</p>
+    </noscript>
+</body>
+</html>

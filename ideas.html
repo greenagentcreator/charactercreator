@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function () {
+            var host = location.hostname;
+            var isLocal = host === 'localhost' || host === '127.0.0.1' || host === '::1';
+            document.documentElement.setAttribute('data-env', isLocal ? 'development' : 'production');
+            var savedTheme = localStorage.getItem('theme');
+            var dark = savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+        })();
+    </script>
+    <title>Delta Green Character Ideas — Agents, Hooks &amp; Inspiration</title>
+    <meta name="description" content="Delta Green character ideas: profession prompts, bond hooks, motivation seeds, and community agents to import. Inspiration for agents and NPC concepts.">
+    <meta name="keywords" content="Delta Green, character ideas, Delta Green characters, agent ideas, NPC ideas, character inspiration, RPG hooks">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://greenagentcreator.github.io/charactercreator/ideas.html">
+    <link rel="alternate" type="text/plain" title="LLM site summary" href="https://greenagentcreator.github.io/charactercreator/llms.txt">
+    <link rel="alternate" type="text/plain" title="LLM full documentation" href="https://greenagentcreator.github.io/charactercreator/llms-full.txt">
+    <link rel="alternate" hreflang="en" href="https://greenagentcreator.github.io/charactercreator/ideas.html?lang=en">
+    <link rel="alternate" hreflang="de" href="https://greenagentcreator.github.io/charactercreator/ideas.html?lang=de">
+    <link rel="alternate" hreflang="es" href="https://greenagentcreator.github.io/charactercreator/ideas.html?lang=es">
+    <link rel="alternate" hreflang="fr" href="https://greenagentcreator.github.io/charactercreator/ideas.html?lang=fr">
+    <link rel="alternate" hreflang="ru" href="https://greenagentcreator.github.io/charactercreator/ideas.html?lang=ru">
+    <link rel="alternate" hreflang="x-default" href="https://greenagentcreator.github.io/charactercreator/ideas.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Delta Green Character Creator">
+    <meta property="og:title" content="Delta Green Character Ideas — Agents, Hooks &amp; Inspiration">
+    <meta property="og:description" content="Delta Green character ideas: profession prompts, bond hooks, motivation seeds, and community agents to import.">
+    <meta property="og:url" content="https://greenagentcreator.github.io/charactercreator/ideas.html">
+    <meta property="og:image" content="https://greenagentcreator.github.io/charactercreator/assets/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://greenagentcreator.github.io/charactercreator/assets/og-image.png">
+    <link rel="stylesheet" href="css/styles.css?v=1cee2e5">
+    <script type="module" src="js/seo-pages/ideas-bootstrap.js?v=1cee2e5"></script>
+</head>
+<body>
+    <div class="seo-static-page">
+        <header class="seo-static-header">
+            <p class="seo-static-brand"><a href="index.html" data-i18n="app_header">Delta Green Character Creator</a></p>
+            <div class="seo-static-header-controls">
+                <button id="theme-toggle" type="button" aria-label="Toggle theme"><span id="theme-icon" aria-hidden="true">🌙</span></button>
+                <select id="language-select" aria-label="Language selection"></select>
+            </div>
+        </header>
+        <nav class="seo-static-nav" aria-label="Site sections">
+            <a href="index.html" data-i18n="seo_pages_nav_home">Creator</a>
+            <a href="guide.html" data-i18n="seo_pages_nav_guide">Creation guide</a>
+            <a href="character-sheet.html" data-i18n="seo_pages_nav_sheet">Character sheet</a>
+            <a href="ideas.html" aria-current="page" data-i18n="seo_pages_nav_ideas">Character ideas</a>
+        </nav>
+        <main class="seo-static-main">
+            <h1 data-i18n="ideas_h1">Delta Green Character Ideas &amp; Inspiration</h1>
+            <p class="seo-static-lead" data-i18n="ideas_lead">Stuck on a concept? Use these prompts for Delta Green agents and NPCs, then open the character creator to turn an idea into a full fillable sheet.</p>
+
+            <h2 data-i18n="ideas_section_professions_title">Profession prompts</h2>
+            <div class="seo-static-ideas-grid">
+                <article class="seo-static-idea-card">
+                    <h3 data-i18n="ideas_profession_1_title">Federal agent under pressure</h3>
+                    <p data-i18n="ideas_profession_1_text">A field office investigator who has seen too much red tape—and one case that should not exist.</p>
+                </article>
+                <article class="seo-static-idea-card">
+                    <h3 data-i18n="ideas_profession_2_title">Scientist who saw too much</h3>
+                    <p data-i18n="ideas_profession_2_text">A lab researcher whose peer-reviewed world collapsed after one sample that moved wrong.</p>
+                </article>
+                <article class="seo-static-idea-card">
+                    <h3 data-i18n="ideas_profession_3_title">Local law with old secrets</h3>
+                    <p data-i18n="ideas_profession_3_text">A sheriff deputy in a county where missing persons reports get filed and forgotten.</p>
+                </article>
+                <article class="seo-static-idea-card">
+                    <h3 data-i18n="ideas_profession_4_title">Civilian expert on retainer</h3>
+                    <p data-i18n="ideas_profession_4_text">A consultant Green Box brought in twice—now they cannot unknow the pattern.</p>
+                </article>
+            </div>
+
+            <h2 data-i18n="ideas_section_hooks_title">Bond &amp; motivation hooks</h2>
+            <ul class="seo-static-tips">
+                <li data-i18n="ideas_hook_1">Bond: A sibling who thinks you work fraud investigations—keep them safe by lying.</li>
+                <li data-i18n="ideas_hook_2">Bond: A partner who survived the last op; they do not remember what you did to save them.</li>
+                <li data-i18n="ideas_hook_3">Motivation: Prove the last report was real, even if it costs your career.</li>
+                <li data-i18n="ideas_hook_4">Motivation: Retire with one normal year—before the next summons.</li>
+            </ul>
+
+            <h2 data-i18n="ideas_section_community_title">Community character library</h2>
+            <p data-i18n="ideas_community_text">On the main creator home screen, browse shared agents from other players—filter by profession or language and import a sheet as a starting point for your own concept.</p>
+
+            <div class="seo-static-cta-block">
+                <a class="seo-static-cta" href="index.html#home-section-library" data-i18n="ideas_cta">Browse creator &amp; library</a>
+            </div>
+        </main>
+        <footer class="seo-static-footer">
+            <p>
+                <a href="llms.txt" rel="alternate">LLM documentation</a>
+                · <a href="llms-full.txt" rel="alternate">Full reference</a>
+            </p>
+            <p data-i18n="footer_text">Published by arrangement with the Delta Green Partnership.</p>
+        </footer>
+    </div>
+    <noscript>
+        <p>Enable JavaScript for full translations (English, Deutsch, Español, Français, Русский). <a href="index.html">Open the character creator</a>.</p>
+    </noscript>
+</body>
+</html>

@@ -14,6 +14,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 const indexPath = path.join(root, 'index.html');
+const staticHtmlPages = ['guide.html', 'character-sheet.html', 'ideas.html'];
 const versionPath = path.join(root, 'version.json');
 const jsRoot = path.join(root, 'js');
 
@@ -65,6 +66,15 @@ function stampIndexHtml(indexHtml, buildId) {
         .replace(/var FALLBACK_BUILD = '[^']+'/, `var FALLBACK_BUILD = '${buildId}'`);
 }
 
+function stampStaticHtml(html, buildId) {
+    return html
+        .replace(/css\/styles\.css\?v=[^"']+/, `css/styles.css?v=${buildId}`)
+        .replace(/js\/seo-pages\/[^"']+\.js\?v=[^"']+/g, (match) => {
+            const base = match.split('?')[0];
+            return `${base}?v=${buildId}`;
+        });
+}
+
 const buildId = getBuildId();
 let indexHtml = fs.readFileSync(indexPath, 'utf8');
 
@@ -77,6 +87,20 @@ if (!indexHtml.includes('"main":')) {
 
 indexHtml = stampIndexHtml(indexHtml, buildId);
 fs.writeFileSync(indexPath, indexHtml);
+
+let updatedHtmlPages = 0;
+for (const page of staticHtmlPages) {
+    const pagePath = path.join(root, page);
+    if (!fs.existsSync(pagePath)) {
+        continue;
+    }
+    const original = fs.readFileSync(pagePath, 'utf8');
+    const stamped = stampStaticHtml(original, buildId);
+    if (stamped !== original) {
+        fs.writeFileSync(pagePath, stamped);
+        updatedHtmlPages += 1;
+    }
+}
 
 const jsFiles = walkJsFiles(jsRoot);
 let updatedJsFiles = 0;
@@ -95,4 +119,4 @@ fs.writeFileSync(
     `${JSON.stringify({ version: buildId, builtAt: new Date().toISOString() }, null, 2)}\n`
 );
 
-console.log(`Stamped build version: ${buildId} (${updatedJsFiles} JS files updated)`);
+console.log(`Stamped build version: ${buildId} (${updatedJsFiles} JS files, ${updatedHtmlPages} static HTML pages updated)`);

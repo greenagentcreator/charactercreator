@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function () {
+            var host = location.hostname;
+            var isLocal = host === 'localhost' || host === '127.0.0.1' || host === '::1';
+            document.documentElement.setAttribute('data-env', isLocal ? 'development' : 'production');
+            var savedTheme = localStorage.getItem('theme');
+            var dark = savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+        })();
+    </script>
+    <title>How to Create a Delta Green Character — Step-by-Step Guide</title>
+    <meta name="description" content="Learn how to make a Delta Green character: profession, stats, bonds, motivations, and sheet. Free RPG character creation guide with online creator.">
+    <meta name="keywords" content="Delta Green, how to make a character, character creation guide, RPG character creation, create agent, Delta Green RPG">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://greenagentcreator.github.io/charactercreator/guide.html">
+    <link rel="alternate" type="text/plain" title="LLM site summary" href="https://greenagentcreator.github.io/charactercreator/llms.txt">
+    <link rel="alternate" type="text/plain" title="LLM full documentation" href="https://greenagentcreator.github.io/charactercreator/llms-full.txt">
+    <link rel="alternate" hreflang="en" href="https://greenagentcreator.github.io/charactercreator/guide.html?lang=en">
+    <link rel="alternate" hreflang="de" href="https://greenagentcreator.github.io/charactercreator/guide.html?lang=de">
+    <link rel="alternate" hreflang="es" href="https://greenagentcreator.github.io/charactercreator/guide.html?lang=es">
+    <link rel="alternate" hreflang="fr" href="https://greenagentcreator.github.io/charactercreator/guide.html?lang=fr">
+    <link rel="alternate" hreflang="ru" href="https://greenagentcreator.github.io/charactercreator/guide.html?lang=ru">
+    <link rel="alternate" hreflang="x-default" href="https://greenagentcreator.github.io/charactercreator/guide.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Delta Green Character Creator">
+    <meta property="og:title" content="How to Create a Delta Green Character — Step-by-Step Guide">
+    <meta property="og:description" content="Learn how to make a Delta Green character: profession, stats, bonds, motivations, and sheet. Free RPG character creation guide with online creator.">
+    <meta property="og:url" content="https://greenagentcreator.github.io/charactercreator/guide.html">
+    <meta property="og:image" content="https://greenagentcreator.github.io/charactercreator/assets/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://greenagentcreator.github.io/charactercreator/assets/og-image.png">
+    <link rel="stylesheet" href="css/styles.css?v=1cee2e5">
+    <script type="module" src="js/seo-pages/guide-bootstrap.js?v=1cee2e5"></script>
+</head>
+<body>
+    <div class="seo-static-page">
+        <header class="seo-static-header">
+            <p class="seo-static-brand"><a href="index.html" data-i18n="app_header">Delta Green Character Creator</a></p>
+            <div class="seo-static-header-controls">
+                <button id="theme-toggle" type="button" aria-label="Toggle theme"><span id="theme-icon" aria-hidden="true">🌙</span></button>
+                <select id="language-select" aria-label="Language selection"></select>
+            </div>
+        </header>
+        <nav class="seo-static-nav" aria-label="Site sections">
+            <a href="index.html" data-i18n="seo_pages_nav_home">Creator</a>
+            <a href="guide.html" aria-current="page" data-i18n="seo_pages_nav_guide">Creation guide</a>
+            <a href="character-sheet.html" data-i18n="seo_pages_nav_sheet">Character sheet</a>
+            <a href="ideas.html" data-i18n="seo_pages_nav_ideas">Character ideas</a>
+        </nav>
+        <main class="seo-static-main">
+            <h1 data-i18n="guide_h1">How to Create a Delta Green Character</h1>
+            <p class="seo-static-lead" data-i18n="guide_lead">This guide explains Delta Green RPG character creation from first concept to a playable agent dossier—the same workflow as our free online character creator and fillable character sheet.</p>
+
+            <h2 data-i18n="guide_section_steps_title">Character creation steps</h2>
+            <ol class="seo-static-steps">
+                <li><strong data-i18n="seo_howto_step1_name">Choose profession and skills</strong> <span data-i18n="seo_howto_step1_text">Select a standard or custom profession and allocate skill points.</span></li>
+                <li><strong data-i18n="seo_howto_step2_name">Define statistics</strong> <span data-i18n="seo_howto_step2_text">Assign or roll STR, CON, DEX, INT, POW, and CHA.</span></li>
+                <li><strong data-i18n="seo_howto_step3_name">Calculate derived attributes</strong> <span data-i18n="seo_howto_step3_text">Confirm HP, WP, SAN, and other derived values from your stats.</span></li>
+                <li><strong data-i18n="seo_howto_step4_name">Set bonds and motivations</strong> <span data-i18n="seo_howto_step4_text">Describe personal connections and what drives your agent.</span></li>
+                <li><strong data-i18n="seo_howto_step5_name">Add personal details</strong> <span data-i18n="seo_howto_step5_text">Enter name, appearance, background, and equipment.</span></li>
+                <li><strong data-i18n="seo_howto_step6_name">Save, print, or share</strong> <span data-i18n="seo_howto_step6_text">Review the summary, save locally, print the sheet, or share a link.</span></li>
+            </ol>
+
+            <h2 data-i18n="guide_section_tips_title">Tips for a strong agent</h2>
+            <ul class="seo-static-tips">
+                <li data-i18n="guide_tip_1">Choose a profession that fits the operation—combat skills are not always the answer in Delta Green.</li>
+                <li data-i18n="guide_tip_2">Bonds and motivations drive roleplay; write them as story hooks, not just numbers.</li>
+                <li data-i18n="guide_tip_3">Leave room on the sheet for notes, gear, and Adaptations after the scenario starts.</li>
+            </ul>
+
+            <div class="seo-static-cta-block">
+                <h2 data-i18n="guide_section_start_title">Build your agent online</h2>
+                <p data-i18n="guide_section_start_text">Use the free character creator to follow these steps automatically—roll skills in the sheet, save locally, print, or share a link with your Handler.</p>
+                <a class="seo-static-cta" href="index.html" data-i18n="guide_cta">Open the character creator</a>
+            </div>
+        </main>
+        <footer class="seo-static-footer">
+            <p>
+                <a href="llms.txt" rel="alternate">LLM documentation</a>
+                · <a href="llms-full.txt" rel="alternate">Full reference</a>
+            </p>
+            <p data-i18n="footer_text">Published by arrangement with the Delta Green Partnership.</p>
+        </footer>
+    </div>
+    <noscript>
+        <p>Enable JavaScript for full translations (English, Deutsch, Español, Français, Русский). <a href="index.html">Open the character creator</a>.</p>
+    </noscript>
+</body>
+</html>

@@ -24,7 +24,7 @@ header::before {
     pointer-events: none;
 }
 
-header h1 {
+header .site-brand {
     flex: 1 1 auto;
     min-width: 0;
     margin: 0;
@@ -39,6 +39,7 @@ header h1 {
     line-height: 1.2;
     position: relative;
     z-index: 1;
+    font-weight: bold;
 }
 
 #header-controls {
@@ -123,7 +124,7 @@ header h1 {
         gap: var(--spacing-sm);
     }
 
-    header h1 {
+    header .site-brand {
         font-size: var(--font-size-xxl);
         letter-spacing: 0.5px;
     }
@@ -135,7 +136,7 @@ header h1 {
 }
 
 @media (max-width: 400px) {
-    header h1 {
+    header .site-brand {
         font-size: var(--font-size-lg);
     }
 

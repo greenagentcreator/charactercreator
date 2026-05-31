@@ -1,16 +1,16 @@
 // Step 0: Introduction
 
-import { resetCharacter } from '../model/character.js?v=27a0927';
-import { getAllCharacters, deleteCharacter, updateCharacterName, importCharacter } from '../utils/storage.js?v=27a0927';
-import { getUnfinishedDrafts } from '../utils/unfinished-drafts.js?v=27a0927';
-import { t, translateAllElements, getCurrentLanguage } from '../i18n/i18n.js?v=27a0927';
-import { languageLabels, SUPPORTED_LIBRARY_LANGUAGES } from '../i18n/translations.js?v=27a0927';
-import { validateImportedCharacter } from '../utils/validation.js?v=27a0927';
-import { getPublicCharacters, importCharacterFromDatabase, reportCharacter, getPublicCharacterById } from '../utils/database.js?v=27a0927';
-import { shouldShowBanner, dismissBanner } from '../utils/banner.js?v=27a0927';
-import { resolveProfessionMetadata, getStandardProfessionFilters } from '../utils/profession-filter.js?v=27a0927';
-import { showModal, closeModal, showConfirmDialog, showPromptDialog, showAlertDialog } from '../utils/modal.js?v=27a0927';
-import { escapeHtml, escapeAttr } from '../utils/escape-html.js?v=27a0927';
+import { resetCharacter } from '../model/character.js?v=1cee2e5';
+import { getAllCharacters, deleteCharacter, updateCharacterName, importCharacter } from '../utils/storage.js?v=1cee2e5';
+import { getUnfinishedDrafts } from '../utils/unfinished-drafts.js?v=1cee2e5';
+import { t, translateAllElements, getCurrentLanguage } from '../i18n/i18n.js?v=1cee2e5';
+import { languageLabels, SUPPORTED_LIBRARY_LANGUAGES } from '../i18n/translations.js?v=1cee2e5';
+import { validateImportedCharacter } from '../utils/validation.js?v=1cee2e5';
+import { getPublicCharacters, importCharacterFromDatabase, reportCharacter, getPublicCharacterById } from '../utils/database.js?v=1cee2e5';
+import { shouldShowBanner, dismissBanner } from '../utils/banner.js?v=1cee2e5';
+import { resolveProfessionMetadata, getStandardProfessionFilters } from '../utils/profession-filter.js?v=1cee2e5';
+import { showModal, closeModal, showConfirmDialog, showPromptDialog, showAlertDialog } from '../utils/modal.js?v=1cee2e5';
+import { escapeHtml, escapeAttr } from '../utils/escape-html.js?v=1cee2e5';
 
 const DEFAULT_PROFESSION_FILTER = 'all';
 const DEFAULT_LANGUAGE_FILTER = 'all';
@@ -167,21 +167,12 @@ function getOwnCharacterCardMarkup(char) {
         </div>`;
 }
 
-function renderHeroSection(hasSavedCharacters) {
-    const compactClass = hasSavedCharacters ? ' home-hero--compact' : '';
+function renderHomeToolbar() {
     return `
-            <header class="home-hero${compactClass}">
-                <div class="home-hero-inner">
-                    <p class="home-hero-eyebrow" data-i18n="home_hero_eyebrow"></p>
-                    <h2 class="home-hero-title" data-i18n="home_hero_title"></h2>
-                    <p class="home-hero-tagline" data-i18n="home_hero_tagline"></p>
-                    <button type="button" id="btn-create-character" class="action-button btn-create-character-large home-hero-cta" data-i18n="create_character" aria-label="${t('create_character')}"></button>
-                    <div class="home-hero-secondary">
-                        <button type="button" id="btn-import-json" class="home-import-link" data-i18n="import_character" aria-label="${t('aria_import_character')}"></button>
-                        <input type="file" id="file-input-json" accept=".json" hidden>
-                    </div>
-                </div>
-            </header>
+            <div class="home-toolbar">
+                <button type="button" id="btn-import-json" class="home-import-link" data-i18n="import_character" aria-label="${t('aria_import_character')}"></button>
+                <input type="file" id="file-input-json" accept=".json" hidden>
+            </div>
             <details class="home-accordion home-how-it-works">
                 <summary class="home-accordion-trigger" data-i18n="home_how_it_works"></summary>
                 <div class="home-accordion-panel">
@@ -460,8 +451,6 @@ export async function renderIntro() {
         resetCharacter();
         const allCharacters = getAllCharacters();
         const unfinishedDrafts = getUnfinishedDrafts();
-        const hasSavedCharacters = allCharacters.length > 0 || unfinishedDrafts.length > 0;
-
         if (window.app?.isLoadingSharedCharacter?.()) {
             return '';
         }
@@ -470,7 +459,7 @@ export async function renderIntro() {
 
         return `
         <div class="step step-home" id="step-intro">
-            ${renderHeroSection(hasSavedCharacters)}
+            ${renderHomeToolbar()}
             ${renderMineSectionMarkup(allCharacters, unfinishedDrafts)}
             ${renderLibrarySectionMarkup()}
             ${showBanner ? `<div class="home-promo-wrap">${renderPromoBannerMarkup(true)}</div>` : ''}
@@ -479,7 +468,7 @@ export async function renderIntro() {
         console.error('Error rendering intro:', error);
         return `
             <div class="step step-home" id="step-intro">
-                ${renderHeroSection(false)}
+                ${renderHomeToolbar()}
             </div>`;
     }
 }
@@ -887,16 +876,6 @@ export function attachIntroListeners() {
                 setTimeout(() => {
                     banner.classList.add('hidden');
                 }, 300);
-            }
-        });
-    }
-    
-    // Create character button
-    const btnCreate = document.getElementById('btn-create-character');
-    if (btnCreate) {
-        btnCreate.addEventListener('click', () => {
-            if (window.app && window.app.handleNextStep) {
-                window.app.handleNextStep();
             }
         });
     }

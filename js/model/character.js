@@ -1,7 +1,7 @@
 // Character model and related functions for Delta Green Character Creator
 
-import { ALL_SKILLS } from '../config/skills.js?v=27a0927';
-import { STAT_KEYS } from '../config/constants.js?v=27a0927';
+import { ALL_SKILLS } from '../config/skills.js?v=1cee2e5';
+import { STAT_KEYS } from '../config/constants.js?v=1cee2e5';
 
 // Character data structure
 let character = {};
