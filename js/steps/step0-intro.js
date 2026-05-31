@@ -167,16 +167,6 @@ function getOwnCharacterCardMarkup(char) {
         </div>`;
 }
 
-function renderHomeToolbar() {
-    return `
-            <details class="home-accordion home-how-it-works">
-                <summary class="home-accordion-trigger" data-i18n="home_how_it_works"></summary>
-                <div class="home-accordion-panel">
-                    <p data-i18n="intro_quote_dg"></p>
-                </div>
-            </details>`;
-}
-
 function renderMineSectionMarkup(allCharacters, unfinishedDrafts = []) {
     const hasCompleted = allCharacters.length > 0;
     const hasUnfinished = unfinishedDrafts.length > 0;
@@ -455,7 +445,6 @@ export async function renderIntro() {
 
         return `
         <div class="step step-home" id="step-intro">
-            ${renderHomeToolbar()}
             ${renderMineSectionMarkup(allCharacters, unfinishedDrafts)}
             ${renderLibrarySectionMarkup()}
             ${showBanner ? `<div class="home-promo-wrap">${renderPromoBannerMarkup(true)}</div>` : ''}
@@ -464,7 +453,6 @@ export async function renderIntro() {
         console.error('Error rendering intro:', error);
         return `
             <div class="step step-home" id="step-intro">
-                ${renderHomeToolbar()}
             </div>`;
     }
 }

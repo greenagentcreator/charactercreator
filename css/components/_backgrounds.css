@@ -34,11 +34,13 @@ body {
 }
 
 /* Paper Texture Overlay (optional, subtle) */
-#app-container {
+#app-container,
+.seo-static-page {
     position: relative;
 }
 
-#app-container::before {
+#app-container::before,
+.seo-static-page::before {
     content: "";
     position: absolute;
     top: 0;
@@ -58,7 +60,8 @@ body {
     z-index: 0;
 }
 
-[data-theme="dark"] #app-container::before {
+[data-theme="dark"] #app-container::before,
+[data-theme="dark"] .seo-static-page::before {
     background-image: 
         repeating-linear-gradient(
             0deg,
@@ -70,7 +73,8 @@ body {
 }
 
 /* Ensure content is above background */
-#app-container > * {
+#app-container > *,
+.seo-static-page > * {
     position: relative;
     z-index: 1;
 }
@@ -105,7 +109,8 @@ body {
 }
 
 /* Subtle Noise/Grain */
-#app-container::after {
+#app-container::after,
+.seo-static-page::after {
     content: "";
     position: absolute;
     top: 0;
@@ -118,7 +123,8 @@ body {
     z-index: 0;
 }
 
-[data-theme="dark"] #app-container::after {
+[data-theme="dark"] #app-container::after,
+[data-theme="dark"] .seo-static-page::after {
     opacity: 0.6;
 }
 

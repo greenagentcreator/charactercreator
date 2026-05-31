@@ -63,13 +63,21 @@
     width: 100%;
     max-width: 28rem;
     margin: 0 auto;
+    text-align: center;
+}
+
+.seo-landing__hero-inner > *:not(.sr-only) {
+    align-self: center;
+    text-align: center;
 }
 
 .seo-landing__eyebrow,
 .seo-landing__hero-title,
 .seo-landing__tagline {
     width: 100%;
-    margin: 0;
+    max-width: 28rem;
+    margin: 0 auto;
+    text-align: center;
 }
 
 .seo-landing__eyebrow {
@@ -100,7 +108,8 @@
     display: block;
     width: 100%;
     max-width: 20rem;
-    margin: 0;
+    margin: 0 auto;
+    text-align: center;
 }
 
 .seo-landing__hero-secondary {
@@ -110,13 +119,17 @@
     justify-content: center;
     gap: var(--spacing-xs);
     width: 100%;
-    margin: 0;
+    max-width: 20rem;
+    margin: 0 auto;
+    text-align: center;
 }
 
 .seo-landing__hero-secondary .home-import-link {
     display: inline-block;
     width: auto;
-    margin: 0;
+    max-width: 100%;
+    margin: 0 auto;
+    text-align: center;
 }
 
 /* Accordion + extras below hero */
