@@ -222,49 +222,6 @@
     <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
 </head>
 <body class="app-is-loading">
-    <section id="seo-landing" class="seo-landing" aria-labelledby="seo-hero-title">
-        <h1 id="seo-hero-title" class="seo-landing__title" data-i18n="seo_hero_title">Delta Green Character Creator &amp; Online Character Sheet</h1>
-        <p class="seo-landing__lead" data-i18n="seo_hero_lead">Free Delta Green character creator and character builder in your browser. Create agents step by step, use a fillable online sheet with skill rolls, then save, print, or share your dossier—no account, no download, no ads.</p>
-        <ul class="seo-landing__features">
-            <li data-i18n="seo_hero_feature_1">Step-by-step RPG character creation for Delta Green agents</li>
-            <li data-i18n="seo_hero_feature_2">Fillable online character sheet with in-sheet dice rolls</li>
-            <li data-i18n="seo_hero_feature_3">Save locally, export JSON, and share character links</li>
-            <li data-i18n="seo_hero_feature_4">Print-ready layout for tabletop sessions</li>
-            <li data-i18n="seo_hero_feature_5">Browse community agents for character ideas (optional)</li>
-        </ul>
-        <div class="seo-landing__actions">
-            <button type="button" id="seo-hero-cta" class="seo-landing__cta" data-i18n="seo_hero_cta">Start creating your agent</button>
-            <a href="#home-section-library" id="seo-hero-secondary" class="seo-landing__secondary" data-i18n="seo_hero_secondary">Browse community character ideas</a>
-        </div>
-        <nav class="seo-landing__related" aria-label="Resources">
-            <a href="guide.html" data-i18n="seo_pages_nav_guide">Creation guide</a>
-            <a href="character-sheet.html" data-i18n="seo_pages_nav_sheet">Character sheet</a>
-            <a href="ideas.html" data-i18n="seo_pages_nav_ideas">Character ideas</a>
-        </nav>
-        <div class="seo-landing__faq">
-            <h2 class="seo-landing__subsection-title" data-i18n="seo_hero_faq_heading">Frequently asked questions</h2>
-            <details>
-                <summary data-i18n="seo_faq_q1">How do I make a Delta Green character?</summary>
-                <p data-i18n="seo_faq_a1">Use this free character creator: pick a profession and skills, roll or assign statistics, set bonds and motivations, add personal details, then save or print your agent dossier. Click Start creating your agent to begin.</p>
-            </details>
-            <details>
-                <summary data-i18n="seo_faq_q2">Is this a fillable online character sheet?</summary>
-                <p data-i18n="seo_faq_a2">Yes. After creation you get an editable online sheet with skill rolls, notes, and items. You can update it anytime, export JSON, or print a clean layout for play.</p>
-            </details>
-            <details>
-                <summary data-i18n="seo_faq_q3">Do I need an account or install anything?</summary>
-                <p data-i18n="seo_faq_a3">No. The tool runs in your browser. Characters save on your device unless you optionally share to the community library.</p>
-            </details>
-            <details>
-                <summary data-i18n="seo_faq_q4">Can I use this as a character generator or builder?</summary>
-                <p data-i18n="seo_faq_a4">Yes—it works as a Delta Green character generator and builder with official-style professions, custom professions, and a guided wizard for new agents.</p>
-            </details>
-            <details>
-                <summary data-i18n="seo_faq_q5">Where can I find Delta Green character ideas?</summary>
-                <p data-i18n="seo_faq_a5">Scroll to the community library on the home screen to browse shared agents, or start the wizard and use bonds, motivations, and professions as hooks for your own concept.</p>
-            </details>
-        </div>
-    </section>
     <div id="app-loading-screen" class="app-loading-screen" role="status" aria-live="polite" aria-busy="true" aria-label="Loading application">
         <div class="app-loading-card">
             <div class="skeleton-header">
@@ -320,6 +277,41 @@
             </div>
         </header>
 
+        <section id="seo-landing" class="seo-landing" aria-labelledby="seo-hero-title">
+            <header class="seo-landing__hero">
+                <div class="seo-landing__hero-inner">
+                    <p class="seo-landing__eyebrow" data-i18n="home_hero_eyebrow">Delta Green RPG</p>
+                    <h1 id="seo-hero-title" class="seo-landing__hero-title" data-i18n="home_hero_title">Delta Green Agent Creator</h1>
+                    <p class="seo-landing__tagline" data-i18n="home_hero_tagline">Free · No login · Create, save, and print agent dossiers</p>
+                    <p class="sr-only" data-i18n="seo_hero_title">Delta Green Character Creator &amp; Online Character Sheet</p>
+                    <button type="button" id="seo-hero-cta" class="action-button btn-create-character-large seo-landing__hero-cta" data-i18n="create_character">Create Character</button>
+                    <div class="seo-landing__hero-secondary">
+                        <button type="button" id="btn-import-json" class="home-import-link" data-i18n="import_character">Import Character</button>
+                        <input type="file" id="file-input-json" accept=".json" hidden>
+                        <a href="#home-section-library" id="seo-hero-secondary" class="home-import-link" data-i18n="seo_hero_secondary">Browse community character ideas</a>
+                    </div>
+                </div>
+            </header>
+            <details class="home-accordion seo-landing__more">
+                <summary class="home-accordion-trigger" data-i18n="seo_landing_more_title">About this creator</summary>
+                <div class="home-accordion-panel">
+                    <p data-i18n="seo_hero_lead">Free Delta Green character creator and character builder in your browser. Create agents step by step, use a fillable online sheet with skill rolls, then save, print, or share your dossier—no account, no download, no ads.</p>
+                    <ul class="seo-landing__features">
+                        <li data-i18n="seo_hero_feature_1">Step-by-step RPG character creation for Delta Green agents</li>
+                        <li data-i18n="seo_hero_feature_2">Fillable online character sheet with in-sheet dice rolls</li>
+                        <li data-i18n="seo_hero_feature_3">Save locally, export JSON, and share character links</li>
+                        <li data-i18n="seo_hero_feature_4">Print-ready layout for tabletop sessions</li>
+                        <li data-i18n="seo_hero_feature_5">Browse community agents for character ideas (optional)</li>
+                    </ul>
+                </div>
+            </details>
+            <nav class="seo-landing__related" aria-label="Resources">
+                <a href="guide.html" data-i18n="seo_pages_nav_guide">Creation guide</a>
+                <a href="character-sheet.html" data-i18n="seo_pages_nav_sheet">Character sheet</a>
+                <a href="ideas.html" data-i18n="seo_pages_nav_ideas">Character ideas</a>
+            </nav>
+        </section>
+
         <main id="main-content" role="main" aria-label="Character creation form">
             <div id="progress-bar-container" aria-label="Progress indicator"></div>
             <div id="step-content-container" role="region" aria-live="polite" aria-atomic="true" aria-label="Current step content">
@@ -343,6 +335,29 @@
                 <span aria-hidden="true"> · </span>
                 <a href="llms-full.txt" class="footer-link" rel="alternate">Full reference</a>
             </p>
+            <div class="footer-faq">
+                <h2 class="footer-faq__heading" data-i18n="seo_hero_faq_heading">Frequently asked questions</h2>
+                <details class="footer-faq__item">
+                    <summary data-i18n="seo_faq_q1">How do I make a Delta Green character?</summary>
+                    <p data-i18n="seo_faq_a1">Use this free character creator: pick a profession and skills, roll or assign statistics, set bonds and motivations, add personal details, then save or print your agent dossier. Click Start creating your agent to begin.</p>
+                </details>
+                <details class="footer-faq__item">
+                    <summary data-i18n="seo_faq_q2">Is this a fillable online character sheet?</summary>
+                    <p data-i18n="seo_faq_a2">Yes. After creation you get an editable online sheet with skill rolls, notes, and items. You can update it anytime, export JSON, or print a clean layout for play.</p>
+                </details>
+                <details class="footer-faq__item">
+                    <summary data-i18n="seo_faq_q3">Do I need an account or install anything?</summary>
+                    <p data-i18n="seo_faq_a3">No. The tool runs in your browser. Characters save on your device unless you optionally share to the community library.</p>
+                </details>
+                <details class="footer-faq__item">
+                    <summary data-i18n="seo_faq_q4">Can I use this as a character generator or builder?</summary>
+                    <p data-i18n="seo_faq_a4">Yes—it works as a Delta Green character generator and builder with official-style professions, custom professions, and a guided wizard for new agents.</p>
+                </details>
+                <details class="footer-faq__item">
+                    <summary data-i18n="seo_faq_q5">Where can I find Delta Green character ideas?</summary>
+                    <p data-i18n="seo_faq_a5">Scroll to the community library on the home screen to browse shared agents, or start the wizard and use bonds, motivations, and professions as hooks for your own concept.</p>
+                </details>
+            </div>
             <p data-i18n="footer_text">© DG Character Creator - Based on Delta Green</p>
         </footer>
     </div>

@@ -22,6 +22,7 @@ export const fr = {
     "seo_hero_feature_4": "Mise en page prête à imprimer pour les parties",
     "seo_hero_feature_5": "Parcourir les agents de la communauté pour des idées (optionnel)",
     "seo_hero_cta": "Commencer à créer votre agent",
+    "seo_landing_more_title": "À propos de ce créateur",
     "seo_hero_secondary": "Voir les idées de personnages de la communauté",
     "seo_hero_faq_heading": "Questions fréquentes",
     "seo_faq_q1": "Comment créer un personnage Delta Green ?",

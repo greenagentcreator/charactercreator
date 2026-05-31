@@ -22,6 +22,7 @@ export const ru = {
     "seo_hero_feature_4": "Вёрстка для печати на игровых сессиях",
     "seo_hero_feature_5": "Просмотр агентов сообщества для идей персонажей (необязательно)",
     "seo_hero_cta": "Начать создание агента",
+    "seo_landing_more_title": "О конструкторе",
     "seo_hero_secondary": "Идеи персонажей от сообщества",
     "seo_hero_faq_heading": "Частые вопросы",
     "seo_faq_q1": "Как создать персонажа Delta Green?",

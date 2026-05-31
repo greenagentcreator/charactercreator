@@ -22,6 +22,7 @@ export const es = {
     "seo_hero_feature_4": "Diseño listo para imprimir en partidas de mesa",
     "seo_hero_feature_5": "Explora agentes de la comunidad para ideas de personajes (opcional)",
     "seo_hero_cta": "Empezar a crear tu agente",
+    "seo_landing_more_title": "Sobre este creador",
     "seo_hero_secondary": "Ver ideas de personajes de la comunidad",
     "seo_hero_faq_heading": "Preguntas frecuentes",
     "seo_faq_q1": "¿Cómo creo un personaje de Delta Green?",

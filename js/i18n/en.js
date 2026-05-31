@@ -22,6 +22,7 @@ export const en = {
     "seo_hero_feature_4": "Print-ready layout for tabletop sessions",
     "seo_hero_feature_5": "Browse community agents for character ideas (optional)",
     "seo_hero_cta": "Start creating your agent",
+    "seo_landing_more_title": "About this creator",
     "seo_hero_secondary": "Browse community character ideas",
     "seo_hero_faq_heading": "Frequently asked questions",
     "seo_faq_q1": "How do I make a Delta Green character?",

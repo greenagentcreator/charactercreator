@@ -20,6 +20,7 @@ export const de = {
     "seo_hero_feature_4": "Druckfertiges Layout für Spielrunden",
     "seo_hero_feature_5": "Community-Agenten als Charakterideen durchstöbern (optional)",
     "seo_hero_cta": "Agenten-Erstellung starten",
+    "seo_landing_more_title": "Über diesen Ersteller",
     "seo_hero_secondary": "Community-Charakterideen ansehen",
     "seo_hero_faq_heading": "Häufige Fragen",
     "seo_faq_q1": "Wie erstelle ich einen Delta-Green-Charakter?",

@@ -169,10 +169,6 @@ function getOwnCharacterCardMarkup(char) {
 
 function renderHomeToolbar() {
     return `
-            <div class="home-toolbar">
-                <button type="button" id="btn-import-json" class="home-import-link" data-i18n="import_character" aria-label="${t('aria_import_character')}"></button>
-                <input type="file" id="file-input-json" accept=".json" hidden>
-            </div>
             <details class="home-accordion home-how-it-works">
                 <summary class="home-accordion-trigger" data-i18n="home_how_it_works"></summary>
                 <div class="home-accordion-panel">
