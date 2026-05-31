@@ -1,7 +1,7 @@
 // Unfinished character creation drafts (persist across browser sessions)
 
-import { PROFESSIONS } from '../config/professions.js?v=addcaa9';
-import { t } from '../i18n/i18n.js?v=addcaa9';
+import { PROFESSIONS } from '../config/professions.js?v=3e17b91';
+import { t } from '../i18n/i18n.js?v=3e17b91';
 
 const DRAFTS_KEY = 'dgcc_unfinished_drafts';
 const ACTIVE_DRAFT_KEY = 'dgcc_active_draft_id';
