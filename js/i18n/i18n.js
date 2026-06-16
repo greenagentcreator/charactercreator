@@ -1,7 +1,7 @@
 // i18n (Internationalization) system for Delta Green Character Creator
 
-import { i18nData, languageLabels } from './translations.js?v=3af973b';
-import { syncRussianFontsWithLanguage } from '../utils/locale-fonts.js?v=3af973b';
+import { i18nData, languageLabels } from './translations.js?v=09f6897';
+import { syncRussianFontsWithLanguage } from '../utils/locale-fonts.js?v=09f6897';
 
 const translations = {};
 let currentLanguage = 'en';
@@ -117,7 +117,7 @@ export function setLanguage(lang) {
         window.app.syncLibraryLanguageFilterWithUi(lang);
     }
 
-    import('../utils/seo.js?v=3af973b').then(({ updateSeoMeta }) => {
+    import('../utils/seo.js?v=09f6897').then(({ updateSeoMeta }) => {
         updateSeoMeta(lang);
     }).catch(() => {});
 
@@ -130,7 +130,7 @@ export function setLanguage(lang) {
             window.app.renderCurrentStep(true);
         }
     }
-    import('../utils/news.js?v=3af973b').then(({ refreshNewsButton }) => {
+    import('../utils/news.js?v=09f6897').then(({ refreshNewsButton }) => {
         refreshNewsButton?.();
     }).catch(() => {});
 }
