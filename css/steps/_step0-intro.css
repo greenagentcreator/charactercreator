@@ -13,11 +13,6 @@
     font-size: var(--font-size-lg);
 }
 
-.home-promo-wrap {
-    margin-top: var(--spacing-xxl);
-    padding-top: var(--spacing-lg);
-}
-
 .home-import-link {
     background: none;
     border: none;
@@ -483,10 +478,6 @@
     margin-top: var(--spacing-xxl);
     padding-top: var(--spacing-xl);
     border-top: 2px solid var(--color-border-light);
-}
-
-.step-home .promo-banner {
-    margin-bottom: var(--spacing-lg);
 }
 
 .character-list-section {

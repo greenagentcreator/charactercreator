@@ -7,7 +7,6 @@ import { t, translateAllElements, getCurrentLanguage } from '../i18n/i18n.js?v=3
 import { languageLabels, SUPPORTED_LIBRARY_LANGUAGES } from '../i18n/translations.js?v=3af973b';
 import { validateImportedCharacter } from '../utils/validation.js?v=3af973b';
 import { getPublicCharacters, importCharacterFromDatabase, reportCharacter, getPublicCharacterById } from '../utils/database.js?v=3af973b';
-import { shouldShowBanner, dismissBanner, BANNER_KEYS } from '../utils/banner.js?v=3af973b';
 import { resolveProfessionMetadata, getStandardProfessionFilters } from '../utils/profession-filter.js?v=3af973b';
 import { showModal, closeModal, showConfirmDialog, showPromptDialog, showAlertDialog } from '../utils/modal.js?v=3af973b';
 import { escapeHtml, escapeAttr } from '../utils/escape-html.js?v=3af973b';
@@ -39,24 +38,6 @@ function getProfessionDisplayName(professionValue) {
         return t(professionValue);
     }
     return professionValue;
-}
-
-function renderPromoBannerMarkup(showBanner) {
-    if (!showBanner) {
-        return '';
-    }
-    return `
-            <div class="promo-banner" id="writersalley-banner">
-                <div class="promo-banner-icon">✍️</div>
-                <div class="promo-banner-content">
-                    <h3 class="promo-banner-headline" data-i18n="banner_headline">Are you a writer?</h3>
-                    <p class="promo-banner-text" data-i18n="banner_text">Check out my new app <a href="https://writersalley.com" target="_blank" rel="noopener noreferrer" class="promo-banner-link">WritersAlley.com</a> — a goal-based writing tracker that helps you stay on target.</p>
-                </div>
-                <div class="promo-banner-actions">
-                    <a href="https://writersalley.com" target="_blank" rel="noopener noreferrer" class="promo-banner-cta" data-i18n="banner_cta">Visit WritersAlley.com</a>
-                    <button class="promo-banner-close" id="banner-close-btn" aria-label="" title="">×</button>
-                </div>
-            </div>`;
 }
 
 const CREATION_STEP_NAME_KEYS = [
@@ -441,13 +422,10 @@ export async function renderIntro() {
             return '';
         }
 
-        const showBanner = shouldShowBanner(BANNER_KEYS.WRITERS_ALLEY);
-
         return `
         <div class="step step-home" id="step-intro">
             ${renderMineSectionMarkup(allCharacters, unfinishedDrafts)}
             ${renderLibrarySectionMarkup()}
-            ${showBanner ? `<div class="home-promo-wrap">${renderPromoBannerMarkup(true)}</div>` : ''}
         </div>`;
     } catch (error) {
         console.error('Error rendering intro:', error);
@@ -842,28 +820,6 @@ async function handleLoadMoreCharacters() {
 }
 
 export function attachIntroListeners() {
-    // Banner dismissal
-    const bannerCloseBtn = document.getElementById('banner-close-btn');
-    if (bannerCloseBtn) {
-        // Set translated aria-label and title
-        const dismissText = t('banner_dismiss');
-        bannerCloseBtn.setAttribute('aria-label', dismissText);
-        bannerCloseBtn.setAttribute('title', dismissText);
-        
-        bannerCloseBtn.addEventListener('click', () => {
-            const banner = document.getElementById('writersalley-banner');
-            if (banner) {
-                dismissBanner(BANNER_KEYS.WRITERS_ALLEY);
-                banner.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                banner.style.opacity = '0';
-                banner.style.transform = 'translateY(-10px)';
-                setTimeout(() => {
-                    banner.classList.add('hidden');
-                }, 300);
-            }
-        });
-    }
-    
     // Import JSON button
     const btnImport = document.getElementById('btn-import-json');
     const fileInput = document.getElementById('file-input-json');

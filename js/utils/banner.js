@@ -1,7 +1,6 @@
 // Banner dismissal utility with 7-day/30-day logic
 
 export const BANNER_KEYS = {
-    WRITERS_ALLEY: 'writersalley_banner_dismissed',
     ADVENTURE_ENGINE: 'adventureengine_banner_dismissed',
 };
 
@@ -13,7 +12,7 @@ const SECOND_DISMISSAL_DURATION = 30 * 24 * 60 * 60 * 1000; // 30 days in millis
  * @param {string} storageKey localStorage key for dismissal state
  * @returns {boolean} True if banner should be shown
  */
-export function shouldShowBanner(storageKey = BANNER_KEYS.WRITERS_ALLEY) {
+export function shouldShowBanner(storageKey = BANNER_KEYS.ADVENTURE_ENGINE) {
     const dismissedData = localStorage.getItem(storageKey);
 
     if (!dismissedData) {
@@ -45,7 +44,7 @@ export function shouldShowBanner(storageKey = BANNER_KEYS.WRITERS_ALLEY) {
  * Dismiss the banner and store dismissal info
  * @param {string} storageKey localStorage key for dismissal state
  */
-export function dismissBanner(storageKey = BANNER_KEYS.WRITERS_ALLEY) {
+export function dismissBanner(storageKey = BANNER_KEYS.ADVENTURE_ENGINE) {
     const dismissedData = localStorage.getItem(storageKey);
     let count = 1;
 
@@ -71,7 +70,7 @@ export function dismissBanner(storageKey = BANNER_KEYS.WRITERS_ALLEY) {
  * @param {string} storageKey localStorage key for dismissal state
  * @returns {number|null} Number of days, or null if banner should be shown
  */
-export function getDaysUntilNextShow(storageKey = BANNER_KEYS.WRITERS_ALLEY) {
+export function getDaysUntilNextShow(storageKey = BANNER_KEYS.ADVENTURE_ENGINE) {
     if (shouldShowBanner(storageKey)) {
         return null;
     }
@@ -104,7 +103,7 @@ export function getDaysUntilNextShow(storageKey = BANNER_KEYS.WRITERS_ALLEY) {
 function animateBannerDismiss(banner) {
     banner.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
     banner.style.opacity = '0';
-    banner.style.transform = 'translateY(-6px)';
+    banner.style.transform = 'translateY(-10px)';
     setTimeout(() => {
         banner.classList.add('hidden');
     }, 300);

@@ -1,13 +1,15 @@
-/* --- Promo Banner - WritersAlley.com --- */
+/* --- Promo Banner — Delta Green horror theme --- */
 .promo-banner {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%);
-    border: 1px solid rgba(59, 130, 246, 0.3);
-    border-left: 4px solid #3b82f6;
+    width: 100%;
+    max-width: var(--container-max-width);
+    background: linear-gradient(135deg, rgba(26, 48, 9, 0.1) 0%, rgba(20, 20, 18, 0.05) 100%);
+    border: 1px solid rgba(45, 80, 22, 0.35);
+    border-left: 4px solid var(--color-classified);
     border-radius: 8px;
     padding: var(--spacing-md) var(--spacing-lg);
     margin-bottom: var(--spacing-xl);
     position: relative;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 2px 8px rgba(45, 80, 22, 0.12);
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
@@ -15,25 +17,29 @@
 }
 
 [data-theme="dark"] .promo-banner {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.1) 100%);
-    border-color: rgba(96, 165, 250, 0.4);
-    border-left-color: #60a5fa;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+    background: linear-gradient(135deg, rgba(10, 20, 10, 0.9) 0%, rgba(18, 22, 18, 0.75) 100%);
+    border-color: rgba(45, 138, 45, 0.3);
+    border-left-color: var(--color-classified);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45), 0 0 24px rgba(45, 138, 45, 0.06);
 }
 
 .promo-banner:hover {
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    box-shadow: 0 4px 14px rgba(45, 80, 22, 0.18);
     transform: translateY(-1px);
 }
 
 [data-theme="dark"] .promo-banner:hover {
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.55), 0 0 28px rgba(204, 0, 0, 0.08);
+}
+
+.promo-banner--top {
+    margin-bottom: var(--spacing-lg);
 }
 
 .promo-banner-icon {
     font-size: 2em;
     flex-shrink: 0;
-    opacity: 0.8;
+    opacity: 0.85;
 }
 
 .promo-banner-content {
@@ -60,23 +66,23 @@
 }
 
 .promo-banner-link {
-    color: #3b82f6;
+    color: var(--color-accent);
     text-decoration: none;
     font-weight: 600;
     transition: color var(--transition-fast);
 }
 
 [data-theme="dark"] .promo-banner-link {
-    color: #60a5fa;
+    color: var(--color-accent-light);
 }
 
 .promo-banner-link:hover {
-    color: #2563eb;
+    color: var(--color-accent-hover);
     text-decoration: underline;
 }
 
 [data-theme="dark"] .promo-banner-link:hover {
-    color: #93c5fd;
+    color: var(--color-accent);
 }
 
 .promo-banner-actions {
@@ -87,8 +93,8 @@
 }
 
 .promo-banner-cta {
-    background-color: #3b82f6;
-    color: #ffffff;
+    background-color: var(--color-button);
+    color: var(--color-button-text);
     border: none;
     border-radius: 6px;
     padding: var(--spacing-sm) var(--spacing-lg);
@@ -104,18 +110,21 @@
 }
 
 [data-theme="dark"] .promo-banner-cta {
-    background-color: #2563eb;
+    background-color: var(--color-accent-dark);
+    border: 1px solid rgba(45, 138, 45, 0.4);
 }
 
 .promo-banner-cta:hover {
-    background-color: #2563eb;
+    background-color: var(--color-button-hover);
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 8px rgba(45, 80, 22, 0.35);
+    color: var(--color-button-text);
 }
 
 [data-theme="dark"] .promo-banner-cta:hover {
-    background-color: #1d4ed8;
-    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4);
+    background-color: var(--color-accent);
+    box-shadow: 0 4px 12px rgba(45, 138, 45, 0.25);
+    color: var(--color-text-on-accent);
 }
 
 .promo-banner-cta:active {
@@ -150,27 +159,26 @@
     outline-offset: 2px;
 }
 
-/* Responsive: Stack on mobile */
 @media (max-width: 600px) {
     .promo-banner {
         flex-direction: column;
         align-items: flex-start;
         gap: var(--spacing-sm);
     }
-    
+
     .promo-banner-icon {
         font-size: 1.5em;
     }
-    
+
     .promo-banner-actions {
         width: 100%;
         justify-content: space-between;
     }
-    
+
     .promo-banner-cta {
         flex: 1;
     }
-    
+
     .promo-banner-close {
         position: absolute;
         top: var(--spacing-xs);
@@ -178,8 +186,6 @@
     }
 }
 
-/* Hidden state */
 .promo-banner.hidden {
     display: none;
 }
-
