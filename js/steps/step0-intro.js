@@ -1,16 +1,16 @@
 // Step 0: Introduction
 
-import { resetCharacter } from '../model/character.js?v=3e17b91';
-import { getAllCharacters, deleteCharacter, updateCharacterName, importCharacter } from '../utils/storage.js?v=3e17b91';
-import { getUnfinishedDrafts } from '../utils/unfinished-drafts.js?v=3e17b91';
-import { t, translateAllElements, getCurrentLanguage } from '../i18n/i18n.js?v=3e17b91';
-import { languageLabels, SUPPORTED_LIBRARY_LANGUAGES } from '../i18n/translations.js?v=3e17b91';
-import { validateImportedCharacter } from '../utils/validation.js?v=3e17b91';
-import { getPublicCharacters, importCharacterFromDatabase, reportCharacter, getPublicCharacterById } from '../utils/database.js?v=3e17b91';
-import { shouldShowBanner, dismissBanner, BANNER_KEYS } from '../utils/banner.js?v=3e17b91';
-import { resolveProfessionMetadata, getStandardProfessionFilters } from '../utils/profession-filter.js?v=3e17b91';
-import { showModal, closeModal, showConfirmDialog, showPromptDialog, showAlertDialog } from '../utils/modal.js?v=3e17b91';
-import { escapeHtml, escapeAttr } from '../utils/escape-html.js?v=3e17b91';
+import { resetCharacter } from '../model/character.js?v=3af973b';
+import { getAllCharacters, deleteCharacter, updateCharacterName, importCharacter } from '../utils/storage.js?v=3af973b';
+import { getUnfinishedDrafts } from '../utils/unfinished-drafts.js?v=3af973b';
+import { t, translateAllElements, getCurrentLanguage } from '../i18n/i18n.js?v=3af973b';
+import { languageLabels, SUPPORTED_LIBRARY_LANGUAGES } from '../i18n/translations.js?v=3af973b';
+import { validateImportedCharacter } from '../utils/validation.js?v=3af973b';
+import { getPublicCharacters, importCharacterFromDatabase, reportCharacter, getPublicCharacterById } from '../utils/database.js?v=3af973b';
+import { shouldShowBanner, dismissBanner, BANNER_KEYS } from '../utils/banner.js?v=3af973b';
+import { resolveProfessionMetadata, getStandardProfessionFilters } from '../utils/profession-filter.js?v=3af973b';
+import { showModal, closeModal, showConfirmDialog, showPromptDialog, showAlertDialog } from '../utils/modal.js?v=3af973b';
+import { escapeHtml, escapeAttr } from '../utils/escape-html.js?v=3af973b';
 
 const DEFAULT_PROFESSION_FILTER = 'all';
 const DEFAULT_LANGUAGE_FILTER = 'all';
