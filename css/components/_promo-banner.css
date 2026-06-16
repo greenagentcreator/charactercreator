@@ -2,7 +2,7 @@
 .promo-banner {
     width: 100%;
     max-width: var(--container-max-width);
-    background: linear-gradient(135deg, rgba(26, 48, 9, 0.1) 0%, rgba(20, 20, 18, 0.05) 100%);
+    background: #ffffff;
     border: 1px solid rgba(45, 80, 22, 0.35);
     border-left: 4px solid var(--color-classified);
     border-radius: 8px;
@@ -17,7 +17,7 @@
 }
 
 [data-theme="dark"] .promo-banner {
-    background: linear-gradient(135deg, rgba(10, 20, 10, 0.9) 0%, rgba(18, 22, 18, 0.75) 100%);
+    background: #ffffff;
     border-color: rgba(45, 138, 45, 0.3);
     border-left-color: var(--color-classified);
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45), 0 0 24px rgba(45, 138, 45, 0.06);
