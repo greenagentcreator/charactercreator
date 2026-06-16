@@ -1,6 +1,6 @@
 // Main entry point for Delta Green Character Creator
 
-import { initI18n, initLanguageSwitcher, setLanguage, getCurrentLanguage } from './i18n/i18n.js?v=3e17b91';
+import { initI18n, initLanguageSwitcher, setLanguage, getCurrentLanguage, t } from './i18n/i18n.js?v=3e17b91';
 import { initializeApp, processSharedCharacterLink } from 'app';
 import { getCharacterFromUrl } from './utils/sharing.js?v=3e17b91';
 import { initFirebase } from './utils/database.js?v=3e17b91';
@@ -8,6 +8,7 @@ import { initNews, refreshNewsButton } from './utils/news.js?v=3e17b91';
 import { initSeoMeta } from './utils/seo.js?v=3e17b91';
 import { initSeoLanding } from './utils/seo-landing.js?v=3e17b91';
 import { failAppLoading } from './utils/app-loading.js?v=3e17b91';
+import { initAdventureEngineTopBanner } from './utils/banner.js?v=3e17b91';
 
 // Theme management
 function initTheme() {
@@ -118,11 +119,14 @@ async function initializeApplication() {
         setLanguage(getCurrentLanguage());
         initSeoMeta();
         refreshNewsButton();
+
+        const updateTopBannerDismissLabel = initAdventureEngineTopBanner(() => t('ae_banner_dismiss'));
         
         const languageSelect = document.getElementById('language-select');
         if (languageSelect) {
             languageSelect.addEventListener('change', () => {
                 setLanguage(languageSelect.value);
+                updateTopBannerDismissLabel?.();
             });
         }
         

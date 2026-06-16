@@ -1,54 +1,54 @@
 // Banner dismissal utility with 7-day/30-day logic
 
-const BANNER_STORAGE_KEY = 'writersalley_banner_dismissed';
+export const BANNER_KEYS = {
+    WRITERS_ALLEY: 'writersalley_banner_dismissed',
+    ADVENTURE_ENGINE: 'adventureengine_banner_dismissed',
+};
+
 const FIRST_DISMISSAL_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 const SECOND_DISMISSAL_DURATION = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 
 /**
  * Check if banner should be shown
+ * @param {string} storageKey localStorage key for dismissal state
  * @returns {boolean} True if banner should be shown
  */
-export function shouldShowBanner() {
-    const dismissedData = localStorage.getItem(BANNER_STORAGE_KEY);
-    
+export function shouldShowBanner(storageKey = BANNER_KEYS.WRITERS_ALLEY) {
+    const dismissedData = localStorage.getItem(storageKey);
+
     if (!dismissedData) {
-        // Never dismissed, show banner
         return true;
     }
-    
+
     try {
         const data = JSON.parse(dismissedData);
         const now = Date.now();
         const dismissedAt = data.dismissedAt;
         const dismissalCount = data.count || 1;
-        
-        // Calculate duration based on dismissal count
-        const duration = dismissalCount === 1 
-            ? FIRST_DISMISSAL_DURATION 
+
+        const duration = dismissalCount === 1
+            ? FIRST_DISMISSAL_DURATION
             : SECOND_DISMISSAL_DURATION;
-        
-        // Check if dismissal period has expired
+
         if (now - dismissedAt >= duration) {
-            // Period expired, show banner again
             return true;
         }
-        
-        // Still within dismissal period
+
         return false;
     } catch (error) {
         console.error('Error parsing banner dismissal data:', error);
-        // On error, show banner to be safe
         return true;
     }
 }
 
 /**
  * Dismiss the banner and store dismissal info
+ * @param {string} storageKey localStorage key for dismissal state
  */
-export function dismissBanner() {
-    const dismissedData = localStorage.getItem(BANNER_STORAGE_KEY);
+export function dismissBanner(storageKey = BANNER_KEYS.WRITERS_ALLEY) {
+    const dismissedData = localStorage.getItem(storageKey);
     let count = 1;
-    
+
     if (dismissedData) {
         try {
             const data = JSON.parse(dismissedData);
@@ -57,42 +57,43 @@ export function dismissBanner() {
             console.error('Error parsing existing dismissal data:', error);
         }
     }
-    
+
     const data = {
         dismissedAt: Date.now(),
         count: count
     };
-    
-    localStorage.setItem(BANNER_STORAGE_KEY, JSON.stringify(data));
+
+    localStorage.setItem(storageKey, JSON.stringify(data));
 }
 
 /**
  * Get days until banner can be shown again
+ * @param {string} storageKey localStorage key for dismissal state
  * @returns {number|null} Number of days, or null if banner should be shown
  */
-export function getDaysUntilNextShow() {
-    if (shouldShowBanner()) {
+export function getDaysUntilNextShow(storageKey = BANNER_KEYS.WRITERS_ALLEY) {
+    if (shouldShowBanner(storageKey)) {
         return null;
     }
-    
-    const dismissedData = localStorage.getItem(BANNER_STORAGE_KEY);
+
+    const dismissedData = localStorage.getItem(storageKey);
     if (!dismissedData) {
         return null;
     }
-    
+
     try {
         const data = JSON.parse(dismissedData);
         const now = Date.now();
         const dismissedAt = data.dismissedAt;
         const dismissalCount = data.count || 1;
-        
-        const duration = dismissalCount === 1 
-            ? FIRST_DISMISSAL_DURATION 
+
+        const duration = dismissalCount === 1
+            ? FIRST_DISMISSAL_DURATION
             : SECOND_DISMISSAL_DURATION;
-        
+
         const remaining = duration - (now - dismissedAt);
         const daysRemaining = Math.ceil(remaining / (24 * 60 * 60 * 1000));
-        
+
         return Math.max(0, daysRemaining);
     } catch (error) {
         console.error('Error calculating days until next show:', error);
@@ -100,3 +101,51 @@ export function getDaysUntilNextShow() {
     }
 }
 
+function animateBannerDismiss(banner) {
+    banner.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+    banner.style.opacity = '0';
+    banner.style.transform = 'translateY(-6px)';
+    setTimeout(() => {
+        banner.classList.add('hidden');
+    }, 300);
+}
+
+/**
+ * Initialize the AdventureEngine top-of-page promo banner
+ * @param {() => string} getDismissLabel Returns translated dismiss label
+ */
+export function initAdventureEngineTopBanner(getDismissLabel) {
+    const banner = document.getElementById('adventureengine-top-banner');
+    if (!banner) {
+        return;
+    }
+
+    if (!shouldShowBanner(BANNER_KEYS.ADVENTURE_ENGINE)) {
+        banner.classList.add('hidden');
+        return;
+    }
+
+    banner.classList.remove('hidden');
+
+    const closeBtn = document.getElementById('ae-banner-close-btn');
+    if (!closeBtn || closeBtn.dataset.bound === 'true') {
+        return;
+    }
+
+    closeBtn.dataset.bound = 'true';
+
+    const updateDismissLabel = () => {
+        const dismissText = getDismissLabel();
+        closeBtn.setAttribute('aria-label', dismissText);
+        closeBtn.setAttribute('title', dismissText);
+    };
+
+    updateDismissLabel();
+
+    closeBtn.addEventListener('click', () => {
+        dismissBanner(BANNER_KEYS.ADVENTURE_ENGINE);
+        animateBannerDismiss(banner);
+    });
+
+    return updateDismissLabel;
+}

@@ -7,7 +7,7 @@ import { t, translateAllElements, getCurrentLanguage } from '../i18n/i18n.js?v=3
 import { languageLabels, SUPPORTED_LIBRARY_LANGUAGES } from '../i18n/translations.js?v=3e17b91';
 import { validateImportedCharacter } from '../utils/validation.js?v=3e17b91';
 import { getPublicCharacters, importCharacterFromDatabase, reportCharacter, getPublicCharacterById } from '../utils/database.js?v=3e17b91';
-import { shouldShowBanner, dismissBanner } from '../utils/banner.js?v=3e17b91';
+import { shouldShowBanner, dismissBanner, BANNER_KEYS } from '../utils/banner.js?v=3e17b91';
 import { resolveProfessionMetadata, getStandardProfessionFilters } from '../utils/profession-filter.js?v=3e17b91';
 import { showModal, closeModal, showConfirmDialog, showPromptDialog, showAlertDialog } from '../utils/modal.js?v=3e17b91';
 import { escapeHtml, escapeAttr } from '../utils/escape-html.js?v=3e17b91';
@@ -441,7 +441,7 @@ export async function renderIntro() {
             return '';
         }
 
-        const showBanner = shouldShowBanner();
+        const showBanner = shouldShowBanner(BANNER_KEYS.WRITERS_ALLEY);
 
         return `
         <div class="step step-home" id="step-intro">
@@ -853,7 +853,7 @@ export function attachIntroListeners() {
         bannerCloseBtn.addEventListener('click', () => {
             const banner = document.getElementById('writersalley-banner');
             if (banner) {
-                dismissBanner();
+                dismissBanner(BANNER_KEYS.WRITERS_ALLEY);
                 banner.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
                 banner.style.opacity = '0';
                 banner.style.transform = 'translateY(-10px)';
