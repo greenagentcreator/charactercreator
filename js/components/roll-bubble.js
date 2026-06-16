@@ -1,6 +1,6 @@
 // Slot-machine roll bubble shown above clicked sheet targets
 
-import { t } from '../i18n/i18n.js?v=09f6897';
+import { t } from '../i18n/i18n.js?v=5c9e92d';
 
 const ONES_SPIN_BASE_MS = 1100;
 const TENS_SPIN_BASE_MS = 2400;

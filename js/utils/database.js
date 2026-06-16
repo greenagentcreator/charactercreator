@@ -2,16 +2,16 @@
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js';
 import { getFirestore, collection, addDoc, getDocs, getDoc, query, where, orderBy, limit, startAfter, doc, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
-import { firebaseConfig, COLLECTIONS, MODERATION_STATUS } from '../config/database.js?v=09f6897';
-import { getProfessionFilterKey } from './profession-filter.js?v=09f6897';
-import { SUPPORTED_LIBRARY_LANGUAGES } from '../i18n/translations.js?v=09f6897';
+import { firebaseConfig, COLLECTIONS, MODERATION_STATUS } from '../config/database.js?v=5c9e92d';
+import { getProfessionFilterKey } from './profession-filter.js?v=5c9e92d';
+import { SUPPORTED_LIBRARY_LANGUAGES } from '../i18n/translations.js?v=5c9e92d';
 import {
     sanitizeCharacterContent,
     validateCharacterContent,
     validateCharacterSchema
-} from './content-moderation.js?v=09f6897';
-import { checkRateLimit, recordUpload } from './rate-limiter.js?v=09f6897';
-import { checkForDuplicate, recordCharacterFingerprint } from './duplicate-detector.js?v=09f6897';
+} from './content-moderation.js?v=5c9e92d';
+import { checkRateLimit, recordUpload } from './rate-limiter.js?v=5c9e92d';
+import { checkForDuplicate, recordCharacterFingerprint } from './duplicate-detector.js?v=5c9e92d';
 
 // Initialize Firebase
 let app = null;
@@ -485,7 +485,7 @@ export async function reportCharacter(characterId, reason) {
  * @returns {Promise<string>} Local storage character ID
  */
 export async function importCharacterFromDatabase(characterDoc) {
-    const { importCharacter } = await import('./storage.js?v=09f6897');
+    const { importCharacter } = await import('./storage.js?v=5c9e92d');
     
     const characterToImport = {
         name: characterDoc.name,

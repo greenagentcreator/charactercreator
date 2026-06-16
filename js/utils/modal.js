@@ -1,6 +1,6 @@
 // Lightweight accessible modal dialogs
 
-import { escapeHtml, escapeAttr } from './escape-html.js?v=09f6897';
+import { escapeHtml, escapeAttr } from './escape-html.js?v=5c9e92d';
 
 let activeModal = null;
 
