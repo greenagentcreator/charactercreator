@@ -4,6 +4,24 @@
 }
 
 @media print {
+    /* Neutralize entry animations/transitions: freshly-inserted print content
+       (e.g. the sheet print root) must not be captured at an animation's
+       opacity:0 initial frame, which prints a blank page. */
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    .step,
+    .sheet-print-root,
+    .sheet-print-root .step,
+    #step5-summary-print {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
     html {
         width: 100% !important;
         overflow: visible !important;
