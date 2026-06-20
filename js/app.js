@@ -489,11 +489,21 @@ function pushAppHistory(replace = false) {
 }
 
 function showCreationChrome() {
+    document.getElementById('app-container')?.classList.remove('sheet-active');
     if (btnNext) btnNext.style.display = 'inline-block';
     if (btnBack) btnBack.style.display = 'inline-block';
 }
 
 function hideCreationChrome() {
+    // Mark the app as being in read-only sheet view so the creator chrome
+    // (the big "DELTA GREEN CHARACTER CREATOR" site-brand banner) can be
+    // suppressed via CSS — a shared sheet link should read as a character
+    // sheet, not the wizard.
+    document.getElementById('app-container')?.classList.add('sheet-active');
+    // The sheet render paths bypass renderCurrentStep, so hide the landing
+    // hero + footer SEO block here too.
+    updateSeoLandingVisibility({ step: 0, viewMode: 'sheet' });
+
     const navigationContainer = document.getElementById('navigation-container');
     if (navigationContainer) {
         navigationContainer.style.display = 'none';
