@@ -9,6 +9,7 @@ import { t, getCurrentLanguage, translateAllElements } from '../i18n/i18n.js?v=5
 import { updateNavigationButtons } from '../app.js?v=5c9e92d';
 import { showInlineError, showFieldError, clearFieldError } from '../utils/validation.js?v=5c9e92d';
 import { attachTooltipListeners } from '../utils/tooltips.js?v=5c9e92d';
+import { escapeHtml, escapeAttr } from '../utils/escape-html.js?v=5c9e92d';
 
 // Helper to get character (for easier access)
 // Note: getCharacter() returns a reference, so we can modify it directly
@@ -92,7 +93,7 @@ export function renderCustomProfession_BondSetup() {
         </div>
         <div id="custom-profession-name-input-container" data-validation-target="custom-profession-name" style="margin-top: 15px;">
             <label for="custom-profession-name" data-validation-section="custom-profession-name" data-i18n="label_custom_profession_name"></label>
-            <input type="text" id="custom-profession-name" value="${character.customProfessionName || ''}" placeholder="e.g., Occult Detective">
+            <input type="text" id="custom-profession-name" value="${escapeAttr(character.customProfessionName || '')}" placeholder="e.g., Occult Detective">
         </div>
         <div class="touch-stepper" id="custom-bonds-stepper">
             <label data-i18n="custom_prof_label_current_bonds"></label>
@@ -175,8 +176,8 @@ function renderCustomProfession_SkillAllocation() {
                             `<div class="skill-instance-left">
                                 <input type="text" class="custom-instance-type-input" 
                                         data-instance-temp-id="${instance.tempInstanceId}" 
-                                        value="${instance.typeName || ''}" 
-                                        placeholder="${t('specify_type_placeholder')}">
+                                        value="${escapeAttr(instance.typeName || '')}"
+                                        placeholder="${t(skillDef.placeholderKey || 'specify_type_placeholder')}">
                             </div>
                             <div class="skill-instance-separator"></div>`
                           : 
@@ -616,8 +617,8 @@ export function renderProfessionSpecificChoices(profData) {
                                     <input type="text" id="typed_base_${uiElementIdSuffixForInput}"
                                            class="skill-type-input base-skill-type-input"
                                            data-instance-id="${currentInstance.instanceId}" 
-                                           value="${currentInstance.typeName || ""}"
-                                           placeholder="${t('specify_type_placeholder')}">
+                                           value="${escapeAttr(currentInstance.typeName || "")}"
+                                           placeholder="${t(baseSkillDef.placeholderKey || 'specify_type_placeholder')}">
                                  </div>`;
             }
             // Nicht-typisierte Basis-Skills (z.B. Firearms 50%) erfordern hier keine eigene UI-Interaktion,
@@ -670,8 +671,8 @@ export function renderProfessionSpecificChoices(profData) {
                 detailsHtml += 
                     `<input type="text" class="skill-type-input choice-skill-type-input" ` +
                     `data-skill-key-for-choice="${choiceOpt.key}" ` +
-                    `placeholder="${t('specify_type_placeholder')}" ` +
-                    `value="${typeNameValueForChoice}" ` +
+                    `placeholder="${t(skillDefChoice.placeholderKey || 'specify_type_placeholder')}" ` +
+                    `value="${escapeAttr(typeNameValueForChoice)}" ` +
                     `style="display:${isSelectedAsChoice ? 'inline-block':'none'}; margin-left: 10px;">`;
             }
             detailsHtml += `</li>`;
@@ -1158,15 +1159,15 @@ export function renderAllSkillsList() {
         }
 
         if (isTypeEditableInStep13) {
-            typeDisplayOrInputHtml = ` <input type="text" class="skill-type-input-inline" data-instance-id="${skillInstanceToRender.instanceId}" value="${skillInstanceToRender.typeName || ""}" placeholder="${t('specify_type_placeholder')}" style="width: 150px; margin: 0px; margin-right: 10px; font-size: 0.9em; padding: 3px 5px; border: 1px solid #ccc; border-radius: 2px;">`;
+            typeDisplayOrInputHtml = ` <input type="text" class="skill-type-input-inline" data-instance-id="${skillInstanceToRender.instanceId}" value="${escapeAttr(skillInstanceToRender.typeName || "")}" placeholder="${t(skillDef.placeholderKey || 'specify_type_placeholder')}" style="width: 150px; margin: 0px; margin-right: 10px; font-size: 0.9em; padding: 3px 5px; border: 1px solid #ccc; border-radius: 2px;">`;
             if (skillInstanceToRender.typeName === "" || skillInstanceToRender.typeName === null) {
                 editableTypedSkillShownForKey.add(skillInstanceToRender.key); // Merken, dass wir eine leere editierbare gezeigt haben
             }
         } else if (skillDef.type) {
             if (skillInstanceToRender.typeName && skillInstanceToRender.typeName.trim() !== "") {
-                typeDisplayOrInputHtml = ` <span class="skill-type-display">(${skillInstanceToRender.typeName.trim()})</span>`;
+                typeDisplayOrInputHtml = ` <span class="skill-type-display">(${escapeHtml(skillInstanceToRender.typeName.trim())})</span>`;
             } else { // Typisiert, aber Typ ist leer und nicht editierbar (z.B. Unnatural, oder Slot der in 1.2 leer blieb)
-                typeDisplayOrInputHtml = ` <span class="skill-type-display skill-type-display--placeholder">(${t('specify_type_placeholder')})</span>`;
+                typeDisplayOrInputHtml = ` <span class="skill-type-display skill-type-display--placeholder">(${t(skillDef.placeholderKey || 'specify_type_placeholder')})</span>`;
             }
         }
 
@@ -1252,8 +1253,8 @@ export function renderAllSkillsList() {
         }
 
 
-        const skillDisplayName = skillDef.type && skillInstanceToRender.typeName && skillInstanceToRender.typeName.trim() !== "" 
-            ? `${t(skillDef.nameKey)} (${skillInstanceToRender.typeName.trim()})` 
+        const skillDisplayName = skillDef.type && skillInstanceToRender.typeName && skillInstanceToRender.typeName.trim() !== ""
+            ? `${t(skillDef.nameKey)} (${escapeAttr(skillInstanceToRender.typeName.trim())})`
             : t(skillDef.nameKey);
         const decreaseAriaLabel = pointsToDecreaseOnClick > 0 
             ? t('aria_skill_decrease', { skillName: skillDisplayName, amount: pointsToDecreaseOnClick })
