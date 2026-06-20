@@ -218,8 +218,10 @@
     
     <link rel="stylesheet" href="css/styles.css?v=5c9e92d">
     
-    <!-- LZ-String for URL compression -->
-    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
+    <!-- LZ-String for URL compression (pinned + SRI: if the CDN is tampered with, the script is rejected) -->
+    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"
+            integrity="sha384-+pWnyi8LtZx+cgXfD2arWgUX7pHIaEL215cEPPk9WrsegNlgvDL9DNjaqsceQq6o"
+            crossorigin="anonymous"></script>
 </head>
 <body class="app-is-loading">
     <aside id="adventureengine-top-banner" class="promo-banner promo-banner--top hidden" role="complementary" aria-label="AdventureEngine promotion">
