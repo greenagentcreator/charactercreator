@@ -178,6 +178,23 @@
     display: block;
 }
 
+/* Read-only sheet view: suppress the creator branding so a shared character
+   sheet link reads as a sheet, not the creation wizard. The header controls
+   (theme/language/news) stay so the viewer can still adjust them. */
+#app-container.sheet-active header .site-brand {
+    display: none !important;
+}
+
+#app-container.sheet-active header::before {
+    display: none;
+}
+
+#app-container.sheet-active header {
+    justify-content: flex-end;
+    border-bottom: none;
+    margin-bottom: var(--spacing-sm);
+}
+
 @media (max-width: 768px) {
     .seo-landing__hero {
         padding: var(--spacing-lg) var(--spacing-md);

@@ -1,0 +1,21 @@
+{
+  "name": "deltagreen-charactercreator",
+  "version": "1.0.0",
+  "description": "Delta Green Character Creator — static vanilla-ESM SPA. This package.json exists only for the test toolchain; the app itself has no build step.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run tests/unit",
+    "test:unit": "vitest run tests/unit",
+    "test:watch": "vitest tests/unit",
+    "test:rules": "firebase emulators:exec --project demo-dg --only firestore \"vitest run tests/rules\"",
+    "test:all": "npm run test:unit && npm run test:rules"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^4.0.1",
+    "firebase": "^11.10.0",
+    "firebase-tools": "^14.0.0",
+    "jsdom": "^25.0.1",
+    "vitest": "^3.2.4"
+  }
+}
