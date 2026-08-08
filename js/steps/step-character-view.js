@@ -22,6 +22,7 @@ function attachSheetEditing(characterId) {
 
 let sheetPrintListenersBound = false;
 let activePrintCharacterId = null;
+let printMediaQuery = null;
 
 function ensureSheetPrintRoot() {
     let root = document.getElementById(SHEET_PRINT_ROOT_ID);
@@ -67,6 +68,13 @@ function onSheetAfterPrint() {
     clearSheetPrintRoot();
 }
 
+function onPrintMediaChange(event) {
+    // Fallback when afterprint is unreliable: clear when leaving print media.
+    if (!event.matches) {
+        clearSheetPrintRoot();
+    }
+}
+
 function bindSheetPrintListeners(characterId) {
     activePrintCharacterId = characterId;
 
@@ -76,6 +84,14 @@ function bindSheetPrintListeners(characterId) {
 
     window.addEventListener('beforeprint', onSheetBeforePrint);
     window.addEventListener('afterprint', onSheetAfterPrint);
+
+    printMediaQuery = window.matchMedia('print');
+    if (typeof printMediaQuery.addEventListener === 'function') {
+        printMediaQuery.addEventListener('change', onPrintMediaChange);
+    } else if (typeof printMediaQuery.addListener === 'function') {
+        printMediaQuery.addListener(onPrintMediaChange);
+    }
+
     sheetPrintListenersBound = true;
 }
 
@@ -89,17 +105,10 @@ export function triggerSheetPrint() {
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
     const delay = isMobile ? 350 : 50;
 
-    const clearOnce = () => {
-        clearSheetPrintRoot();
-    };
-
-    window.addEventListener('afterprint', clearOnce, { once: true });
-
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
             window.setTimeout(() => {
                 window.print();
-                window.setTimeout(clearOnce, 1500);
             }, delay);
         });
     });

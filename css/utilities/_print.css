@@ -68,6 +68,14 @@
         display: none !important;
     }
 
+    /* Promo / overlays that live outside #app-container */
+    #adventureengine-top-banner,
+    .promo-banner,
+    .app-modal-overlay,
+    .app-loading-screen {
+        display: none !important;
+    }
+
     /* Wizard / non-sheet print: app container uses full page width */
     #app-container {
         box-shadow: none !important;
