@@ -1,12 +1,12 @@
 // News button, unread badge, and modal
 
 import { collection, doc, getDocs, increment, setDoc } from 'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js';
-import { NEWS_ENTRIES } from '../data/news.js?v=e070baf';
-import { COLLECTIONS } from '../config/database.js?v=e070baf';
-import { t, getCurrentLanguage } from '../i18n/i18n.js?v=e070baf';
-import { showModal } from './modal.js?v=e070baf';
-import { escapeHtml, escapeAttr } from './escape-html.js?v=e070baf';
-import { getDb } from './database.js?v=e070baf';
+import { NEWS_ENTRIES } from '../data/news.js?v=5f80dbc';
+import { COLLECTIONS } from '../config/database.js?v=5f80dbc';
+import { t, getCurrentLanguage } from '../i18n/i18n.js?v=5f80dbc';
+import { showModal } from './modal.js?v=5f80dbc';
+import { escapeHtml, escapeAttr } from './escape-html.js?v=5f80dbc';
+import { getDb } from './database.js?v=5f80dbc';
 
 const STORAGE_KEY = 'dg_news_last_read_id';
 const LIKES_STORAGE_KEY = 'dg_news_liked_ids';

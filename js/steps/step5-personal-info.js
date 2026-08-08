@@ -1,8 +1,8 @@
 // Step 5: Personal Information
 // This step collects personal details before showing the summary
 
-import { getCharacter } from '../model/character.js?v=e070baf';
-import { t } from '../i18n/i18n.js?v=e070baf';
+import { getCharacter } from '../model/character.js?v=5f80dbc';
+import { t } from '../i18n/i18n.js?v=5f80dbc';
 
 export function renderStep5_PersonalInfo() {
     const character = getCharacter();
