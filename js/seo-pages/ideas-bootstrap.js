@@ -1,3 +1,3 @@
-import { initStaticPage } from './init-static-page.js?v=5c9e92d';
+import { initStaticPage } from './init-static-page.js?v=c8241d5';
 
 initStaticPage({ pageId: 'ideas', filename: 'ideas.html' });

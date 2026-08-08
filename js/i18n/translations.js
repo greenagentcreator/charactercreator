@@ -1,9 +1,9 @@
-import { en } from './en.js?v=5c9e92d';
-import { de } from './de.js?v=5c9e92d';
-import { es } from './es.js?v=5c9e92d';
-import { fr } from './fr.js?v=5c9e92d';
-import { ru } from './ru.js?v=5c9e92d';
-import { pt } from './pt.js?v=5c9e92d';
+import { en } from './en.js?v=c8241d5';
+import { de } from './de.js?v=c8241d5';
+import { es } from './es.js?v=c8241d5';
+import { fr } from './fr.js?v=c8241d5';
+import { ru } from './ru.js?v=c8241d5';
+import { pt } from './pt.js?v=c8241d5';
 
 export const i18nData = {
     en,
