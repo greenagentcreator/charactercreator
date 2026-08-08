@@ -1,6 +1,6 @@
 // Keyboard navigation utilities
 
-import { clearErrors } from './validation.js?v=e38b3de';
+import { clearErrors } from './validation.js?v=1b711ae';
 
 /**
  * Initialize keyboard navigation for the application

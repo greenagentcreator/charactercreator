@@ -30,6 +30,28 @@ body.sheet-print-active .sheet-print-root {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    color: #000;
+    /* Chrome print preview often snapshots this on-screen overlay — keep ink black. */
+    --color-text: #000000;
+    --color-text-muted: #000000;
+    --color-text-light: #111111;
+    --color-text-heading: #000000;
+    --color-text-heading-dark: #000000;
+    --color-text-on-accent: #ffffff;
+    --color-summary-title-bg: #2d5016;
+    --color-summary-title-text: #ffffff;
+    --color-summary-table-header: #dddddd;
+    --color-summary-table-border: #000000;
+    --color-border: #000000;
+    --color-border-light: #000000;
+    --color-border-lighter: #333333;
+    --color-bg-primary: #ffffff;
+    --color-bg-secondary: #ffffff;
+    --color-bg-summary: #ffffff;
+    --color-bg-info: #f0f0f0;
+    --color-button-disabled: #000000;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
 }
 
 @media print {
@@ -94,8 +116,8 @@ body.sheet-print-active .sheet-print-root {
 
     html,
     body {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
     
     body {
@@ -105,6 +127,66 @@ body.sheet-print-active .sheet-print-root {
         color: #000 !important;
         padding-bottom: 0 !important;
         margin: 0 !important;
+    }
+
+    /*
+     * Chrome defaults to print-color-adjust: economy, which washes colors out.
+     * Theme tokens (especially dark-theme greys) also leak into the print clone.
+     * Force exact ink + high-contrast tokens on the sheet print root.
+     */
+    .sheet-print-root,
+    .sheet-print-root *,
+    #step5-summary-print,
+    #step5-summary-print * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        opacity: 1 !important;
+        filter: none !important;
+    }
+
+    .sheet-print-root,
+    #step5-summary-print {
+        color: #000 !important;
+        background-color: #fff !important;
+        --color-text: #000000;
+        --color-text-muted: #000000;
+        --color-text-light: #111111;
+        --color-text-heading: #000000;
+        --color-text-heading-dark: #000000;
+        --color-text-on-accent: #ffffff;
+        --color-summary-title-bg: #2d5016;
+        --color-summary-title-text: #ffffff;
+        --color-summary-table-header: #dddddd;
+        --color-summary-table-border: #000000;
+        --color-border: #000000;
+        --color-border-light: #000000;
+        --color-border-lighter: #333333;
+        --color-bg-primary: #ffffff;
+        --color-bg-secondary: #ffffff;
+        --color-bg-summary: #ffffff;
+        --color-bg-info: #f0f0f0;
+        --color-button-disabled: #000000;
+    }
+
+    .sheet-print-root,
+    .sheet-print-root p,
+    .sheet-print-root span,
+    .sheet-print-root li,
+    .sheet-print-root td,
+    .sheet-print-root th,
+    .sheet-print-root strong,
+    .sheet-print-root label,
+    .sheet-print-root div,
+    #step5-summary-print,
+    #step5-summary-print p,
+    #step5-summary-print span,
+    #step5-summary-print li,
+    #step5-summary-print td,
+    #step5-summary-print th,
+    #step5-summary-print strong,
+    #step5-summary-print label,
+    #step5-summary-print div {
+        color: #000 !important;
     }
     
     #navigation-container {
@@ -190,12 +272,17 @@ body.sheet-print-active .sheet-print-root {
     #step5-summary-print h3.summary-block-title {
         background-color: #2d5016 !important;
         color: #fff !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
         margin: -8px -10px 6px -10px !important;
         font-size: 0.95em !important;
         padding: 4px 10px !important;
         border-bottom: 2px solid #fff !important;
+    }
+
+    #step5-summary h3.summary-block-title *,
+    #step5-summary-print h3.summary-block-title * {
+        color: #fff !important;
     }
     
     /* Hide wizard summary title only; keep sheet agent title */

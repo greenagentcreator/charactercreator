@@ -1,14 +1,14 @@
 // Main entry point for Delta Green Character Creator
 
-import { initI18n, initLanguageSwitcher, setLanguage, getCurrentLanguage, t } from './i18n/i18n.js?v=e38b3de';
+import { initI18n, initLanguageSwitcher, setLanguage, getCurrentLanguage, t } from './i18n/i18n.js?v=1b711ae';
 import { initializeApp, processSharedCharacterLink } from 'app';
-import { getCharacterFromUrl } from './utils/sharing.js?v=e38b3de';
-import { initFirebase } from './utils/database.js?v=e38b3de';
-import { initNews, refreshNewsButton } from './utils/news.js?v=e38b3de';
-import { initSeoMeta } from './utils/seo.js?v=e38b3de';
-import { initSeoLanding } from './utils/seo-landing.js?v=e38b3de';
-import { failAppLoading } from './utils/app-loading.js?v=e38b3de';
-import { initAdventureEngineTopBanner } from './utils/banner.js?v=e38b3de';
+import { getCharacterFromUrl } from './utils/sharing.js?v=1b711ae';
+import { initFirebase } from './utils/database.js?v=1b711ae';
+import { initNews, refreshNewsButton } from './utils/news.js?v=1b711ae';
+import { initSeoMeta } from './utils/seo.js?v=1b711ae';
+import { initSeoLanding } from './utils/seo-landing.js?v=1b711ae';
+import { failAppLoading } from './utils/app-loading.js?v=1b711ae';
+import { initAdventureEngineTopBanner } from './utils/banner.js?v=1b711ae';
 
 // Theme management
 function initTheme() {

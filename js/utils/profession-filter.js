@@ -1,7 +1,7 @@
 // Shared profession metadata for library filters and uploads
 
-import { PROFESSIONS } from '../config/professions.js?v=e38b3de';
-import { t } from '../i18n/i18n.js?v=e38b3de';
+import { PROFESSIONS } from '../config/professions.js?v=1b711ae';
+import { t } from '../i18n/i18n.js?v=1b711ae';
 
 const PROFESSION_KEY_TO_NAME_KEY = new Map();
 
