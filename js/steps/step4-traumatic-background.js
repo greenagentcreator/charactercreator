@@ -105,8 +105,14 @@ function applyTraumaticBackgroundEffects(backgroundType) {
     }
 
     // Apply Hard Experience effects (skills will be applied when selected)
-    if (backgroundType === 'hard_experience' && !character.traumaticBackgroundEffects.hardExperienceSkills) {
-        character.traumaticBackgroundEffects.hardExperienceSkills = ['', '', '', ''];
+    if (backgroundType === 'hard_experience') {
+        if (!character.traumaticBackgroundEffects.hardExperienceSkills) {
+            character.traumaticBackgroundEffects.hardExperienceSkills = ['', '', '', '', ''];
+        } else {
+            while (character.traumaticBackgroundEffects.hardExperienceSkills.length < 5) {
+                character.traumaticBackgroundEffects.hardExperienceSkills.push('');
+            }
+        }
     }
 
     character.traumaticBackground = backgroundType;
@@ -230,8 +236,8 @@ export function renderStep4_TraumaticBackground() {
                     <h4 data-validation-section="hard-experience-skills" data-i18n="hard_experience_skill_selection_label"></h4>`;
     
     // Add 4 skill selection dropdowns for Hard Experience
-    const selectedSkills = character.traumaticBackgroundEffects?.hardExperienceSkills || ['', '', '', ''];
-    for (let i = 0; i < 4; i++) {
+    const selectedSkills = character.traumaticBackgroundEffects?.hardExperienceSkills || ['', '', '', '', ''];
+    for (let i = 0; i < 5; i++) {
         const selectedSkill = selectedSkills[i] || '';
         html += `<div class="hard-experience-skill-select">
                     <label for="hard-experience-skill-${i}" data-i18n="hard_experience_skill_label" data-i18n-replacements='{"number":"${i + 1}"}'>${t('hard_experience_skill_label', {number: i + 1})}</label>
@@ -331,7 +337,7 @@ export function attachStep4_3Listeners() {
             
             // If the new skill was selected in another dropdown, remove it from there first
             if (selectedSkill) {
-                const currentSelections = character.traumaticBackgroundEffects?.hardExperienceSkills || ['', '', '', ''];
+                const currentSelections = character.traumaticBackgroundEffects?.hardExperienceSkills || ['', '', '', '', ''];
                 const otherIndex = currentSelections.findIndex((sk, idx) => idx !== skillIndex && sk === selectedSkill);
                 if (otherIndex !== -1) {
                     // Remove the skill from the other dropdown
@@ -350,7 +356,7 @@ export function attachStep4_3Listeners() {
             
             // Update stored selections
             if (!character.traumaticBackgroundEffects.hardExperienceSkills) {
-                character.traumaticBackgroundEffects.hardExperienceSkills = ['', '', '', ''];
+                character.traumaticBackgroundEffects.hardExperienceSkills = ['', '', '', '', ''];
             }
             character.traumaticBackgroundEffects.hardExperienceSkills[skillIndex] = selectedSkill;
 
@@ -445,11 +451,11 @@ export function validateStep4_3(showAlerts = true) {
     }
 
     const effects = character.traumaticBackgroundEffects || {};
-    const skills = effects.hardExperienceSkills || ['', '', '', ''];
+    const skills = effects.hardExperienceSkills || ['', '', '', '', ''];
     const filledSkills = skills.filter(sk => sk && sk !== 'unnatural');
     const uniqueSkills = new Set(filledSkills);
 
-    if (filledSkills.length !== 4 || uniqueSkills.size !== 4) {
+    if (filledSkills.length !== 5 || uniqueSkills.size !== 5) {
         if (showAlerts) {
             const firstEmptyIndex = skills.findIndex(sk => !sk || sk === 'unnatural');
             const skillSelect = document.getElementById(`hard-experience-skill-${firstEmptyIndex >= 0 ? firstEmptyIndex : 0}`);
