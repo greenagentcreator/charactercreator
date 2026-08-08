@@ -501,6 +501,7 @@ function hideCreationChrome() {
     if (btnNext) btnNext.style.display = 'none';
     if (btnBack) btnBack.style.display = 'none';
     if (progressBarContainer) progressBarContainer.style.display = 'none';
+    updateSeoLandingVisibility({ step: currentStep, viewMode: currentViewMode });
 }
 
 async function applyNavigationFromHistory(state) {
