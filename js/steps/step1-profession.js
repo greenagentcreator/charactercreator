@@ -1,15 +1,15 @@
 // Step 1: Profession & Skills
 // This module handles profession selection, custom profession creation, and skill management
 
-import { getCharacter, initializeCharacterSkills, generateInstanceId } from '../model/character.js?v=05f314a';
-import { ALL_SKILLS } from '../config/skills.js?v=05f314a';
-import { PROFESSIONS } from '../config/professions.js?v=05f314a';
-import { MAX_SKILL_INCREASES, SKILL_INCREASE_AMOUNT, MAX_SKILL_VALUE } from '../config/constants.js?v=05f314a';
-import { t, getCurrentLanguage, translateAllElements } from '../i18n/i18n.js?v=05f314a';
-import { updateNavigationButtons } from '../app.js?v=05f314a';
-import { showInlineError, showFieldError, clearFieldError } from '../utils/validation.js?v=05f314a';
-import { attachTooltipListeners } from '../utils/tooltips.js?v=05f314a';
-import { escapeHtml, escapeAttr } from '../utils/escape-html.js?v=05f314a';
+import { getCharacter, initializeCharacterSkills, generateInstanceId } from '../model/character.js?v=1a58e28';
+import { ALL_SKILLS } from '../config/skills.js?v=1a58e28';
+import { PROFESSIONS } from '../config/professions.js?v=1a58e28';
+import { MAX_SKILL_INCREASES, SKILL_INCREASE_AMOUNT, MAX_SKILL_VALUE } from '../config/constants.js?v=1a58e28';
+import { t, getCurrentLanguage, translateAllElements } from '../i18n/i18n.js?v=1a58e28';
+import { updateNavigationButtons } from '../app.js?v=1a58e28';
+import { showInlineError, showFieldError, clearFieldError } from '../utils/validation.js?v=1a58e28';
+import { attachTooltipListeners } from '../utils/tooltips.js?v=1a58e28';
+import { escapeHtml, escapeAttr } from '../utils/escape-html.js?v=1a58e28';
 
 // Helper to get character (for easier access)
 // Note: getCharacter() returns a reference, so we can modify it directly
