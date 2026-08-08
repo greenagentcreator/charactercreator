@@ -1,37 +1,37 @@
 // Main application logic for Delta Green Character Creator
 
-import { t, translateAllElements } from './i18n/i18n.js?v=cc0d40b';
-import { getCurrentLanguage } from './i18n/i18n.js?v=cc0d40b';
-import { resetCharacter, getCharacter, setCharacter } from './model/character.js?v=cc0d40b';
-import { initErrorContainer, clearErrors, validateImportedCharacter } from './utils/validation.js?v=cc0d40b';
-import { initKeyboardNavigation } from './utils/keyboard.js?v=cc0d40b';
-import { renderIntro, attachIntroListeners, syncLibraryLanguageFilterWithUi } from './steps/step0-intro.js?v=cc0d40b';
-import { renderStep1_ProfessionSkills, validateStep1, saveStep1, attachStep1Listeners } from './steps/step1-profession.js?v=cc0d40b';
-import { renderStep2_Statistics, validateStep2, saveStep2, attachStep2Listeners } from './steps/step2-statistics.js?v=cc0d40b';
-import { renderStep3_DerivedAttributes, validateStep3, saveStep3, attachStep3Listeners } from './steps/step3-derived.js?v=cc0d40b';
-import { renderStep4_BondsMotivations, validateStep4, saveStep4, attachStep4Listeners } from './steps/step4-bonds.js?v=cc0d40b';
-import { renderStep4_TraumaticBackground, validateStep4_3, saveStep4_3, attachStep4_3Listeners } from './steps/step4-traumatic-background.js?v=cc0d40b';
-import { renderStep5_PersonalInfo, validateStep5_PersonalInfo, saveStep5_PersonalInfo, attachStep5_PersonalInfoListeners } from './steps/step5-personal-info.js?v=cc0d40b';
-import { renderStep5_Summary, validateStep5, saveStep5, attachStep5Listeners } from './steps/step5-summary.js?v=cc0d40b';
-import { saveCharacter, isStorageFull, getStorageLimit, importCharacter } from './utils/storage.js?v=cc0d40b';
-import { PROFESSIONS } from './config/professions.js?v=cc0d40b';
-import { renderCharacterView, attachCharacterViewListeners, prepareSheetSummaryForPrint, triggerSheetPrint } from './steps/step-character-view.js?v=cc0d40b';
-import { confirmLeaveSheetIfDirty, isLeavingSheetView, resetSheetEditState } from './utils/sheet-autosave.js?v=cc0d40b';
-import { captureSheetBaseline } from './utils/sheet-baseline.js?v=cc0d40b';
-import { getCharacterFromUrl } from './utils/sharing.js?v=cc0d40b';
-import { normalizeSheetCharacterFields } from './utils/sheet-edit.js?v=cc0d40b';
-import { uploadCharacter } from './utils/database.js?v=cc0d40b';
-import { initAppHistory, syncAppHistory, appStateFromUrl, isNavigatingFromHistory } from './utils/app-history.js?v=cc0d40b';
-import { loadAppNavigationState } from './utils/app-session.js?v=cc0d40b';
+import { t, translateAllElements } from './i18n/i18n.js?v=05f314a';
+import { getCurrentLanguage } from './i18n/i18n.js?v=05f314a';
+import { resetCharacter, getCharacter, setCharacter } from './model/character.js?v=05f314a';
+import { initErrorContainer, clearErrors, validateImportedCharacter } from './utils/validation.js?v=05f314a';
+import { initKeyboardNavigation } from './utils/keyboard.js?v=05f314a';
+import { renderIntro, attachIntroListeners, syncLibraryLanguageFilterWithUi } from './steps/step0-intro.js?v=05f314a';
+import { renderStep1_ProfessionSkills, validateStep1, saveStep1, attachStep1Listeners } from './steps/step1-profession.js?v=05f314a';
+import { renderStep2_Statistics, validateStep2, saveStep2, attachStep2Listeners } from './steps/step2-statistics.js?v=05f314a';
+import { renderStep3_DerivedAttributes, validateStep3, saveStep3, attachStep3Listeners } from './steps/step3-derived.js?v=05f314a';
+import { renderStep4_BondsMotivations, validateStep4, saveStep4, attachStep4Listeners } from './steps/step4-bonds.js?v=05f314a';
+import { renderStep4_TraumaticBackground, validateStep4_3, saveStep4_3, attachStep4_3Listeners } from './steps/step4-traumatic-background.js?v=05f314a';
+import { renderStep5_PersonalInfo, validateStep5_PersonalInfo, saveStep5_PersonalInfo, attachStep5_PersonalInfoListeners } from './steps/step5-personal-info.js?v=05f314a';
+import { renderStep5_Summary, validateStep5, saveStep5, attachStep5Listeners } from './steps/step5-summary.js?v=05f314a';
+import { saveCharacter, isStorageFull, getStorageLimit, importCharacter } from './utils/storage.js?v=05f314a';
+import { PROFESSIONS } from './config/professions.js?v=05f314a';
+import { renderCharacterView, attachCharacterViewListeners, prepareSheetSummaryForPrint, triggerSheetPrint } from './steps/step-character-view.js?v=05f314a';
+import { confirmLeaveSheetIfDirty, isLeavingSheetView, resetSheetEditState } from './utils/sheet-autosave.js?v=05f314a';
+import { captureSheetBaseline } from './utils/sheet-baseline.js?v=05f314a';
+import { getCharacterFromUrl } from './utils/sharing.js?v=05f314a';
+import { normalizeSheetCharacterFields } from './utils/sheet-edit.js?v=05f314a';
+import { uploadCharacter } from './utils/database.js?v=05f314a';
+import { initAppHistory, syncAppHistory, appStateFromUrl, isNavigatingFromHistory } from './utils/app-history.js?v=05f314a';
+import { loadAppNavigationState } from './utils/app-session.js?v=05f314a';
 import {
     saveUnfinishedDraft,
     resolveUnfinishedDraftForResume,
     removeUnfinishedDraft,
     clearActiveUnfinishedDraftReference,
     getUnfinishedDraftById
-} from './utils/unfinished-drafts.js?v=cc0d40b';
-import { completeAppLoading } from './utils/app-loading.js?v=cc0d40b';
-import { updateSeoLandingVisibility } from './utils/seo-landing.js?v=cc0d40b';
+} from './utils/unfinished-drafts.js?v=05f314a';
+import { completeAppLoading } from './utils/app-loading.js?v=05f314a';
+import { updateSeoLandingVisibility } from './utils/seo-landing.js?v=05f314a';
 
 let currentStep = 0;
 let stepContainer, progressBarContainer, btnNext, btnBack;
@@ -793,7 +793,7 @@ async function discardUnfinishedDraft(draftId) {
         return;
     }
 
-    const { showConfirmDialog } = await import('./utils/modal.js?v=cc0d40b');
+    const { showConfirmDialog } = await import('./utils/modal.js?v=05f314a');
     const confirmed = await showConfirmDialog({
         title: t('discard_unfinished_title'),
         message: t('confirm_discard_unfinished', { name: draft.name }),
@@ -856,7 +856,7 @@ async function renderDatabaseCharacterView(dbId) {
     hideCreationChrome();
 
     try {
-        const { getPublicCharacterById } = await import('./utils/database.js?v=cc0d40b');
+        const { getPublicCharacterById } = await import('./utils/database.js?v=05f314a');
         const characterDoc = await getPublicCharacterById(dbId);
 
         if (!characterDoc) {
