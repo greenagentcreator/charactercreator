@@ -1,6 +1,6 @@
 // Character storage utilities for localStorage
 
-import { captureSheetBaseline } from './sheet-baseline.js?v=6e845c4';
+import { captureSheetBaseline } from './sheet-baseline.js?v=e070baf';
 
 const STORAGE_KEY = 'delta_green_characters';
 const STORAGE_LIMIT = 20;

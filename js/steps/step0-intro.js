@@ -1,15 +1,15 @@
 // Step 0: Introduction
 
-import { resetCharacter } from '../model/character.js?v=6e845c4';
-import { getAllCharacters, deleteCharacter, updateCharacterName, importCharacter } from '../utils/storage.js?v=6e845c4';
-import { getUnfinishedDrafts } from '../utils/unfinished-drafts.js?v=6e845c4';
-import { t, translateAllElements, getCurrentLanguage } from '../i18n/i18n.js?v=6e845c4';
-import { languageLabels, SUPPORTED_LIBRARY_LANGUAGES } from '../i18n/translations.js?v=6e845c4';
-import { validateImportedCharacter } from '../utils/validation.js?v=6e845c4';
-import { getPublicCharacters, importCharacterFromDatabase, reportCharacter, getPublicCharacterById } from '../utils/database.js?v=6e845c4';
-import { resolveProfessionMetadata, getStandardProfessionFilters } from '../utils/profession-filter.js?v=6e845c4';
-import { showModal, closeModal, showConfirmDialog, showPromptDialog, showAlertDialog } from '../utils/modal.js?v=6e845c4';
-import { escapeHtml, escapeAttr } from '../utils/escape-html.js?v=6e845c4';
+import { resetCharacter } from '../model/character.js?v=e070baf';
+import { getAllCharacters, deleteCharacter, updateCharacterName, importCharacter } from '../utils/storage.js?v=e070baf';
+import { getUnfinishedDrafts } from '../utils/unfinished-drafts.js?v=e070baf';
+import { t, translateAllElements, getCurrentLanguage } from '../i18n/i18n.js?v=e070baf';
+import { languageLabels, SUPPORTED_LIBRARY_LANGUAGES } from '../i18n/translations.js?v=e070baf';
+import { validateImportedCharacter } from '../utils/validation.js?v=e070baf';
+import { getPublicCharacters, importCharacterFromDatabase, reportCharacter, getPublicCharacterById } from '../utils/database.js?v=e070baf';
+import { resolveProfessionMetadata, getStandardProfessionFilters } from '../utils/profession-filter.js?v=e070baf';
+import { showModal, closeModal, showConfirmDialog, showPromptDialog, showAlertDialog } from '../utils/modal.js?v=e070baf';
+import { escapeHtml, escapeAttr } from '../utils/escape-html.js?v=e070baf';
 
 const DEFAULT_PROFESSION_FILTER = 'all';
 const DEFAULT_LANGUAGE_FILTER = 'all';

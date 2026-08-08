@@ -1,13 +1,13 @@
 // Lightweight i18n + meta for static SEO subpages (guide, sheet, ideas)
 
-import { initI18n, initLanguageSwitcher, applyPageTranslations, getCurrentLanguage, t } from '../i18n/i18n.js?v=6e845c4';
-import { configureLogging } from '../config/environment.js?v=6e845c4';
+import { initI18n, initLanguageSwitcher, applyPageTranslations, getCurrentLanguage, t } from '../i18n/i18n.js?v=e070baf';
+import { configureLogging } from '../config/environment.js?v=e070baf';
 import {
     getDocumentCanonicalUrl,
     getOgImageUrl,
     getPageUrl,
     SUPPORTED_UI_LANGUAGES
-} from '../config/site.js?v=6e845c4';
+} from '../config/site.js?v=e070baf';
 
 function upsertMeta(selector, attributes) {
     let el = document.head.querySelector(selector);

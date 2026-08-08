@@ -1,8 +1,8 @@
 // Auto-save, dirty tracking, and leave confirmation for editable agent sheets
 
-import { t } from '../i18n/i18n.js?v=6e845c4';
-import { showModal, closeModal } from './modal.js?v=6e845c4';
-import { saveLocalSheetCharacter, collectSheetEditsFromDOM } from './sheet-edit.js?v=6e845c4';
+import { t } from '../i18n/i18n.js?v=e070baf';
+import { showModal, closeModal } from './modal.js?v=e070baf';
+import { saveLocalSheetCharacter, collectSheetEditsFromDOM } from './sheet-edit.js?v=e070baf';
 
 const AUTO_SAVE_DELAY_MS = 2000;
 
