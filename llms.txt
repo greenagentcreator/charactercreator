@@ -28,9 +28,9 @@ Extended documentation for AI assistants: https://greenagentcreator.github.io/ch
 
 ## Localization
 
-UI and SEO pages: English (default), Deutsch, Español, Français, Русский.
+UI and SEO pages: English (default), Deutsch, Español, Français, Русский, Português.
 
-Append `?lang=de`, `?lang=es`, `?lang=fr`, or `?lang=ru` to any page URL.
+Append `?lang=de`, `?lang=es`, `?lang=fr`, `?lang=ru`, or `?lang=pt` to any page URL.
 
 ## Quick start (main app)
 

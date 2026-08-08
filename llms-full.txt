@@ -29,7 +29,7 @@ Primary user goals:
 | Character sheet info | /character-sheet.html | Fillable online sheet vs PDF; feature list |
 | Character ideas | /ideas.html | Prompts for agents/NPC concepts; links to library |
 
-Localized copy: add `?lang=en|de|es|fr|ru` to any URL above.
+Localized copy: add `?lang=en|de|es|fr|ru|pt` to any URL above.
 
 ---
 

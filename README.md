@@ -11,4 +11,4 @@ Free browser-based [Delta Green](https://www.arcdream.com/delta-green/) characte
 
 **SEO pages:** [guide](https://greenagentcreator.github.io/charactercreator/guide.html) · [character sheet](https://greenagentcreator.github.io/charactercreator/character-sheet.html) · [ideas](https://greenagentcreator.github.io/charactercreator/ideas.html)
 
-Languages: English, Deutsch, Español, Français, Русский (`?lang=` on any URL).
+Languages: English, Deutsch, Español, Français, Русский, Português (`?lang=` on any URL).

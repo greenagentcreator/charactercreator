@@ -10,6 +10,7 @@
     <xhtml:link rel="alternate" hreflang="es" href="https://greenagentcreator.github.io/charactercreator/?lang=es"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://greenagentcreator.github.io/charactercreator/?lang=fr"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://greenagentcreator.github.io/charactercreator/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://greenagentcreator.github.io/charactercreator/?lang=pt"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://greenagentcreator.github.io/charactercreator/"/>
   </url>
   <url>
@@ -21,6 +22,7 @@
     <xhtml:link rel="alternate" hreflang="es" href="https://greenagentcreator.github.io/charactercreator/guide.html?lang=es"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://greenagentcreator.github.io/charactercreator/guide.html?lang=fr"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://greenagentcreator.github.io/charactercreator/guide.html?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://greenagentcreator.github.io/charactercreator/guide.html?lang=pt"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://greenagentcreator.github.io/charactercreator/guide.html"/>
   </url>
   <url>
@@ -32,6 +34,7 @@
     <xhtml:link rel="alternate" hreflang="es" href="https://greenagentcreator.github.io/charactercreator/character-sheet.html?lang=es"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://greenagentcreator.github.io/charactercreator/character-sheet.html?lang=fr"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://greenagentcreator.github.io/charactercreator/character-sheet.html?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://greenagentcreator.github.io/charactercreator/character-sheet.html?lang=pt"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://greenagentcreator.github.io/charactercreator/character-sheet.html"/>
   </url>
   <url>
@@ -53,6 +56,7 @@
     <xhtml:link rel="alternate" hreflang="es" href="https://greenagentcreator.github.io/charactercreator/ideas.html?lang=es"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://greenagentcreator.github.io/charactercreator/ideas.html?lang=fr"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://greenagentcreator.github.io/charactercreator/ideas.html?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://greenagentcreator.github.io/charactercreator/ideas.html?lang=pt"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://greenagentcreator.github.io/charactercreator/ideas.html"/>
   </url>
 </urlset>

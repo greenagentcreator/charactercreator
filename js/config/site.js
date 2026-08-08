@@ -3,7 +3,7 @@ export const SITE_URL = 'https://greenagentcreator.github.io/charactercreator/';
 export const SITE_OG_IMAGE_PATH = 'assets/og-image.png';
 export const SITE_LLMS_TXT_URL = 'https://greenagentcreator.github.io/charactercreator/llms.txt';
 export const SITE_LLMS_FULL_TXT_URL = 'https://greenagentcreator.github.io/charactercreator/llms-full.txt';
-export const SUPPORTED_UI_LANGUAGES = ['en', 'de', 'es', 'fr', 'ru'];
+export const SUPPORTED_UI_LANGUAGES = ['en', 'de', 'es', 'fr', 'ru', 'pt'];
 
 export function getCanonicalSiteUrl() {
     if (typeof window !== 'undefined' && window.location?.origin) {

@@ -3,7 +3,7 @@
 import { t } from '../i18n/i18n.js?v=5c9e92d';
 import { getCanonicalSiteUrl, getOgImageUrl } from '../config/site.js?v=5c9e92d';
 
-const HREFLANGS = ['en', 'de', 'es', 'fr', 'ru'];
+const HREFLANGS = ['en', 'de', 'es', 'fr', 'ru', 'pt'];
 const FAQ_COUNT = 5;
 const HOWTO_STEP_COUNT = 6;
 

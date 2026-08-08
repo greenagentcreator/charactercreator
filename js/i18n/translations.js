@@ -3,6 +3,7 @@ import { de } from './de.js?v=5c9e92d';
 import { es } from './es.js?v=5c9e92d';
 import { fr } from './fr.js?v=5c9e92d';
 import { ru } from './ru.js?v=5c9e92d';
+import { pt } from './pt.js?v=5c9e92d';
 
 export const i18nData = {
     en,
@@ -10,6 +11,7 @@ export const i18nData = {
     es,
     fr,
     ru,
+    pt,
 };
 
 /** Native language names for UI and library filters */
@@ -20,7 +22,7 @@ export const languageLabels = {
     fr: 'Français',
     nl: 'Nederlands',
     pl: 'Polski',
-    pt: 'Português',
+    pt: 'Português (Brasil)',
     ru: 'Русский',
     it: 'Italiano',
 };
