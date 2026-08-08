@@ -199,6 +199,8 @@ export const en = {
     "news_feed_aria": "Project news archive",
     "news_like_aria": "Like this update",
     "news_like_aria_liked": "You liked this update",
+    "news_2026_08_08_security_title": "Security & interface polish",
+    "news_2026_08_08_security_body": "<p>Thanks to <a href=\"https://github.com/awfultie\" target=\"_blank\" rel=\"noopener noreferrer\">awfultie</a> (Tyler Kilgore) for the pull request that drove much of this work.</p><ul class=\"news-patch-list\"><li>Safer skill and profession text fields (XSS hardening)</li><li>Stronger community-library data checks in Firestore</li><li>Pinned lz-string script with Subresource Integrity</li><li>Clearer placeholders for typed skills (language, science, art, and more)</li><li>Less clutter away from home — FAQ/privacy footer stays on the landing screen</li><li>Shared character sheets no longer look like the creation wizard</li><li>Automated unit tests for core helpers</li></ul>",
     "news_2026_08_08_title": "Summer 2026 update",
     "news_2026_08_08_body": "<ul class=\"news-patch-list\"><li>New UI language: Portuguese (Brasil)</li><li>Hard Experience now correctly grants +10% to five skills (was four)</li><li>Cleaner printing — promo banners stay off the page, and the sheet print view clears more reliably</li><li>Fixed landing-page content that could stay visible after you start creating or open a character</li></ul>",
     "news_2026_05_25_title": "Spring 2026 update",

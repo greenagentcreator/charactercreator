@@ -199,6 +199,8 @@ export const fr = {
     "news_feed_aria": "Archives des actualités du projet",
     "news_like_aria": "J'aime cette mise à jour",
     "news_like_aria_liked": "Vous avez aimé cette mise à jour",
+    "news_2026_08_08_security_title": "Sécurité et polish d’interface",
+    "news_2026_08_08_security_body": "<p>Merci à <a href=\"https://github.com/awfultie\" target=\"_blank\" rel=\"noopener noreferrer\">awfultie</a> (Tyler Kilgore) pour la pull request qui a largement orienté ce travail.</p><ul class=\"news-patch-list\"><li>Champs de compétences et de profession plus sûrs (durcissement XSS)</li><li>Contrôles plus stricts des données de la bibliothèque communautaire dans Firestore</li><li>Script lz-string épinglé avec Subresource Integrity</li><li>Placeholders plus clairs pour les compétences typées (langue, science, art, etc.)</li><li>Moins d’encombrement hors de l’accueil — FAQ/confidentialité restent sur l’écran d’atterrissage</li><li>Les fiches partagées ne ressemblent plus à l’assistant de création</li><li>Tests unitaires automatisés pour les helpers essentiels</li></ul>",
     "news_2026_08_08_title": "Mise à jour été 2026",
     "news_2026_08_08_body": "<ul class=\"news-patch-list\"><li>Nouvelle langue d’interface : portugais (Brésil)</li><li>Expérience douloureuse accorde désormais correctement +10 % à cinq compétences (au lieu de quatre)</li><li>Impression plus propre — les bannières promo restent hors page, et la vue d’impression de la fiche se nettoie plus fiablement</li><li>Correction du contenu de la page d’accueil qui pouvait rester visible après avoir commencé une création ou ouvert un personnage</li></ul>",
     "news_2026_05_25_title": "Mise à jour printemps 2026",

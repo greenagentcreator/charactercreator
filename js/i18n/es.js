@@ -199,6 +199,8 @@ export const es = {
     "news_feed_aria": "Archivo de noticias del proyecto",
     "news_like_aria": "Me gusta esta actualización",
     "news_like_aria_liked": "Te gustó esta actualización",
+    "news_2026_08_08_security_title": "Seguridad y retoques de interfaz",
+    "news_2026_08_08_security_body": "<p>Gracias a <a href=\"https://github.com/awfultie\" target=\"_blank\" rel=\"noopener noreferrer\">awfultie</a> (Tyler Kilgore) por el pull request que impulsó gran parte de este trabajo.</p><ul class=\"news-patch-list\"><li>Campos de habilidades y profesión más seguros (protección XSS)</li><li>Controles más estrictos de datos de la biblioteca comunitaria en Firestore</li><li>Script lz-string fijado con Subresource Integrity</li><li>Marcadores de posición más claros para habilidades tipadas (idioma, ciencia, arte, etc.)</li><li>Menos ruido fuera del inicio — FAQ/privacidad se quedan en la pantalla de aterrizaje</li><li>Las fichas compartidas ya no parecen el asistente de creación</li><li>Tests unitarios automatizados para utilidades clave</li></ul>",
     "news_2026_08_08_title": "Actualización de verano 2026",
     "news_2026_08_08_body": "<ul class=\"news-patch-list\"><li>Nuevo idioma de interfaz: portugués (Brasil)</li><li>Experiencia dura ahora otorga correctamente +10% a cinco habilidades (antes eran cuatro)</li><li>Impresión más limpia: los banners promocionales no aparecen, y la vista de impresión de la ficha se limpia de forma más fiable</li><li>Corregido el contenido de la página de inicio que podía seguir visible tras empezar a crear o abrir un personaje</li></ul>",
     "news_2026_05_25_title": "Actualización primavera 2026",
