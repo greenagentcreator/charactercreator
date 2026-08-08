@@ -1,16 +1,16 @@
 // Character View - Agent sheet (read-only dossier + toolbar)
 
-import { getCharacterById, saveCharacter } from '../utils/storage.js?v=c8241d5';
-import { setCharacter } from '../model/character.js?v=c8241d5';
-import { renderStep5_Summary } from './step5-summary.js?v=c8241d5';
-import { t, translateAllElements } from '../i18n/i18n.js?v=c8241d5';
-import { renderSheetToolbar, attachSheetToolbarListeners } from '../components/sheet-toolbar.js?v=c8241d5';
-import { attachSheetEditListeners, collectSheetEditsFromDOM, escapeHtml } from '../utils/sheet-edit.js?v=c8241d5';
-import { initSheetAutoSave, resetSheetEditState, notifySheetSaved } from '../utils/sheet-autosave.js?v=c8241d5';
-import { attachSheetRollListeners } from '../utils/sheet-rolls.js?v=c8241d5';
-import { ensureSheetBaseline } from '../utils/sheet-baseline.js?v=c8241d5';
-import { dismissRollResult } from '../components/roll-bubble.js?v=c8241d5';
-import { maybeShowSheetOnboarding } from '../utils/sheet-onboarding.js?v=c8241d5';
+import { getCharacterById, saveCharacter } from '../utils/storage.js?v=e38b3de';
+import { setCharacter } from '../model/character.js?v=e38b3de';
+import { renderStep5_Summary } from './step5-summary.js?v=e38b3de';
+import { t, translateAllElements } from '../i18n/i18n.js?v=e38b3de';
+import { renderSheetToolbar, attachSheetToolbarListeners } from '../components/sheet-toolbar.js?v=e38b3de';
+import { attachSheetEditListeners, collectSheetEditsFromDOM, escapeHtml } from '../utils/sheet-edit.js?v=e38b3de';
+import { initSheetAutoSave, resetSheetEditState, notifySheetSaved } from '../utils/sheet-autosave.js?v=e38b3de';
+import { attachSheetRollListeners } from '../utils/sheet-rolls.js?v=e38b3de';
+import { ensureSheetBaseline } from '../utils/sheet-baseline.js?v=e38b3de';
+import { dismissRollResult } from '../components/roll-bubble.js?v=e38b3de';
+import { maybeShowSheetOnboarding } from '../utils/sheet-onboarding.js?v=e38b3de';
 
 const SHEET_PRINT_ROOT_ID = 'sheet-print-root';
 
@@ -22,6 +22,8 @@ function attachSheetEditing(characterId) {
 
 let sheetPrintListenersBound = false;
 let activePrintCharacterId = null;
+let printSessionActive = false;
+let printStartedAt = 0;
 let printMediaQuery = null;
 
 function ensureSheetPrintRoot() {
@@ -37,9 +39,12 @@ function ensureSheetPrintRoot() {
 }
 
 function clearSheetPrintRoot() {
+    printSessionActive = false;
+    printStartedAt = 0;
     const root = document.getElementById(SHEET_PRINT_ROOT_ID);
     if (root) {
         root.innerHTML = '';
+        root.setAttribute('aria-hidden', 'true');
     }
     document.body.classList.remove('sheet-print-active');
 }
@@ -47,7 +52,7 @@ function clearSheetPrintRoot() {
 function prepareSheetPrintRoot() {
     const summaryEl = document.getElementById('step5-summary');
     if (!summaryEl?.classList.contains('sheet-summary')) {
-        return;
+        return false;
     }
 
     if (summaryEl.classList.contains('sheet-summary-editable')) {
@@ -56,8 +61,33 @@ function prepareSheetPrintRoot() {
 
     const root = ensureSheetPrintRoot();
     root.innerHTML = renderStep5_Summary({ context: 'sheet', editable: false, printLayout: true });
+    root.setAttribute('aria-hidden', 'false');
     document.body.classList.add('sheet-print-active');
+    printSessionActive = true;
+    printStartedAt = Date.now();
     translateAllElements(root);
+    return true;
+}
+
+/**
+ * Chromium fires afterprint as soon as the preview opens (not when it closes).
+ * Never tear down while @media print still matches, and ignore early afterprint.
+ */
+function requestClearSheetPrintRoot(reason) {
+    if (!printSessionActive) {
+        return;
+    }
+
+    const ageMs = Date.now() - printStartedAt;
+    if (reason === 'afterprint' && ageMs < 800) {
+        return;
+    }
+
+    if (window.matchMedia('print').matches) {
+        return;
+    }
+
+    clearSheetPrintRoot();
 }
 
 function onSheetBeforePrint() {
@@ -65,12 +95,20 @@ function onSheetBeforePrint() {
 }
 
 function onSheetAfterPrint() {
-    clearSheetPrintRoot();
+    requestClearSheetPrintRoot('afterprint');
 }
 
 function onPrintMediaChange(event) {
-    // Fallback when afterprint is unreliable: clear when leaving print media.
     if (!event.matches) {
+        requestClearSheetPrintRoot('print-media-end');
+    }
+}
+
+function onPrintSessionKeydown(event) {
+    if (!printSessionActive) {
+        return;
+    }
+    if (event.key === 'Escape') {
         clearSheetPrintRoot();
     }
 }
@@ -84,6 +122,7 @@ function bindSheetPrintListeners(characterId) {
 
     window.addEventListener('beforeprint', onSheetBeforePrint);
     window.addEventListener('afterprint', onSheetAfterPrint);
+    document.addEventListener('keydown', onPrintSessionKeydown);
 
     printMediaQuery = window.matchMedia('print');
     if (typeof printMediaQuery.addEventListener === 'function') {
@@ -100,7 +139,9 @@ export function prepareSheetSummaryForPrint() {
 }
 
 export function triggerSheetPrint() {
-    prepareSheetPrintRoot();
+    if (!prepareSheetPrintRoot()) {
+        return;
+    }
 
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
     const delay = isMobile ? 350 : 50;
@@ -108,14 +149,22 @@ export function triggerSheetPrint() {
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
             window.setTimeout(() => {
+                const printCallStarted = Date.now();
                 window.print();
+                const printBlockedMs = Date.now() - printCallStarted;
+
+                // Firefox blocks until the dialog closes. Chromium returns immediately
+                // and must keep the print root until print media ends / late afterprint.
+                if (printBlockedMs > 300) {
+                    requestClearSheetPrintRoot('post-print');
+                }
             }, delay);
         });
     });
 }
 
 export function restoreSheetSummaryAfterPrint() {
-    onSheetAfterPrint();
+    clearSheetPrintRoot();
 }
 
 function syncSheetStickySpacer() {

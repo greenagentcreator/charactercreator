@@ -1,11 +1,11 @@
 // Step 4: Bonds & Motivations
 // This module handles bonds and motivations input
 
-import { getCharacter } from '../model/character.js?v=c8241d5';
-import { PROFESSIONS } from '../config/professions.js?v=c8241d5';
-import { t } from '../i18n/i18n.js?v=c8241d5';
-import { updateNavigationButtons } from '../app.js?v=c8241d5';
-import { showInlineError, showFieldError } from '../utils/validation.js?v=c8241d5';
+import { getCharacter } from '../model/character.js?v=e38b3de';
+import { PROFESSIONS } from '../config/professions.js?v=e38b3de';
+import { t } from '../i18n/i18n.js?v=e38b3de';
+import { updateNavigationButtons } from '../app.js?v=e38b3de';
+import { showInlineError, showFieldError } from '../utils/validation.js?v=e38b3de';
 
 export function renderStep4_BondsMotivations() {
     const character = getCharacter();

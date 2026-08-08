@@ -1,6 +1,35 @@
 /* --- Print Styles --- */
+/* Hidden on normal screen; becomes visible on screen once a print session starts
+   so Chromium can paint it (display:none → @media print alone often yields blank pages). */
 .sheet-print-root {
     display: none;
+}
+
+body.sheet-print-active {
+    overflow: hidden !important;
+}
+
+body.sheet-print-active #app-container,
+body.sheet-print-active #navigation-container,
+body.sheet-print-active #adventureengine-top-banner,
+body.sheet-print-active .promo-banner,
+body.sheet-print-active .app-modal-overlay,
+body.sheet-print-active .app-loading-screen {
+    display: none !important;
+}
+
+body.sheet-print-active .sheet-print-root {
+    display: block !important;
+    position: fixed;
+    inset: 0;
+    z-index: 2147483000;
+    overflow: auto;
+    background: #fff;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 @media print {
@@ -21,6 +50,20 @@
     body.sheet-print-active #app-container,
     body.sheet-print-active #navigation-container {
         display: none !important;
+    }
+
+    body.sheet-print-active .sheet-print-root {
+        display: block !important;
+        position: static !important;
+        inset: auto !important;
+        z-index: auto !important;
+        overflow: visible !important;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        background: transparent !important;
     }
 
     .sheet-print-root {

@@ -1,9 +1,9 @@
 // Click-to-roll on saved agent sheets (stats, derived attributes, skills)
 
-import { rollD100, classifyRollResult, isSnakeEyes } from './dice-roll.js?v=c8241d5';
-import { showRollBubble, setRollStamp, dismissRollResult } from '../components/roll-bubble.js?v=c8241d5';
-import { syncSkillFailMark } from './sheet-edit.js?v=c8241d5';
-import { queueSheetAutoSave } from './sheet-autosave.js?v=c8241d5';
+import { rollD100, classifyRollResult, isSnakeEyes } from './dice-roll.js?v=e38b3de';
+import { showRollBubble, setRollStamp, dismissRollResult } from '../components/roll-bubble.js?v=e38b3de';
+import { syncSkillFailMark } from './sheet-edit.js?v=e38b3de';
+import { queueSheetAutoSave } from './sheet-autosave.js?v=e38b3de';
 
 let rollBusy = false;
 let boundSummary = null;

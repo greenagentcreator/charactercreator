@@ -1,9 +1,9 @@
 // Step 3: Derived Attributes
 // This module displays and calculates derived attributes based on primary statistics
 
-import { getCharacter } from '../model/character.js?v=c8241d5';
-import { calculateDerivedAttributes } from '../model/character.js?v=c8241d5';
-import { t } from '../i18n/i18n.js?v=c8241d5';
+import { getCharacter } from '../model/character.js?v=e38b3de';
+import { calculateDerivedAttributes } from '../model/character.js?v=e38b3de';
+import { t } from '../i18n/i18n.js?v=e38b3de';
 
 export function renderStep3_DerivedAttributes() {
     const character = getCharacter();
