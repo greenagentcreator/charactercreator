@@ -1,9 +1,11 @@
 /* --- Step 5: Summary Page - Official Dossier Style --- */
-#step5-summary {
+#step5-summary,
+#step5-summary-print {
     position: relative;
 }
 
-#step5-summary::before {
+#step5-summary::before,
+#step5-summary-print::before {
     content: "OFFICIAL USE ONLY";
     position: absolute;
     top: 0;
@@ -18,12 +20,14 @@
     z-index: 0;
 }
 
-#step5-summary > * {
+#step5-summary > *,
+#step5-summary-print > * {
     position: relative;
     z-index: 1;
 }
 
-#step5-summary h3.summary-block-title {
+#step5-summary h3.summary-block-title,
+#step5-summary-print h3.summary-block-title {
     background-color: var(--color-summary-title-bg);
     color: var(--color-summary-title-text);
     padding: var(--spacing-sm) var(--spacing-md);
@@ -37,7 +41,8 @@
     position: relative;
 }
 
-#step5-summary h4.summary-subsection-title {
+#step5-summary h4.summary-subsection-title,
+#step5-summary-print h4.summary-subsection-title {
     font-family: var(--font-heading);
     font-size: var(--font-size-xl);
     margin-top: var(--spacing-lg);
@@ -47,7 +52,8 @@
     padding-bottom: var(--spacing-xs);
 }
 
-#step5-summary h4.summary-subsection-title:first-of-type {
+#step5-summary h4.summary-subsection-title:first-of-type,
+#step5-summary-print h4.summary-subsection-title:first-of-type {
     margin-top: 0;
 }
 
@@ -663,7 +669,8 @@ ul.summary-list li:last-child {
 }
 
 /* Compact subsection titles */
-#step5-summary h4.summary-subsection-title {
+#step5-summary h4.summary-subsection-title,
+#step5-summary-print h4.summary-subsection-title {
     font-size: 1.05em;
     margin-top: var(--spacing-md);
     margin-bottom: 6px;
