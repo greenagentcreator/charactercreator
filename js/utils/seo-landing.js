@@ -39,8 +39,8 @@ export function updateSeoLandingVisibility({ step = 0, viewMode = 'creation' } =
         landing.hidden = !show;
     }
 
-    // Footer SEO (feedback, privacy, LLM links, FAQ) is landing-page content.
-    // Copyright stays outside #footer-seo and remains visible everywhere.
+    // Footer SEO (privacy, LLM links, FAQ) is landing-page content.
+    // Feedback/bug-report line and copyright stay visible everywhere.
     const footerSeo = document.getElementById('footer-seo');
     if (footerSeo) {
         footerSeo.hidden = !show;
