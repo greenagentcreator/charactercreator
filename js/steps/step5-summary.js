@@ -1,13 +1,13 @@
 // Step 5: Summary
 // This module displays the final character summary with print/download functionality
 
-import { getCharacter } from '../model/character.js?v=5f80dbc';
-import { calculateDerivedAttributes } from '../model/character.js?v=5f80dbc';
-import { ALL_SKILLS } from '../config/skills.js?v=5f80dbc';
-import { PROFESSIONS } from '../config/professions.js?v=5f80dbc';
-import { STAT_KEYS } from '../config/constants.js?v=5f80dbc';
-import { t, getCurrentLanguage } from '../i18n/i18n.js?v=5f80dbc';
-import { escapeHtml, normalizeSheetCharacterFields, getBondScoreMax } from '../utils/sheet-edit.js?v=5f80dbc';
+import { getCharacter } from '../model/character.js?v=cc0d40b';
+import { calculateDerivedAttributes } from '../model/character.js?v=cc0d40b';
+import { ALL_SKILLS } from '../config/skills.js?v=cc0d40b';
+import { PROFESSIONS } from '../config/professions.js?v=cc0d40b';
+import { STAT_KEYS } from '../config/constants.js?v=cc0d40b';
+import { t, getCurrentLanguage } from '../i18n/i18n.js?v=cc0d40b';
+import { escapeHtml, normalizeSheetCharacterFields, getBondScoreMax } from '../utils/sheet-edit.js?v=cc0d40b';
 
 function renderPersonalSection(character, professionDisplayName, isEditable) {
     const pi = character.personalInfo || {};
