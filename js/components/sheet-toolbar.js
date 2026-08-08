@@ -1,15 +1,15 @@
 // Unified toolbar for agent sheet view (local + library characters)
 
-import { t } from '../i18n/i18n.js?v=78f5820';
-import { createShareableUrl, copyToClipboard } from '../utils/sharing.js?v=78f5820';
-import { getCharacterById, deleteCharacter } from '../utils/storage.js?v=78f5820';
-import { importCharacterFromDatabase, reportCharacter } from '../utils/database.js?v=78f5820';
-import { collectSheetEditsFromDOM, escapeHtml } from '../utils/sheet-edit.js?v=78f5820';
-import { getCharacter } from '../model/character.js?v=78f5820';
-import { showConfirmDialog, showAlertDialog, showPromptDialog } from '../utils/modal.js?v=78f5820';
-import { resetSheetEditState, notifySheetSaved } from '../utils/sheet-autosave.js?v=78f5820';
-import { resetLocalSheetToBaseline } from '../utils/sheet-baseline.js?v=78f5820';
-import { reloadCharacterSheetView } from '../steps/step-character-view.js?v=78f5820';
+import { t } from '../i18n/i18n.js?v=9e5a3d4';
+import { createShareableUrl, copyToClipboard } from '../utils/sharing.js?v=9e5a3d4';
+import { getCharacterById, deleteCharacter } from '../utils/storage.js?v=9e5a3d4';
+import { importCharacterFromDatabase, reportCharacter } from '../utils/database.js?v=9e5a3d4';
+import { collectSheetEditsFromDOM, escapeHtml } from '../utils/sheet-edit.js?v=9e5a3d4';
+import { getCharacter } from '../model/character.js?v=9e5a3d4';
+import { showConfirmDialog, showAlertDialog, showPromptDialog } from '../utils/modal.js?v=9e5a3d4';
+import { resetSheetEditState, notifySheetSaved } from '../utils/sheet-autosave.js?v=9e5a3d4';
+import { resetLocalSheetToBaseline } from '../utils/sheet-baseline.js?v=9e5a3d4';
+import { reloadCharacterSheetView } from '../steps/step-character-view.js?v=9e5a3d4';
 
 /**
  * @param {{ isDatabase?: boolean, canSave?: boolean }} options

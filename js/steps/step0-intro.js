@@ -1,15 +1,15 @@
 // Step 0: Introduction
 
-import { resetCharacter } from '../model/character.js?v=78f5820';
-import { getAllCharacters, deleteCharacter, updateCharacterName, importCharacter } from '../utils/storage.js?v=78f5820';
-import { getUnfinishedDrafts } from '../utils/unfinished-drafts.js?v=78f5820';
-import { t, translateAllElements, getCurrentLanguage } from '../i18n/i18n.js?v=78f5820';
-import { languageLabels, SUPPORTED_LIBRARY_LANGUAGES } from '../i18n/translations.js?v=78f5820';
-import { validateImportedCharacter } from '../utils/validation.js?v=78f5820';
-import { getPublicCharacters, importCharacterFromDatabase, reportCharacter, getPublicCharacterById } from '../utils/database.js?v=78f5820';
-import { resolveProfessionMetadata, getStandardProfessionFilters } from '../utils/profession-filter.js?v=78f5820';
-import { showModal, closeModal, showConfirmDialog, showPromptDialog, showAlertDialog } from '../utils/modal.js?v=78f5820';
-import { escapeHtml, escapeAttr } from '../utils/escape-html.js?v=78f5820';
+import { resetCharacter } from '../model/character.js?v=9e5a3d4';
+import { getAllCharacters, deleteCharacter, updateCharacterName, importCharacter } from '../utils/storage.js?v=9e5a3d4';
+import { getUnfinishedDrafts } from '../utils/unfinished-drafts.js?v=9e5a3d4';
+import { t, translateAllElements, getCurrentLanguage } from '../i18n/i18n.js?v=9e5a3d4';
+import { languageLabels, SUPPORTED_LIBRARY_LANGUAGES } from '../i18n/translations.js?v=9e5a3d4';
+import { validateImportedCharacter } from '../utils/validation.js?v=9e5a3d4';
+import { getPublicCharacters, importCharacterFromDatabase, reportCharacter, getPublicCharacterById } from '../utils/database.js?v=9e5a3d4';
+import { resolveProfessionMetadata, getStandardProfessionFilters } from '../utils/profession-filter.js?v=9e5a3d4';
+import { showModal, closeModal, showConfirmDialog, showPromptDialog, showAlertDialog } from '../utils/modal.js?v=9e5a3d4';
+import { escapeHtml, escapeAttr } from '../utils/escape-html.js?v=9e5a3d4';
 
 const DEFAULT_PROFESSION_FILTER = 'all';
 const DEFAULT_LANGUAGE_FILTER = 'all';
@@ -280,26 +280,40 @@ function buildProfessionFilterButtonsMarkup() {
 
 function getCharacterStatsPreview(char) {
     const stats = char.previewStats || char.data?.stats;
-    if (!stats) {
+    if (!stats || typeof stats !== 'object') {
         return '';
     }
 
     const statKeys = ['STR', 'CON', 'DEX', 'INT', 'POW', 'CHA'];
     const chips = statKeys
-        .filter((key) => stats[key] != null)
-        .map((key) => `
+        .map((key) => {
+            const raw = stats[key];
+            if (raw == null || raw === '') {
+                return null;
+            }
+            const value = Number(raw);
+            if (!Number.isFinite(value)) {
+                return null;
+            }
+            return `
             <div class="character-stat-chip">
                 <span class="character-stat-label">${key}</span>
-                <span class="character-stat-value">${stats[key]}</span>
-            </div>`);
+                <span class="character-stat-value">${escapeHtml(String(value))}</span>
+            </div>`;
+        })
+        .filter(Boolean);
 
     if (chips.length === 0) {
         return '';
     }
 
-    const bondCount = char.data?.bonds?.length ?? char.bondCount ?? 0;
-    const bondsMarkup = bondCount > 0
-        ? `<span class="character-bonds-preview">${t('library_bonds_count', { count: bondCount })}</span>`
+    const rawBondCount = char.data?.bonds?.length ?? char.bondCount ?? 0;
+    const bondCount = Number(rawBondCount);
+    const safeBondCount = Number.isFinite(bondCount)
+        ? Math.max(0, Math.min(99, Math.trunc(bondCount)))
+        : 0;
+    const bondsMarkup = safeBondCount > 0
+        ? `<span class="character-bonds-preview">${escapeHtml(t('library_bonds_count', { count: safeBondCount }))}</span>`
         : '';
 
     return `

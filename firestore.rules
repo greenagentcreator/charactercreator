@@ -5,6 +5,22 @@ service cloud.firestore {
       return field is string && field.size() > 0 && field.size() <= max;
     }
 
+    // previewStats and bondCount are rendered into the community library list
+    // WITHOUT escaping (js/steps/step0-intro.js). Constrain their types here so a
+    // direct-to-Firestore writer can't store markup that would render as raw HTML.
+    function validPreviewStats(ps) {
+      return ps == null || (
+        ps is map &&
+        ps.keys().hasOnly(['STR', 'CON', 'DEX', 'INT', 'POW', 'CHA']) &&
+        (!('STR' in ps) || ps.STR is number) &&
+        (!('CON' in ps) || ps.CON is number) &&
+        (!('DEX' in ps) || ps.DEX is number) &&
+        (!('INT' in ps) || ps.INT is number) &&
+        (!('POW' in ps) || ps.POW is number) &&
+        (!('CHA' in ps) || ps.CHA is number)
+      );
+    }
+
     function validCharacterPayload() {
       return request.resource.data.keys().hasOnly([
                'name', 'nameLower', 'profession', 'professionFilterKey',
@@ -14,6 +30,10 @@ service cloud.firestore {
              request.resource.data.data is map &&
              request.resource.data.data.size() <= 80 &&
              request.resource.data.moderationStatus == 'approved' &&
+             validPreviewStats(request.resource.data.previewStats) &&
+             request.resource.data.bondCount is int &&
+             request.resource.data.bondCount >= 0 &&
+             request.resource.data.bondCount <= 99 &&
              safeString(request.resource.data.name, 80) &&
              safeString(request.resource.data.nameLower, 80) &&
              safeString(request.resource.data.profession, 80) &&

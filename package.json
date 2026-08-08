@@ -1,0 +1,16 @@
+{
+  "name": "deltagreen-charactercreator",
+  "version": "1.0.0",
+  "description": "Delta Green Character Creator — static vanilla-ESM SPA. This package.json exists only for the test toolchain; the app itself has no build step.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run tests/unit",
+    "test:unit": "vitest run tests/unit",
+    "test:watch": "vitest tests/unit"
+  },
+  "devDependencies": {
+    "jsdom": "^25.0.1",
+    "vitest": "^3.2.4"
+  }
+}

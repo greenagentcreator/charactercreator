@@ -1,6 +1,6 @@
 // Shared info-icon tooltips (skills, stats, etc.)
 
-import { escapeHtml, escapeAttr } from './escape-html.js?v=78f5820';
+import { escapeHtml, escapeAttr } from './escape-html.js?v=9e5a3d4';
 
 /**
  * @param {string} description - Tooltip body text

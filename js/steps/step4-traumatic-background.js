@@ -1,13 +1,13 @@
 // Step 4.3: Traumatic Background
 // This module handles traumatic background selection
 
-import { getCharacter } from '../model/character.js?v=78f5820';
-import { PROFESSIONS } from '../config/professions.js?v=78f5820';
-import { ALL_SKILLS } from '../config/skills.js?v=78f5820';
-import { t } from '../i18n/i18n.js?v=78f5820';
-import { updateNavigationButtons } from '../app.js?v=78f5820';
-import { showInlineError, showFieldError } from '../utils/validation.js?v=78f5820';
-import { findSkillInstance, modifySkillValue, calculateDerivedAttributes, normalizeTraumaticBackgroundFields, syncStatsFromAssignments } from '../model/character.js?v=78f5820';
+import { getCharacter } from '../model/character.js?v=9e5a3d4';
+import { PROFESSIONS } from '../config/professions.js?v=9e5a3d4';
+import { ALL_SKILLS } from '../config/skills.js?v=9e5a3d4';
+import { t } from '../i18n/i18n.js?v=9e5a3d4';
+import { updateNavigationButtons } from '../app.js?v=9e5a3d4';
+import { showInlineError, showFieldError } from '../utils/validation.js?v=9e5a3d4';
+import { findSkillInstance, modifySkillValue, calculateDerivedAttributes, normalizeTraumaticBackgroundFields, syncStatsFromAssignments } from '../model/character.js?v=9e5a3d4';
 
 // Remove all traumatic background effects
 function removeTraumaticBackgroundEffects() {

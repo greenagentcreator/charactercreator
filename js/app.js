@@ -1,37 +1,37 @@
 // Main application logic for Delta Green Character Creator
 
-import { t, translateAllElements } from './i18n/i18n.js?v=78f5820';
-import { getCurrentLanguage } from './i18n/i18n.js?v=78f5820';
-import { resetCharacter, getCharacter, setCharacter } from './model/character.js?v=78f5820';
-import { initErrorContainer, clearErrors, validateImportedCharacter } from './utils/validation.js?v=78f5820';
-import { initKeyboardNavigation } from './utils/keyboard.js?v=78f5820';
-import { renderIntro, attachIntroListeners, syncLibraryLanguageFilterWithUi } from './steps/step0-intro.js?v=78f5820';
-import { renderStep1_ProfessionSkills, validateStep1, saveStep1, attachStep1Listeners } from './steps/step1-profession.js?v=78f5820';
-import { renderStep2_Statistics, validateStep2, saveStep2, attachStep2Listeners } from './steps/step2-statistics.js?v=78f5820';
-import { renderStep3_DerivedAttributes, validateStep3, saveStep3, attachStep3Listeners } from './steps/step3-derived.js?v=78f5820';
-import { renderStep4_BondsMotivations, validateStep4, saveStep4, attachStep4Listeners } from './steps/step4-bonds.js?v=78f5820';
-import { renderStep4_TraumaticBackground, validateStep4_3, saveStep4_3, attachStep4_3Listeners } from './steps/step4-traumatic-background.js?v=78f5820';
-import { renderStep5_PersonalInfo, validateStep5_PersonalInfo, saveStep5_PersonalInfo, attachStep5_PersonalInfoListeners } from './steps/step5-personal-info.js?v=78f5820';
-import { renderStep5_Summary, validateStep5, saveStep5, attachStep5Listeners } from './steps/step5-summary.js?v=78f5820';
-import { saveCharacter, isStorageFull, getStorageLimit, importCharacter } from './utils/storage.js?v=78f5820';
-import { PROFESSIONS } from './config/professions.js?v=78f5820';
-import { renderCharacterView, attachCharacterViewListeners, prepareSheetSummaryForPrint, triggerSheetPrint } from './steps/step-character-view.js?v=78f5820';
-import { confirmLeaveSheetIfDirty, isLeavingSheetView, resetSheetEditState } from './utils/sheet-autosave.js?v=78f5820';
-import { captureSheetBaseline } from './utils/sheet-baseline.js?v=78f5820';
-import { getCharacterFromUrl } from './utils/sharing.js?v=78f5820';
-import { normalizeSheetCharacterFields } from './utils/sheet-edit.js?v=78f5820';
-import { uploadCharacter } from './utils/database.js?v=78f5820';
-import { initAppHistory, syncAppHistory, appStateFromUrl, isNavigatingFromHistory } from './utils/app-history.js?v=78f5820';
-import { loadAppNavigationState } from './utils/app-session.js?v=78f5820';
+import { t, translateAllElements } from './i18n/i18n.js?v=9e5a3d4';
+import { getCurrentLanguage } from './i18n/i18n.js?v=9e5a3d4';
+import { resetCharacter, getCharacter, setCharacter } from './model/character.js?v=9e5a3d4';
+import { initErrorContainer, clearErrors, validateImportedCharacter } from './utils/validation.js?v=9e5a3d4';
+import { initKeyboardNavigation } from './utils/keyboard.js?v=9e5a3d4';
+import { renderIntro, attachIntroListeners, syncLibraryLanguageFilterWithUi } from './steps/step0-intro.js?v=9e5a3d4';
+import { renderStep1_ProfessionSkills, validateStep1, saveStep1, attachStep1Listeners } from './steps/step1-profession.js?v=9e5a3d4';
+import { renderStep2_Statistics, validateStep2, saveStep2, attachStep2Listeners } from './steps/step2-statistics.js?v=9e5a3d4';
+import { renderStep3_DerivedAttributes, validateStep3, saveStep3, attachStep3Listeners } from './steps/step3-derived.js?v=9e5a3d4';
+import { renderStep4_BondsMotivations, validateStep4, saveStep4, attachStep4Listeners } from './steps/step4-bonds.js?v=9e5a3d4';
+import { renderStep4_TraumaticBackground, validateStep4_3, saveStep4_3, attachStep4_3Listeners } from './steps/step4-traumatic-background.js?v=9e5a3d4';
+import { renderStep5_PersonalInfo, validateStep5_PersonalInfo, saveStep5_PersonalInfo, attachStep5_PersonalInfoListeners } from './steps/step5-personal-info.js?v=9e5a3d4';
+import { renderStep5_Summary, validateStep5, saveStep5, attachStep5Listeners } from './steps/step5-summary.js?v=9e5a3d4';
+import { saveCharacter, isStorageFull, getStorageLimit, importCharacter } from './utils/storage.js?v=9e5a3d4';
+import { PROFESSIONS } from './config/professions.js?v=9e5a3d4';
+import { renderCharacterView, attachCharacterViewListeners, prepareSheetSummaryForPrint, triggerSheetPrint } from './steps/step-character-view.js?v=9e5a3d4';
+import { confirmLeaveSheetIfDirty, isLeavingSheetView, resetSheetEditState } from './utils/sheet-autosave.js?v=9e5a3d4';
+import { captureSheetBaseline } from './utils/sheet-baseline.js?v=9e5a3d4';
+import { getCharacterFromUrl } from './utils/sharing.js?v=9e5a3d4';
+import { normalizeSheetCharacterFields } from './utils/sheet-edit.js?v=9e5a3d4';
+import { uploadCharacter } from './utils/database.js?v=9e5a3d4';
+import { initAppHistory, syncAppHistory, appStateFromUrl, isNavigatingFromHistory } from './utils/app-history.js?v=9e5a3d4';
+import { loadAppNavigationState } from './utils/app-session.js?v=9e5a3d4';
 import {
     saveUnfinishedDraft,
     resolveUnfinishedDraftForResume,
     removeUnfinishedDraft,
     clearActiveUnfinishedDraftReference,
     getUnfinishedDraftById
-} from './utils/unfinished-drafts.js?v=78f5820';
-import { completeAppLoading } from './utils/app-loading.js?v=78f5820';
-import { updateSeoLandingVisibility } from './utils/seo-landing.js?v=78f5820';
+} from './utils/unfinished-drafts.js?v=9e5a3d4';
+import { completeAppLoading } from './utils/app-loading.js?v=9e5a3d4';
+import { updateSeoLandingVisibility } from './utils/seo-landing.js?v=9e5a3d4';
 
 let currentStep = 0;
 let stepContainer, progressBarContainer, btnNext, btnBack;
@@ -489,11 +489,17 @@ function pushAppHistory(replace = false) {
 }
 
 function showCreationChrome() {
+    document.getElementById('app-container')?.classList.remove('sheet-active');
     if (btnNext) btnNext.style.display = 'inline-block';
     if (btnBack) btnBack.style.display = 'inline-block';
 }
 
 function hideCreationChrome() {
+    // Suppress creator brand chrome in read-only sheet view; theme/language stay.
+    document.getElementById('app-container')?.classList.add('sheet-active');
+    // Sheet render paths bypass renderCurrentStep — hide landing + footer SEO here too.
+    updateSeoLandingVisibility({ step: 0, viewMode: 'sheet' });
+
     const navigationContainer = document.getElementById('navigation-container');
     if (navigationContainer) {
         navigationContainer.style.display = 'none';
@@ -501,7 +507,6 @@ function hideCreationChrome() {
     if (btnNext) btnNext.style.display = 'none';
     if (btnBack) btnBack.style.display = 'none';
     if (progressBarContainer) progressBarContainer.style.display = 'none';
-    updateSeoLandingVisibility({ step: currentStep, viewMode: currentViewMode });
 }
 
 async function applyNavigationFromHistory(state) {
@@ -788,7 +793,7 @@ async function discardUnfinishedDraft(draftId) {
         return;
     }
 
-    const { showConfirmDialog } = await import('./utils/modal.js?v=78f5820');
+    const { showConfirmDialog } = await import('./utils/modal.js?v=9e5a3d4');
     const confirmed = await showConfirmDialog({
         title: t('discard_unfinished_title'),
         message: t('confirm_discard_unfinished', { name: draft.name }),
@@ -851,7 +856,7 @@ async function renderDatabaseCharacterView(dbId) {
     hideCreationChrome();
 
     try {
-        const { getPublicCharacterById } = await import('./utils/database.js?v=78f5820');
+        const { getPublicCharacterById } = await import('./utils/database.js?v=9e5a3d4');
         const characterDoc = await getPublicCharacterById(dbId);
 
         if (!characterDoc) {

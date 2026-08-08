@@ -31,11 +31,18 @@ export function initSeoLanding() {
 }
 
 export function updateSeoLandingVisibility({ step = 0, viewMode = 'creation' } = {}) {
-    const landing = document.getElementById(SEO_LANDING_ID);
-    if (!landing) {
-        return;
-    }
     const onHome = viewMode === 'creation' || viewMode === 'list';
     const show = onHome && step === 0;
-    landing.hidden = !show;
+
+    const landing = document.getElementById(SEO_LANDING_ID);
+    if (landing) {
+        landing.hidden = !show;
+    }
+
+    // Footer SEO (feedback, privacy, LLM links, FAQ) is landing-page content.
+    // Copyright stays outside #footer-seo and remains visible everywhere.
+    const footerSeo = document.getElementById('footer-seo');
+    if (footerSeo) {
+        footerSeo.hidden = !show;
+    }
 }
