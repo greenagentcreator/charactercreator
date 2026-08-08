@@ -4,12 +4,6 @@
 
 export const NEWS_ENTRIES = [
     {
-        id: '2026-08-08-security-ux',
-        date: '2026-08-08',
-        titleKey: 'news_2026_08_08_security_title',
-        bodyKey: 'news_2026_08_08_security_body'
-    },
-    {
         id: '2026-08-08-summer-update',
         date: '2026-08-08',
         titleKey: 'news_2026_08_08_title',
